@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     // Hitboxから呼ばれる
     public void OnHit()
     {
+        DanmakuGameManager.Instance.GameOver();
         Destroy(gameObject);
     }
 }

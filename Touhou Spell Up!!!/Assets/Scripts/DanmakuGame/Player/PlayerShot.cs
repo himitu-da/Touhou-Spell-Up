@@ -4,6 +4,7 @@ public class PlayerShot : MonoBehaviour
 {
     [SerializeField] float speed = 12f;
     [SerializeField] float lifeTime = 4f;
+    [SerializeField] float shotDamage = 1f;
 
     void Update()
     {
@@ -17,10 +18,12 @@ public class PlayerShot : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.CompareTag("Enemy"))
+        Health health = col.GetComponent<Health>();
+        if (health != null)
         {
-            Destroy(col.gameObject);   // 敵を倒す
-            Destroy(gameObject);       // 弾も消える
+            health.TakeDamage(shotDamage); // 敵のHPを減らす
+            Destroy(gameObject);             // 弾は消える
+            return;
         }
     }
 }
