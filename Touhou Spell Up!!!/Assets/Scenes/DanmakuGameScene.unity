@@ -694,9 +694,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421d8442025816849bece32b5cf760d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 8358218248195228109, guid: ec6a97990289a034aaeb676a711af676, type: 3}
-  fireInterval: 0.2
+  fireInterval: 0.5
   lifeGaugePrefab: {fileID: 6845083702458507679, guid: b33681019a1032140a6bf80759c2caf7, type: 3}
+  attackPattern: {fileID: 11400000, guid: 17976175674b9cc4ea9f639ecfa25887, type: 2}
 --- !u!114 &1629254599
 MonoBehaviour:
   m_ObjectHideFlags: 0
