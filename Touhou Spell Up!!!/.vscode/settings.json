@@ -66,5 +66,12 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
     },
-    "dotnet.defaultSolution": "Touhou Spell Up!!!.sln"
+    "dotnet.defaultSolution": "Touhou Spell Up!!!.sln",
+    "cSpell.words": [
+        "Behaviour",
+        "Cysharp",
+        "Danmaku",
+        "Scriptable",
+        "Touhou"
+    ]
 }

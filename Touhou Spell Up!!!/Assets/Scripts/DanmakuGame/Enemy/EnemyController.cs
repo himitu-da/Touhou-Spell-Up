@@ -1,18 +1,21 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(Health))]
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] GameObject bulletPrefab;
+    //[SerializeField] GameObject bulletPrefab;
     [SerializeField] float fireInterval = 1.0f;
     [SerializeField] GameObject lifeGaugePrefab;
+
+    [Header("攻撃パターン")]
+    [SerializeField] BulletPatternBase attackPattern;
 
     private Health _health;
     private GameObject _lifeGaugeInstance;
 
     float _timer;
-    float _delta = 0.0f;
 
     void Start()
     {
@@ -45,25 +48,10 @@ public class EnemyController : MonoBehaviour
         if (_timer >= fireInterval)
         {
             _timer = 0f;
-            // NWayBullet(5, 90, UnityEngine.Random.Range(0.0f, 360.0f));
-            NWayBullet(7, 120, _delta);
-            _delta += 27.7f;
-        }
-
-        if (_delta >= 360.0f)
-            _delta -= 360.0f;
-    }
-
-    void NWayBullet(int wayCount, float angle, float delta = 0.0f)
-    {
-        float startAngle = -angle / 2 + delta;
-        float angleStep = angle / (wayCount - 1);
-
-        for (int i = 0; i < wayCount; i++)
-        {
-            float currentAngle = startAngle + angleStep * i;
-            Quaternion rotation = Quaternion.Euler(0, 0, currentAngle);
-            Instantiate(bulletPrefab, transform.position, rotation);
+            if (attackPattern != null)
+            {
+                attackPattern.Execute(transform, this.GetCancellationTokenOnDestroy()).Forget();
+            }
         }
     }
 }
