@@ -7,9 +7,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject shotPrefab;
     [SerializeField] float shotInterval = 0.15f;
 
+    public static PlayerController Instance { get; private set; }
     float _shotTimer;
     Vector2 _moveInput;
     bool _isShotPressed;
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void OnMove(InputValue value)
     {

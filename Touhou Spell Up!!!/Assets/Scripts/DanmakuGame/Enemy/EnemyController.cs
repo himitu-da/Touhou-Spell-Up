@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 public class EnemyController : MonoBehaviour
 {
     //[SerializeField] GameObject bulletPrefab;
-    [SerializeField] float fireInterval = 1.0f;
     [SerializeField] GameObject lifeGaugePrefab;
 
     [Header("攻撃パターン")]
@@ -14,8 +13,6 @@ public class EnemyController : MonoBehaviour
 
     private Health _health;
     private GameObject _lifeGaugeInstance;
-
-    float _timer;
 
     void Start()
     {
@@ -40,18 +37,10 @@ public class EnemyController : MonoBehaviour
                 lifeGaugeController.Initialize(_health);
             }
         }
-    }
 
-    void Update()
-    {
-        _timer += Time.deltaTime;
-        if (_timer >= fireInterval)
+        if (attackPattern != null)
         {
-            _timer = 0f;
-            if (attackPattern != null)
-            {
-                attackPattern.Execute(transform, this.GetCancellationTokenOnDestroy()).Forget();
-            }
+            attackPattern.Execute(transform, this.GetCancellationTokenOnDestroy()).Forget();
         }
     }
 }
