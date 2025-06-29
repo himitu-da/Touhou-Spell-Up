@@ -2,16 +2,16 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-[CreateAssetMenu(fileName = "LoopPattern", menuName = "Touhou Spell Up/Bullet Pattern/Loop")]
+[CreateAssetMenu(fileName = "LOOP_", menuName = "Touhou Spell Up/Bullet Pattern/Loop")]
 public class LoopPattern : BulletPatternBase
 {
     [SerializeField]
     private BulletPatternBase pattern;
 
-    [SerializeField, Min(0.01f)]
+    [SerializeField, Min(0.0f)]
     private float interval = 1.0f;
 
-    public override async UniTask Execute(Transform spawnPoint, CancellationToken token)
+    public override async UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token)
     {
         if (pattern == null)
         {
@@ -19,13 +19,19 @@ public class LoopPattern : BulletPatternBase
             return;
         }
 
+        // 自身の上書き設定があればそれを優先し、なければ親からの継承をそのまま使う
+        GameObject bulletForChildren = this.overrideBulletPrefab != null ? this.overrideBulletPrefab : inheritedBulletPrefab;
+
         while (!token.IsCancellationRequested)
         {
             // 子パターンの実行
-            await pattern.Execute(spawnPoint, token);
+            await pattern.Execute(spawnPoint, bulletForChildren, token);
 
+            if (interval > 0)
+            {
             // 指定された間隔だけ待機
             await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
+            }
         }
     }
 }

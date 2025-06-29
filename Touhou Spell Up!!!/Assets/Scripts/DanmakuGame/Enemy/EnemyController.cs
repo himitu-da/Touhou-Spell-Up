@@ -40,7 +40,8 @@ public class EnemyController : MonoBehaviour
 
         if (attackPattern != null)
         {
-            attackPattern.Execute(transform, this.GetCancellationTokenOnDestroy()).Forget();
+            // 第2引数にnullを渡して実行。使用する弾はattackPattern自身がoverrideBulletPrefabで指定する想定
+            attackPattern.Execute(transform, null, this.GetCancellationTokenOnDestroy()).Forget();
         }
     }
 }

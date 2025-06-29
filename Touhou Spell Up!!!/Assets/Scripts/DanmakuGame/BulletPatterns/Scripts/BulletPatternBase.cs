@@ -4,5 +4,7 @@ using System.Threading;
 
 public abstract class BulletPatternBase : ScriptableObject
 {
-    public abstract UniTask Execute(Transform spawnPoint, CancellationToken token);
+    [Tooltip("パターン以下で使う弾を上書きします")]
+    [SerializeField] protected GameObject overrideBulletPrefab = null;
+    public abstract UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token);
 }

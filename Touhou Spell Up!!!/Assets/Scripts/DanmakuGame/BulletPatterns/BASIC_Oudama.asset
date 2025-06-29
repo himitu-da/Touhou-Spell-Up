@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3820d39d8630a224dba9f9ea6ea5bf39, type: 3}
-  m_Name: Bullet_Chu
+  m_Name: BASIC_Oudama
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 8358218248195228109, guid: ec6a97990289a034aaeb676a711af676, type: 3}
+  overrideBulletPrefab: {fileID: 8358218248195228109, guid: 4dbf00e2379025b4c938da165c4e1455, type: 3}

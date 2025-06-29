@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System; // TimeSpanのために追加
 
-[CreateAssetMenu(fileName = "SequencePattern", menuName = "Touhou Spell Up/Bullet Pattern/Sequence")]
+[CreateAssetMenu(fileName = "SEQ_", menuName = "Touhou Spell Up/Bullet Pattern/Sequence")]
 public class SequencePattern : BulletPatternBase
 {
     [System.Serializable]
@@ -13,12 +13,18 @@ public class SequencePattern : BulletPatternBase
         public BulletPatternBase pattern;
         [Tooltip("このパターンの実行前に待機する時間（秒）")]
         public float delay;
+
+        [Tooltip("このパターンでのみ使用する弾を上書きする")]
+        public GameObject overrideBulletPrefab;
     }
 
     [SerializeField] private List<PatternStep> sequence;
 
-    public override async UniTask Execute(Transform spawnPoint, CancellationToken token)
+    public override async UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token)
     {
+        // パターン全体で使う弾を決定（自身の上書きがあればそれを使い、なければ親から継承）
+        GameObject patternScopeBullet = this.overrideBulletPrefab != null ? this.overrideBulletPrefab : inheritedBulletPrefab;
+
         foreach (var step in sequence)
         {
             // キャンセルチェック
@@ -35,8 +41,12 @@ public class SequencePattern : BulletPatternBase
 
             if (step.pattern != null)
             {
+                // このステップで最終的に使う弾を決定
+                // ステップ固有の上書きがあれば最優先、なければパターン全体で使う弾を引き継ぐ
+                GameObject finalBulletForStep = step.overrideBulletPrefab != null ? step.overrideBulletPrefab : patternScopeBullet;
+
                 // 子パターンのUniTaskを実行し、完了を待つ
-                await step.pattern.Execute(spawnPoint, token);
+                await step.pattern.Execute(spawnPoint, finalBulletForStep, token);
             }
         }
     }

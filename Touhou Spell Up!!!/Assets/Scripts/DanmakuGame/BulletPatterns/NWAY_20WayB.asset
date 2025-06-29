@@ -9,7 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3820d39d8630a224dba9f9ea6ea5bf39, type: 3}
-  m_Name: Bullet_Oudama
+  m_Script: {fileID: 11500000, guid: 1c7d318de5afe304383d78cb17036400, type: 3}
+  m_Name: NWAY_20WayB
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 8358218248195228109, guid: 4dbf00e2379025b4c938da165c4e1455, type: 3}
+  overrideBulletPrefab: {fileID: 0}
+  wayCount: 20
+  interval: 0
+  totalAngle: 30
+  allRound: 1
+  rotationDirection: 0
+  aimAtPlayer: 0
+  avoidAtPlayer: 0

@@ -2,63 +2,78 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using TouhouSpellUp.Danmaku;
 
-[CreateAssetMenu(fileName = "MultiWayPattern", menuName = "Touhou Spell Up/Bullet Pattern/Multi-Way")]
+[CreateAssetMenu(fileName = "NWAY_", menuName = "Touhou Spell Up/Bullet Pattern/Multi-Way")]
 public class MultiWayPattern : BulletPatternBase
 {
-    [Header("基本設定")]
-    [Tooltip("このパターンを複数方向に展開します")]
-    [SerializeField] private BulletPatternBase patternToSpread;
-
     [Header("N-Way弾の設定")]
     [SerializeField, Range(1, 100)] private int wayCount = 5;
+    [SerializeField, Range(0f, 20f)] private float interval = 0.5f;
     [SerializeField, Range(0f, 360f)] private float totalAngle = 90f;
     [SerializeField] private bool allRound;
+    [SerializeField] private RotationDirection rotationDirection = RotationDirection.CounterClockwise;
 
-    [Header("自機狙い")]
+    [Header("自機の方向を狙う")]
+    [Tooltip("奇数弾なら自機狙い、偶数弾なら自機外し")]
     [SerializeField] private bool aimAtPlayer = false;
+    [Header("全方位で自機外し")]
+    [SerializeField] private bool avoidAtPlayer = false; 
 
-    public override async UniTask Execute(Transform spawnPoint, CancellationToken token)
+    public override async UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token)
     {
-        if (patternToSpread == null)
+        // このパターンが使う弾を決定
+        GameObject bulletToUse = this.overrideBulletPrefab != null ? this.overrideBulletPrefab : inheritedBulletPrefab;
+
+        if (bulletToUse == null)
         {
-            Debug.LogError("Pattern To Spreadが設定されていません。", this);
+            Debug.LogError("発射する弾が指定されていません！", this);
             return;
         }
         if (token.IsCancellationRequested) return;
 
+        // 全方位でないなら自機外しはfalse
+        avoidAtPlayer = allRound && avoidAtPlayer;
+
+        // 回転方向に応じて角度の増減を決定（反時計回りなら+1、時計回りなら-1）
+        float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
+
         float centerAngle = spawnPoint.eulerAngles.z;
         if (aimAtPlayer)
         {
-            if (PlayerController.Instance != null)
-            {
-                Vector3 dir = PlayerController.Instance.transform.position - spawnPoint.position;
-                centerAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 90f;
-            }
+            centerAngle = AngleUtility.GetAngleToPlayer(spawnPoint.position);
         }
 
         float finalAngle = allRound ? 360f : totalAngle;
 
-        float startAngle = -finalAngle / 2;
+        float startAngle = -finalAngle / 2 * directionMultiplier;
         // 全方位の場合は最後の弾が最初と重ならないようにする
         float angleStep = allRound ? finalAngle / wayCount : ((wayCount > 1) ? finalAngle / (wayCount - 1) : 0f);
 
         Quaternion originalRotation = spawnPoint.rotation;
 
-        var tasks = new List<UniTask>();
         for (int i = 0; i < wayCount; i++)
         {
             if (token.IsCancellationRequested) break;
 
             // 全方位の場合、startAngleは不要（0度から開始するため）
-            float currentAngle = centerAngle + (allRound ? 0 : startAngle) + angleStep * i;
+            // 全方位の自機外しの場合、angleStepの半分だけずらす
+            // directionMultiplierで回転方向を制御
+            float currentAngle = centerAngle + (allRound ? 0 : startAngle) + (avoidAtPlayer ? angleStep / 2 : 0) + (angleStep * i * directionMultiplier);
             spawnPoint.rotation = Quaternion.Euler(0, 0, currentAngle);
 
-            tasks.Add(patternToSpread.Execute(spawnPoint, token));
+            Instantiate(bulletToUse, spawnPoint.position, spawnPoint.rotation);
+
+            // 元の回転に戻す
+            spawnPoint.rotation = originalRotation;
+
+            // intervalだけ待つ
+            if (interval > 0)
+            {
+                await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
+            }
         }
 
-        await UniTask.WhenAll(tasks);
-
-        spawnPoint.rotation = originalRotation;
+        await UniTask.CompletedTask;
     }
 }

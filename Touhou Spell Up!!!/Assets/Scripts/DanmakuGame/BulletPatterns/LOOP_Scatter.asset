@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c988225907b881f4cb4590287b277f5b, type: 3}
-  m_Name: ParallelPattern
+  m_Script: {fileID: 11500000, guid: ab8e274925f08734487dd148de7d202a, type: 3}
+  m_Name: LOOP_Scatter
   m_EditorClassIdentifier: 
-  patterns:
-  - {fileID: 11400000, guid: 14a3dd4fd5f3f344ab911999f629c955, type: 2}
-  - {fileID: 11400000, guid: 5964d942b1385f243a8b788ee6b10855, type: 2}
+  pattern: {fileID: 11400000, guid: 0ce478758bb14c147ae723851947d31a, type: 2}
+  interval: 0
