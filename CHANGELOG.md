@@ -51,7 +51,7 @@
 - 敵機が回転しまくってしまう問題を解消
 - 設計思想を、「何を」「どう打つか」に分別。「何」はPrefab、「どう」はBulletPatternBaseが担当
 - 各パターンにおいて、使う弾を上書きできるように。BulletPatternBaseを変更
-- Patternの命名規則を統一
+- Patternの命名規則を統一し、ファイル名を変更
     - `BasicShotPattern` → `BASIC_`
     - `LoopPattern` → `LOOP_`
     - `MultiWayPattern` → `NWAY_`
