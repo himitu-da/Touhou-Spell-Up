@@ -4,8 +4,8 @@ using System.Threading;
 using System.Collections.Generic;
 using TouhouSpellUp.Danmaku;
 
-[CreateAssetMenu(fileName = "NWAY_", menuName = "Touhou Spell Up/Bullet Pattern/Multi-Way")]
-public class MultiWayPattern : BulletPatternBase
+[CreateAssetMenu(fileName = "NWAY_", menuName = "Touhou Spell Up/Danmaku/Bullet Pattern/Multi-Way")]
+public class MultiWayPattern : ShootPatternBase
 {
     [Header("N-Way弾の設定")]
     [SerializeField, Range(1, 100)] private int wayCount = 5;

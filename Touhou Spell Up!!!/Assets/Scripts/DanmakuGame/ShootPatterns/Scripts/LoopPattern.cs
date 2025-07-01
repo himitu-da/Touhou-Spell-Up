@@ -2,11 +2,11 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-[CreateAssetMenu(fileName = "LOOP_", menuName = "Touhou Spell Up/Bullet Pattern/Loop")]
-public class LoopPattern : BulletPatternBase
+[CreateAssetMenu(fileName = "LOOP_", menuName = "Touhou Spell Up/Danmaku/Bullet Pattern/Loop")]
+public class LoopPattern : ShootPatternBase
 {
     [SerializeField]
-    private BulletPatternBase pattern;
+    private ShootPatternBase pattern;
 
     [SerializeField, Min(0.0f)]
     private float interval = 1.0f;

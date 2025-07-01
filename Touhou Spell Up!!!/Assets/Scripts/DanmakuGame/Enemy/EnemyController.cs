@@ -9,7 +9,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] GameObject lifeGaugePrefab;
 
     [Header("攻撃パターン")]
-    [SerializeField] BulletPatternBase attackPattern;
+    [SerializeField] ShootPatternBase attackPattern;
 
     private Health _health;
     private GameObject _lifeGaugeInstance;

@@ -3,8 +3,8 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "SCTR_", menuName = "Touhou Spell Up/Bullet Pattern/Scattering")]
-public class ScatteringPattern : BulletPatternBase
+[CreateAssetMenu(fileName = "SCTR_", menuName = "Touhou Spell Up/Danmaku/Bullet Pattern/Scattering")]
+public class ScatteringPattern : ShootPatternBase
 {
     [Header("ばらまき弾の設定")]
     // 分布方法＝正規分布、ランダムを将来的に追加する

@@ -2,8 +2,8 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-[CreateAssetMenu(fileName = "BASIC_", menuName = "Touhou Spell Up/Bullet Pattern/Basic Shot")]
-public class BasicShotPattern : BulletPatternBase
+[CreateAssetMenu(fileName = "BASIC_", menuName = "Touhou Spell Up/Danmaku/Bullet Pattern/Basic Shot")]
+public class BasicShotPattern : ShootPatternBase
 {
     public override async UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token)
     {
