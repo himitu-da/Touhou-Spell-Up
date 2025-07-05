@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: NWAY_Normal
   m_EditorClassIdentifier: 
   overrideBulletPrefab: {fileID: 8358218248195228109, guid: ec6a97990289a034aaeb676a711af676, type: 3}
-  wayCount: 7
+  wayCount: 15
   interval: 0
   totalAngle: 90
   allRound: 0

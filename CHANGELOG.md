@@ -68,6 +68,7 @@
 - 背景色を灰色に
 
 ## [v0.1.4] - 2025-07-01
+- CHANGELOGとREADMEに実装計画を分離
 - menuNameの構造を調節
     - 弾幕ゲーム関係はTouhou Spell Up -> DanMakuに移動
 - BulletPatternBaseをShootPatternBaseに改称

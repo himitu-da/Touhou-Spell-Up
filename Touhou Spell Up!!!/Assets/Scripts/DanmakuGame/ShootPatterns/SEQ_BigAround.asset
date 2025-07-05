@@ -18,5 +18,5 @@ MonoBehaviour:
     delay: 0
     overrideBulletPrefab: {fileID: 0}
   - pattern: {fileID: 11400000, guid: e01f2f2aa03373648b46215d0c264292, type: 2}
-    delay: 0.9
+    delay: 0.8
     overrideBulletPrefab: {fileID: 0}

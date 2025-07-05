@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edd4ec64db6ab0445998cea85f782abe, type: 3}
   m_Name: SEQ_Normal
   m_EditorClassIdentifier: 
+  overrideBulletPrefab: {fileID: 0}
   sequence:
   - pattern: {fileID: 11400000, guid: 6bd630fb27632184a8698f4da3379fe4, type: 2}
     delay: 0
+    overrideBulletPrefab: {fileID: 0}
   - pattern: {fileID: 11400000, guid: 6bd630fb27632184a8698f4da3379fe4, type: 2}
     delay: 0.1
+    overrideBulletPrefab: {fileID: 0}
