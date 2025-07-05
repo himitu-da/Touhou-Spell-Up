@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   overrideBullet: {fileID: 11400000, guid: 92f01fc2c4c8cbc4ca80b37047b2172a, type: 2}
   scatterCount: 40
-  interval: 0.02
+  interval: 0.015
   totalAngle: 60
   allRound: 1
   aimAtPlayer: 1

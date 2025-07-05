@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b84b4aee6ad1b24ea33e11bad69f00c, type: 3}
   m_Name: BLTP_Medium
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 6
   lifeTime: 7

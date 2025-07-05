@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: NWAY_Normal
   m_EditorClassIdentifier: 
   overrideBullet: {fileID: 11400000, guid: 3e7e8f26e42fbda4ebbd6b973950412a, type: 2}
-  wayCount: 11
+  wayCount: 9
   interval: 0
-  totalAngle: 75
+  totalAngle: 90
   allRound: 0
   rotationDirection: 1
   aimAtPlayer: 1

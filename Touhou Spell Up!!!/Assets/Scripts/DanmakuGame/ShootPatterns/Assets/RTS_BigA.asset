@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   overrideBullet: {fileID: 11400000, guid: bb8e2a6fa1bb1094d9e14baf5d62c1c8, type: 2}
   startAngle: 0
-  intervalAngle: 28.571428
-  intervalTime: 0.03333334
+  intervalAngle: 42.857143
+  intervalTime: 0.04
   shotCount: 81
   rotationDirection: 0
   sharedAngle: {fileID: 11400000, guid: 32f0b98e951c19d4599cc3830a06d392, type: 2}
