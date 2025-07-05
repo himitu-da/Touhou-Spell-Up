@@ -17,18 +17,13 @@ public class ScatteringPattern : ShootPatternBase
     [SerializeField] private bool aimAtPlayer = false;
     [SerializeField] private bool alwaysAimToPlayer = false;
 
-    public override async UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token)
+    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
     {
-        // このパターンが使う弾を決定
-        GameObject bulletToUse = this.overrideBulletPrefab != null ? this.overrideBulletPrefab : inheritedBulletPrefab;
-
-        if (bulletToUse == null)
+        if (bulletToUse == null || bulletToUse.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
         }
-        if (token.IsCancellationRequested) return;
-
         // aimAtPlayerがfalseのときは無効化
         alwaysAimToPlayer = aimAtPlayer && alwaysAimToPlayer;
 
@@ -52,7 +47,12 @@ public class ScatteringPattern : ShootPatternBase
             float scatterAngle = centerAngle + Random.Range(startAngle, endAngle);
             spawnPoint.rotation = Quaternion.Euler(0, 0, scatterAngle);
 
-            Instantiate(bulletToUse, spawnPoint.position, spawnPoint.rotation);
+            var bulletInstance = Instantiate(bulletToUse.Prefab, spawnPoint.position, spawnPoint.rotation);
+            var enemyBullet = bulletInstance.GetComponent<EnemyBullet>();
+            if (enemyBullet != null)
+            {
+                enemyBullet.Initialize(bulletToUse.Property);
+            }
 
             // 回転を元に戻す
             spawnPoint.rotation = originalRotation;

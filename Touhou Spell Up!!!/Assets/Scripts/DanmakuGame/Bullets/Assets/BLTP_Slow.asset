@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3820d39d8630a224dba9f9ea6ea5bf39, type: 3}
-  m_Name: BASIC_Oudama
+  m_Script: {fileID: 11500000, guid: 4b84b4aee6ad1b24ea33e11bad69f00c, type: 3}
+  m_Name: BLTP_Slow
   m_EditorClassIdentifier: 
-  overrideBulletPrefab: {fileID: 8358218248195228109, guid: 4dbf00e2379025b4c938da165c4e1455, type: 3}
+  speed: 4
+  lifeTime: 8

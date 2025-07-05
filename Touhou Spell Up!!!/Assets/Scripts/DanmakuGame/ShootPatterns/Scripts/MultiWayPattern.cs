@@ -20,17 +20,13 @@ public class MultiWayPattern : ShootPatternBase
     [Header("全方位で自機外し")]
     [SerializeField] private bool avoidAtPlayer = false; 
 
-    public override async UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token)
+    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
     {
-        // このパターンが使う弾を決定
-        GameObject bulletToUse = this.overrideBulletPrefab != null ? this.overrideBulletPrefab : inheritedBulletPrefab;
-
-        if (bulletToUse == null)
+        if (bulletToUse == null || bulletToUse.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
         }
-        if (token.IsCancellationRequested) return;
 
         // 全方位でないなら自機外しはfalse
         avoidAtPlayer = allRound && avoidAtPlayer;
@@ -62,7 +58,12 @@ public class MultiWayPattern : ShootPatternBase
             float currentAngle = centerAngle + (allRound ? 0 : startAngle) + (avoidAtPlayer ? angleStep / 2 : 0) + (angleStep * i * directionMultiplier);
             spawnPoint.rotation = Quaternion.Euler(0, 0, currentAngle);
 
-            Instantiate(bulletToUse, spawnPoint.position, spawnPoint.rotation);
+            var bulletInstance = Instantiate(bulletToUse.Prefab, spawnPoint.position, spawnPoint.rotation);
+            var enemyBullet = bulletInstance.GetComponent<EnemyBullet>();
+            if (enemyBullet != null)
+            {
+                enemyBullet.Initialize(bulletToUse.Property);
+            }
 
             // 元の回転に戻す
             spawnPoint.rotation = originalRotation;

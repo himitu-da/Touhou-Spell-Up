@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab8e274925f08734487dd148de7d202a, type: 3}
-  m_Name: LOOP_A
+  m_Name: LOOP_Big
   m_EditorClassIdentifier: 
-  overrideBulletPrefab: {fileID: 0}
-  pattern: {fileID: 11400000, guid: 17976175674b9cc4ea9f639ecfa25887, type: 2}
-  interval: 0.6
+  overrideBullet: {fileID: 0}
+  pattern: {fileID: 11400000, guid: ac10688a00cdb6048a72d27f48025ec5, type: 2}
+  interval: 0

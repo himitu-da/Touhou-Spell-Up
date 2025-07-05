@@ -11,7 +11,7 @@ public class LoopPattern : ShootPatternBase
     [SerializeField, Min(0.0f)]
     private float interval = 1.0f;
 
-    public override async UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token)
+    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
     {
         if (pattern == null)
         {
@@ -19,13 +19,10 @@ public class LoopPattern : ShootPatternBase
             return;
         }
 
-        // 自身の上書き設定があればそれを優先し、なければ親からの継承をそのまま使う
-        GameObject bulletForChildren = this.overrideBulletPrefab != null ? this.overrideBulletPrefab : inheritedBulletPrefab;
-
         while (!token.IsCancellationRequested)
         {
             // 子パターンの実行
-            await pattern.Execute(spawnPoint, bulletForChildren, token);
+            await pattern.Execute(spawnPoint, bulletToUse, token);
 
             if (interval > 0)
             {

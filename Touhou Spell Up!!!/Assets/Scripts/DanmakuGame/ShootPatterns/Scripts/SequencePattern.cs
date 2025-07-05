@@ -15,16 +15,13 @@ public class SequencePattern : ShootPatternBase
         public float delay;
 
         [Tooltip("このパターンでのみ使用する弾を上書きする")]
-        public GameObject overrideBulletPrefab;
+        public Bullet overrideBullet;
     }
 
     [SerializeField] private List<PatternStep> sequence;
 
-    public override async UniTask Execute(Transform spawnPoint, GameObject inheritedBulletPrefab, CancellationToken token)
+    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
     {
-        // パターン全体で使う弾を決定（自身の上書きがあればそれを使い、なければ親から継承）
-        GameObject patternScopeBullet = this.overrideBulletPrefab != null ? this.overrideBulletPrefab : inheritedBulletPrefab;
-
         foreach (var step in sequence)
         {
             // キャンセルチェック
@@ -43,7 +40,7 @@ public class SequencePattern : ShootPatternBase
             {
                 // このステップで最終的に使う弾を決定
                 // ステップ固有の上書きがあれば最優先、なければパターン全体で使う弾を引き継ぐ
-                GameObject finalBulletForStep = step.overrideBulletPrefab != null ? step.overrideBulletPrefab : patternScopeBullet;
+                Bullet finalBulletForStep = step.overrideBullet != null ? step.overrideBullet : bulletToUse;
 
                 // 子パターンのUniTaskを実行し、完了を待つ
                 await step.pattern.Execute(spawnPoint, finalBulletForStep, token);

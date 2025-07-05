@@ -837,7 +837,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 0.05256107, b: 0.033018887, a: 1}
   m_FlipX: 0
@@ -914,6 +914,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifeGaugePrefab: {fileID: 6845083702458507679, guid: b33681019a1032140a6bf80759c2caf7, type: 3}
   attackPattern: {fileID: 11400000, guid: b7175cb4b76d4cf4aae0da363592077b, type: 2}
+  defaultBullet: {fileID: 0}
 --- !u!114 &1629254599
 MonoBehaviour:
   m_ObjectHideFlags: 0

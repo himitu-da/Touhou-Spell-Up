@@ -2,14 +2,23 @@ using UnityEngine;
 
 public class EnemyBullet : MonoBehaviour
 {
-    [SerializeField] float speed = 5f;
-    [SerializeField] float lifeTime = 6f;
+    private float _speed = 5f;
+    private float _lifeTime = 6f;
+
+    public void Initialize(BulletProperty property)
+    {
+        if (property != null)
+        {
+            this._speed = property.Speed;
+            this._lifeTime = property.LifeTime;
+        }
+    }
 
     void Update()
     {
-        transform.Translate(Vector2.down * speed * Time.deltaTime);
-        lifeTime -= Time.deltaTime;
-        if (lifeTime <= 0)
+        transform.Translate(Vector2.down * _speed * Time.deltaTime);
+        _lifeTime -= Time.deltaTime;
+        if (_lifeTime <= 0)
         {
             Destroy(gameObject);
         }

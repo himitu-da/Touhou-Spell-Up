@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edd4ec64db6ab0445998cea85f782abe, type: 3}
   m_Name: SEQ_BigAround
   m_EditorClassIdentifier: 
-  overrideBulletPrefab: {fileID: 8358218248195228109, guid: 4dbf00e2379025b4c938da165c4e1455, type: 3}
+  overrideBullet: {fileID: 11400000, guid: bb8e2a6fa1bb1094d9e14baf5d62c1c8, type: 2}
   sequence:
   - pattern: {fileID: 11400000, guid: 6c4f1809c4b6de9438d1890882952371, type: 2}
     delay: 0
-    overrideBulletPrefab: {fileID: 0}
+    overrideBullet: {fileID: 0}
   - pattern: {fileID: 11400000, guid: e01f2f2aa03373648b46215d0c264292, type: 2}
     delay: 0.8
-    overrideBulletPrefab: {fileID: 0}
+    overrideBullet: {fileID: 0}

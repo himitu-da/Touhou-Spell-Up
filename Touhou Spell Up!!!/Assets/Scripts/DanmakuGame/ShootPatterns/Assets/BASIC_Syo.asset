@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3820d39d8630a224dba9f9ea6ea5bf39, type: 3}
   m_Name: BASIC_Syo
   m_EditorClassIdentifier: 
-  overrideBulletPrefab: {fileID: 8358218248195228109, guid: 46e012bfd5ab1a44a98ae57a4a6f60d6, type: 3}
+  overrideBullet: {fileID: 11400000, guid: 92f01fc2c4c8cbc4ca80b37047b2172a, type: 2}

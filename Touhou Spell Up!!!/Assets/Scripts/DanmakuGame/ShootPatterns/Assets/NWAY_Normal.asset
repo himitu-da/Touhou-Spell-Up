@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d6353cc88c9c1964881d834756391663, type: 3}
-  m_Name: NWAY_ScatteringPattern
+  m_Script: {fileID: 11500000, guid: 1c7d318de5afe304383d78cb17036400, type: 3}
+  m_Name: NWAY_Normal
   m_EditorClassIdentifier: 
-  overrideBulletPrefab: {fileID: 8358218248195228109, guid: 46e012bfd5ab1a44a98ae57a4a6f60d6, type: 3}
-  scatterCount: 40
-  interval: 0.016
-  totalAngle: 60
-  allRound: 1
+  overrideBullet: {fileID: 11400000, guid: 3e7e8f26e42fbda4ebbd6b973950412a, type: 2}
+  wayCount: 11
+  interval: 0
+  totalAngle: 75
+  allRound: 0
+  rotationDirection: 1
   aimAtPlayer: 1
-  alwaysAimToPlayer: 1
+  avoidAtPlayer: 0

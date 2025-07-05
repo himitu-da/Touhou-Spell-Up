@@ -5,11 +5,11 @@ using Cysharp.Threading.Tasks;
 [RequireComponent(typeof(Health))]
 public class EnemyController : MonoBehaviour
 {
-    //[SerializeField] GameObject bulletPrefab;
     [SerializeField] GameObject lifeGaugePrefab;
 
     [Header("攻撃パターン")]
     [SerializeField] ShootPatternBase attackPattern;
+    [SerializeField] Bullet defaultBullet;
 
     private Health _health;
     private GameObject _lifeGaugeInstance;
@@ -40,8 +40,7 @@ public class EnemyController : MonoBehaviour
 
         if (attackPattern != null)
         {
-            // 第2引数にnullを渡して実行。使用する弾はattackPattern自身がoverrideBulletPrefabで指定する想定
-            attackPattern.Execute(transform, null, this.GetCancellationTokenOnDestroy()).Forget();
+            attackPattern.Execute(transform, defaultBullet, this.GetCancellationTokenOnDestroy()).Forget();
         }
     }
 }
