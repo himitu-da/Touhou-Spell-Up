@@ -3,13 +3,10 @@ using Cysharp.Threading.Tasks;
 
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Shooter))]
 public class EnemyController : MonoBehaviour
 {
     [SerializeField] GameObject lifeGaugePrefab;
-
-    [Header("攻撃パターン")]
-    [SerializeField] ShootPatternBase attackPattern;
-    [SerializeField] Bullet defaultBullet;
 
     private Health _health;
     private GameObject _lifeGaugeInstance;
@@ -36,11 +33,6 @@ public class EnemyController : MonoBehaviour
             {
                 lifeGaugeController.Initialize(_health);
             }
-        }
-
-        if (attackPattern != null)
-        {
-            attackPattern.Execute(transform, defaultBullet, this.GetCancellationTokenOnDestroy()).Forget();
         }
     }
 }

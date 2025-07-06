@@ -17,7 +17,7 @@ public class ScatteringPattern : ShootPatternBase
     [SerializeField] private bool aimAtPlayer = false;
     [SerializeField] private bool alwaysAimToPlayer = false;
 
-    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteImpl(Shooter shooter, Bullet bulletToUse, CancellationToken token)
     {
         if (bulletToUse == null || bulletToUse.Prefab == null)
         {
@@ -27,10 +27,12 @@ public class ScatteringPattern : ShootPatternBase
         // aimAtPlayerがfalseのときは無効化
         alwaysAimToPlayer = aimAtPlayer && alwaysAimToPlayer;
 
-        float centerAngle = spawnPoint.eulerAngles.z;
+        Vector3 spawnPosition = GetSpawnPosition(shooter);
+
+        float centerAngle = shooter.transform.eulerAngles.z;
         if (aimAtPlayer)
         {
-            centerAngle = AngleUtility.GetAngleToPlayer(spawnPoint.position);
+            centerAngle = AngleUtility.GetAngleToPlayer(spawnPosition);
         }
 
         float finalAngle = allRound ? 360f : totalAngle;
@@ -38,24 +40,19 @@ public class ScatteringPattern : ShootPatternBase
         float startAngle = -finalAngle / 2;
         float endAngle = finalAngle / 2;
 
-        Quaternion originalRotation = spawnPoint.rotation;
-
         for (int i = 0; i < scatterCount; i++)
         {
             if (token.IsCancellationRequested) break;
 
             float scatterAngle = centerAngle + Random.Range(startAngle, endAngle);
-            spawnPoint.rotation = Quaternion.Euler(0, 0, scatterAngle);
+            Quaternion rotation = Quaternion.Euler(0, 0, scatterAngle);
 
-            var bulletInstance = Instantiate(bulletToUse.Prefab, spawnPoint.position, spawnPoint.rotation);
+            var bulletInstance = Instantiate(bulletToUse.Prefab, spawnPosition, rotation);
             var enemyBullet = bulletInstance.GetComponent<EnemyBullet>();
             if (enemyBullet != null)
             {
                 enemyBullet.Initialize(bulletToUse.Property);
             }
-
-            // 回転を元に戻す
-            spawnPoint.rotation = originalRotation;
 
             // intervalだけ待つ
             if (interval > 0)
@@ -65,7 +62,7 @@ public class ScatteringPattern : ShootPatternBase
 
             if (alwaysAimToPlayer)
             {
-               centerAngle = AngleUtility.GetAngleToPlayer(spawnPoint.position);
+               centerAngle = AngleUtility.GetAngleToPlayer(spawnPosition);
             }
         }
 

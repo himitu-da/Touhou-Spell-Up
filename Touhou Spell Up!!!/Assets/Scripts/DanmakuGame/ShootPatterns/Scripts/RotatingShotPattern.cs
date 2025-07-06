@@ -26,7 +26,7 @@ public class RotatingShotPattern : ShootPatternBase
     private bool _isInitialized = false;
 
 
-    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteImpl(Shooter shooter, Bullet bulletToUse, CancellationToken token)
     {
         if (bulletToUse == null || bulletToUse.Prefab == null)
         {
@@ -35,7 +35,8 @@ public class RotatingShotPattern : ShootPatternBase
         }
 
         float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
-        Quaternion originalRotation = spawnPoint.rotation;
+
+        Vector3 spawnPosition = GetSpawnPosition(shooter);
 
         // --- 実行開始時の角度を決定 ---
         float currentAngle;
@@ -67,16 +68,9 @@ public class RotatingShotPattern : ShootPatternBase
             // 弾を発射する角度を決定（ループの初回は発射してから角度を足す）
             float shotAngle = currentAngle + (directionMultiplier * intervalAngle * i);
 
-            spawnPoint.rotation = Quaternion.Euler(0, 0, shotAngle);
+            Quaternion rotation = Quaternion.Euler(0, 0, shotAngle);
 
-            var bulletInstance = Instantiate(bulletToUse.Prefab, spawnPoint.position, spawnPoint.rotation);
-            var enemyBullet = bulletInstance.GetComponent<EnemyBullet>();
-            if (enemyBullet != null)
-            {
-                enemyBullet.Initialize(bulletToUse.Property);
-            }
-
-            spawnPoint.rotation = originalRotation;
+            shooter.InstantiateBullet(bulletToUse, spawnPosition, rotation);
 
             if (intervalTime > 0)
             {

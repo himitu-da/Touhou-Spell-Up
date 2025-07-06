@@ -11,7 +11,7 @@ public class LoopPattern : ShootPatternBase
     [SerializeField, Min(0.0f)]
     private float interval = 1.0f;
 
-    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteImpl(Shooter shooter, Bullet bulletToUse, CancellationToken token)
     {
         if (pattern == null)
         {
@@ -22,7 +22,7 @@ public class LoopPattern : ShootPatternBase
         while (!token.IsCancellationRequested)
         {
             // 子パターンの実行
-            await pattern.Execute(spawnPoint, bulletToUse, token);
+            await pattern.Execute(shooter, bulletToUse, token);
 
             if (interval > 0)
             {

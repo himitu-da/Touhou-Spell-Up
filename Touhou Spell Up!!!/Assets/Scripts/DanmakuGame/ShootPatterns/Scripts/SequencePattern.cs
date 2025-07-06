@@ -20,7 +20,7 @@ public class SequencePattern : ShootPatternBase
 
     [SerializeField] private List<PatternStep> sequence;
 
-    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteImpl(Shooter shooter, Bullet bulletToUse, CancellationToken token)
     {
         foreach (var step in sequence)
         {
@@ -43,7 +43,7 @@ public class SequencePattern : ShootPatternBase
                 Bullet finalBulletForStep = step.overrideBullet != null ? step.overrideBullet : bulletToUse;
 
                 // 子パターンのUniTaskを実行し、完了を待つ
-                await step.pattern.Execute(spawnPoint, finalBulletForStep, token);
+                await step.pattern.Execute(shooter, finalBulletForStep, token);
             }
         }
     }

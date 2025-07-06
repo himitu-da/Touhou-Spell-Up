@@ -90,3 +90,16 @@
 - RotatingShotPattern上での処理を変更
 - RotatingShotPattern上ではオフセット等を指定可能
 - enemyのレイヤー変更（弾幕より前面に）
+
+## [v0.1.5] - 2025-07-05
+- 射撃機能の共通化。Shooter Componentを作成し、GameObjectにShooterをアタッチするだけで射撃能力を付与できるように
+- 発射地点の柔軟化。ShootPatternBaseにSpawnPointTypeとpositionOffsetを追加。弾幕の起点を変更できるように
+- ShootPatternBaseがShooter Componentを使うように変更（引数transformをshooterに変更）
+    - ShootPatternBaseの具象クラスもShooter Componentを使うように変更
+- 弾の初期化処理をShooterに移譲
+- ShootPatternBaseに発射位置を変更するためのenumを作成（敵の相対位置、絶対位置、自機の相対位置）
+- Shooter Componentの追加に伴うEnemyController等のリファクタリング
+    - Enemy Controllerから射撃関連のコードを削除し、責任を限定化
+- 移動機能の共通化。Mover Componentの作成し、GameObjectにMoverをアタッチするだけで移動能力を付与できるように
+- MovePatternBaseの作成。敵機や敵弾に関する動的で複雑な「移動」ふるまいを実現する（敵機、敵機弾の双方）
+- 一定方向に一定時間移動するStraightMoveを実装

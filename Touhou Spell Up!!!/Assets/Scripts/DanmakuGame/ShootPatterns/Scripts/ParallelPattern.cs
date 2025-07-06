@@ -16,7 +16,7 @@ public class ParallelPattern : ShootPatternBase
 
     [SerializeField] private List<ParallelStep> patterns;
 
-    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteImpl(Shooter shooter, Bullet bulletToUse, CancellationToken token)
     {
         if (patterns == null || patterns.Count == 0)
         {
@@ -34,7 +34,7 @@ public class ParallelPattern : ShootPatternBase
                 Bullet finalBulletForStep = step.overrideBullet != null ? step.overrideBullet : bulletToUse;
 
                 // awaitせず、タスクだけをリストに追加していく
-                tasks.Add(step.pattern.Execute(spawnPoint, finalBulletForStep, token));
+                tasks.Add(step.pattern.Execute(shooter, finalBulletForStep, token));
             }
         }
         // UniTask.WhenAllで、リスト内の全てのタスクが完了するのを待つ

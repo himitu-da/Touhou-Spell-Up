@@ -1,13 +1,9 @@
 Developing
 
+
 - 移動システムの共通化
-    - IMovable Interface、MovePatternBase、Mover Componentの作成
+    - MovePatternBase、Mover Componentの作成
     - 敵機や敵弾に関する動的で複雑な「移動」ふるまいを実現する（敵機、敵機弾の双方）
-    - 射撃システムとの連携（射撃が一巡してから移動等）
-- 射撃システムの共通化
-    - IShootable Interface、Shooter Componentの作成、ShootPatternBaseの修正
-    - ShootPatternBaseにShooterを追加
-    - 敵機以外から現れる弾幕を実現する（ShootPatternBaseに発射ポイントを設定：絶対位置、敵の相対位置、自機の相対位置、壁面、発射口、弾自身など）
 - BasicShotPattern、MultiWayPattern、ScatteringPatternに対して、向きのオフセットを指定できるように
     - 敵機完全固定弾を作れるように
 - ワインダーパターンを作成
@@ -18,6 +14,15 @@ Developing
     - トリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時
 - LoopPatternでループ回数の指定ができるように
 - ShootPatternやそれを継承したクラスにおけるBulletの表示をShotに変更
+- Override Bulletに弾幕パターンを入れられるように（柔軟性）
+- IMovableとIShootableの作成
+- BulletとEnemyをShootable、Movable Interfaceにまとめられるように
+- 壁面、発射口、弾自身などから現れる弾幕を実現できるように
+- MovePatternBaseとShootPatternBaseの抽象クラスを作成し、ParallelPattern、LoopPattern、SequencePatternはそちらに移動
+- 射撃システムとの連携（射撃が一巡してから移動等）
+- オブジェクトプーリングの実装
+- EnemyPropertyとBulletPropertyをEntityPropertyとしてまとめる
+- EnemyとBulletをEntityとしてまとめる
 
 # v0.2～実装予定
 - 自機ライフの実装

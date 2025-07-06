@@ -20,7 +20,7 @@ public class MultiWayPattern : ShootPatternBase
     [Header("全方位で自機外し")]
     [SerializeField] private bool avoidAtPlayer = false; 
 
-    public override async UniTask ExecuteImpl(Transform spawnPoint, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteImpl(Shooter shooter, Bullet bulletToUse, CancellationToken token)
     {
         if (bulletToUse == null || bulletToUse.Prefab == null)
         {
@@ -34,10 +34,12 @@ public class MultiWayPattern : ShootPatternBase
         // 回転方向に応じて角度の増減を決定（反時計回りなら+1、時計回りなら-1）
         float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
 
-        float centerAngle = spawnPoint.eulerAngles.z;
+        Vector3 spawnPosition = GetSpawnPosition(shooter);
+
+        float centerAngle = shooter.transform.eulerAngles.z;
         if (aimAtPlayer)
         {
-            centerAngle = AngleUtility.GetAngleToPlayer(spawnPoint.position);
+            centerAngle = AngleUtility.GetAngleToPlayer(spawnPosition);
         }
 
         float finalAngle = allRound ? 360f : totalAngle;
@@ -45,8 +47,6 @@ public class MultiWayPattern : ShootPatternBase
         float startAngle = -finalAngle / 2 * directionMultiplier;
         // 全方位の場合は最後の弾が最初と重ならないようにする
         float angleStep = allRound ? finalAngle / wayCount : ((wayCount > 1) ? finalAngle / (wayCount - 1) : 0f);
-
-        Quaternion originalRotation = spawnPoint.rotation;
 
         for (int i = 0; i < wayCount; i++)
         {
@@ -56,17 +56,9 @@ public class MultiWayPattern : ShootPatternBase
             // 全方位の自機外しの場合、angleStepの半分だけずらす
             // directionMultiplierで回転方向を制御
             float currentAngle = centerAngle + (allRound ? 0 : startAngle) + (avoidAtPlayer ? angleStep / 2 : 0) + (angleStep * i * directionMultiplier);
-            spawnPoint.rotation = Quaternion.Euler(0, 0, currentAngle);
+            Quaternion rotation = Quaternion.Euler(0, 0, currentAngle);
 
-            var bulletInstance = Instantiate(bulletToUse.Prefab, spawnPoint.position, spawnPoint.rotation);
-            var enemyBullet = bulletInstance.GetComponent<EnemyBullet>();
-            if (enemyBullet != null)
-            {
-                enemyBullet.Initialize(bulletToUse.Property);
-            }
-
-            // 元の回転に戻す
-            spawnPoint.rotation = originalRotation;
+            shooter.InstantiateBullet(bulletToUse, spawnPosition, rotation);
 
             // intervalだけ待つ
             if (interval > 0)
