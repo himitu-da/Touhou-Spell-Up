@@ -1,25 +1,23 @@
 Developing
 
+- LoopPatternでループ回数の指定ができるように
+- 射撃システムとの連携（射撃が一巡してから移動等）
+- Composite群において、「中身の実装に関わらず次に進める」というようなものを追加する
+- ShootPatternにおいて、射撃位置を常に敵機に追随するかを選べるように
 
-- 移動システムの共通化
-    - MovePatternBase、Mover Componentの作成
-    - 敵機や敵弾に関する動的で複雑な「移動」ふるまいを実現する（敵機、敵機弾の双方）
-- BasicShotPattern、MultiWayPattern、ScatteringPatternに対して、向きのオフセットを指定できるように
-    - 敵機完全固定弾を作れるように
+- 射撃位置にMoverが適用できるようにするかを検討
+- ShootPatternBaseに自機狙いを指定する項目を増やすかどうか検討
 - ワインダーパターンを作成
 - へにょり弾を打てるように
 - 時間発狂やHP発狂を作れるように
 - ChainedShotPatternを実装し、弾が次の弾や弾幕を打てるように
     - 最初に撃つ弾
     - トリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時
-- LoopPatternでループ回数の指定ができるように
 - ShootPatternやそれを継承したクラスにおけるBulletの表示をShotに変更
 - Override Bulletに弾幕パターンを入れられるように（柔軟性）
 - IMovableとIShootableの作成
 - BulletとEnemyをShootable、Movable Interfaceにまとめられるように
 - 壁面、発射口、弾自身などから現れる弾幕を実現できるように
-- MovePatternBaseとShootPatternBaseの抽象クラスを作成し、ParallelPattern、LoopPattern、SequencePatternはそちらに移動
-- 射撃システムとの連携（射撃が一巡してから移動等）
 - オブジェクトプーリングの実装
 - EnemyPropertyとBulletPropertyをEntityPropertyとしてまとめる
 - EnemyとBulletをEntityとしてまとめる

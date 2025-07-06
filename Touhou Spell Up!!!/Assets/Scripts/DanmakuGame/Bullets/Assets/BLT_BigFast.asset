@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b84b4aee6ad1b24ea33e11bad69f00c, type: 3}
-  m_Name: BLTP_Fast
+  m_Script: {fileID: 11500000, guid: dae897c254c7b8b4abe9cf15c8b41089, type: 3}
+  m_Name: BLT_BigFast
   m_EditorClassIdentifier: 
-  speed: 7
-  lifeTime: 6
+  prefab: {fileID: 8358218248195228109, guid: 4dbf00e2379025b4c938da165c4e1455, type: 3}
+  property: {fileID: 11400000, guid: e0548bb74eccc024e8e2dcd515fddb24, type: 2}

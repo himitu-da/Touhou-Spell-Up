@@ -9,8 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b84b4aee6ad1b24ea33e11bad69f00c, type: 3}
-  m_Name: BLTP_Fast
+  m_Script: {fileID: 11500000, guid: ab8e274925f08734487dd148de7d202a, type: 3}
+  m_Name: LOOP_AimShot
   m_EditorClassIdentifier: 
-  speed: 7
-  lifeTime: 6
+  overrideBullet: {fileID: 0}
+  spawnPointType: 0
+  positionOffset: {x: 0, y: 0, z: 0}
+  pattern: {fileID: 11400000, guid: 2aaac7eda9ed79b4a8cebb9314fd1569, type: 2}
+  interval: 1

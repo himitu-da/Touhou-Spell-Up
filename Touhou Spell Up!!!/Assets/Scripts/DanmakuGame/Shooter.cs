@@ -5,7 +5,7 @@ using System.Threading;
 public class Shooter : MonoBehaviour
 {
     [SerializeField]
-    private ShootPatternBase _shootPattern;
+    private PatternBase _shootPattern;
 
     [SerializeField]
     private Bullet _bullet; // このShooterが使用する基本の弾
@@ -23,7 +23,7 @@ public class Shooter : MonoBehaviour
 
         _cancellationTokenSource = new CancellationTokenSource();
         // 自身の情報を渡してShootPatternを実行
-        _shootPattern.Execute(this, _bullet, _cancellationTokenSource.Token).Forget();
+        _shootPattern.Execute(GetComponent<Mover>(), this, _bullet, _cancellationTokenSource.Token).Forget();
     }
 
     private void OnDestroy()

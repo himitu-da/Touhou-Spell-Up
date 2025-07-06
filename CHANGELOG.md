@@ -91,7 +91,7 @@
 - RotatingShotPattern上ではオフセット等を指定可能
 - enemyのレイヤー変更（弾幕より前面に）
 
-## [v0.1.5] - 2025-07-05
+## [v0.1.5] - 2025-07-06
 - 射撃機能の共通化。Shooter Componentを作成し、GameObjectにShooterをアタッチするだけで射撃能力を付与できるように
 - 発射地点の柔軟化。ShootPatternBaseにSpawnPointTypeとpositionOffsetを追加。弾幕の起点を変更できるように
 - ShootPatternBaseがShooter Componentを使うように変更（引数transformをshooterに変更）
@@ -103,3 +103,30 @@
 - 移動機能の共通化。Mover Componentの作成し、GameObjectにMoverをアタッチするだけで移動能力を付与できるように
 - MovePatternBaseの作成。敵機や敵弾に関する動的で複雑な「移動」ふるまいを実現する（敵機、敵機弾の双方）
 - 一定方向に一定時間移動するStraightMoveを実装
+- すべてのパターンの基底クラスのPatternBaseを作成
+- 弾の発射可能なパターンのための基底クラス ShootablePatternクラスを作成
+- MovePatternとShootPatternを、共通の`PatternBase`を継承するようにアーキテクチャを刷新。
+    - `SequencePattern`, `ParallelPattern`, `LoopPattern`内で、移動パターンと射撃パターンを混在させることが可能に
+- `Mover`と`Shooter`が、新しい`PatternBase`を直接扱えるように修正。
+- `SequencePattern`と`ParallelPattern`が、ステップごとに弾を上書きできる機能を維持したままリファクタリング。
+- Patternsフォルダを作成し、MovePattern、ShootPatternフォルダを移動
+- AseetsはPatterns直下のみにし、スクリプトは各フォルダの直下に配置するように変更
+- Patterns/Compositeを作成し、SequencePattern、ParallelPattern、LoopPatternはComposite直下に移動
+- SequencePattern、ParallelPattern、LoopPatternのmenuNameをTouhou Spell Up/Danmaku/Compositeに変更
+- PatternBase.csとShootablePattern.csをPatterns直下に移動
+- 最終的なディレクトリ構造
+    DanmakuGame/
+    ├─ Mover.cs
+    ├─ Shooter.cs
+    ├─ DanmakuGameManager.cs
+    └─ Patterns/
+        ├─ PatternBase.cs
+        ├─ ShootablePattern.cs
+        ├─ Assets/
+        ├─ Composite/
+        ├─ Move/
+        └─ Shoot/
+- menuNameのDanmaku/Bullet PatternをShootに変更
+- MoverにShooterを指定できるようにして、それが責任をもって発射するように
+- ShootPatternbaseを実現する具象クラス（BasicShotPattern、MultiWayPattern、ScatteringPattern）に対して、向きのオフセットを指定できるように
+    - 敵機完全固定弾を作れるように
