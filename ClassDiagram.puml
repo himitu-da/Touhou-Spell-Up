@@ -1,0 +1,84 @@
+@startuml ClassDiagram
+' ステレオタイプの色設定
+skinparam class {
+    BackgroundColor<<MonoBehaviour>> LightBlue
+    BackgroundColor<<ScriptableObject>> LightGreen
+}
+
+' クラスの定義
+class DanmakuGameManager <<MonoBehaviour>>
+class PlayerController <<MonoBehaviour>>
+class EnemyController <<MonoBehaviour>>
+class Health <<MonoBehaviour>>
+class Shooter <<MonoBehaviour>>
+class Mover <<MonoBehaviour>>
+
+' --- パターン関連 ---
+abstract class PatternBase <<ScriptableObject>>
+abstract class ShootablePattern <<ScriptableObject>>
+abstract class MovePatternBase <<ScriptableObject>>
+PatternBase <|-- ShootablePattern
+PatternBase <|-- MovePatternBase
+
+abstract class ShootPatternBase <<ScriptableObject>>
+ShootablePattern <|-- ShootPatternBase
+
+class BasicShotPattern <<ScriptableObject>>
+class MultiWayPattern <<ScriptableObject>>
+class RotatingShotPattern <<ScriptableObject>>
+class ScatteringPattern <<ScriptableObject>>
+ShootPatternBase <|-- BasicShotPattern
+ShootPatternBase <|-- MultiWayPattern
+ShootPatternBase <|-- RotatingShotPattern
+ShootPatternBase <|-- ScatteringPattern
+
+class LoopPattern <<ScriptableObject>>
+class ParallelPattern <<ScriptableObject>>
+class SequencePattern <<ScriptableObject>>
+ShootablePattern <|-- LoopPattern
+ShootablePattern <|-- ParallelPattern
+ShootablePattern <|-- SequencePattern
+
+class StraightMovePattern <<ScriptableObject>>
+MovePatternBase <|-- StraightMovePattern
+
+' --- 共有リソース関連 ---
+abstract class SharedResource <<ScriptableObject>>
+abstract class "SharedResource<T>" as SharedResource_T <<ScriptableObject>>
+class SharedAngle <<ScriptableObject>>
+SharedResource <|-- SharedResource_T
+SharedResource_T <|-- SharedAngle
+note right of SharedAngle : T = float
+
+' --- 弾関連 ---
+class Bullet <<ScriptableObject>>
+class BulletProperty <<ScriptableObject>>
+class EnemyBullet <<MonoBehaviour>>
+
+' --- その他 ---
+class PlayerShot <<MonoBehaviour>>
+class PlayerHitbox <<MonoBehaviour>>
+class EnemyLifeGaugeController <<MonoBehaviour>>
+
+
+' 関連
+PlayerController --> DanmakuGameManager : "calls"
+EnemyController o-- Health
+EnemyController o-- Shooter
+EnemyController o-- Mover
+Shooter --> Mover : "gets component"
+Mover --> Shooter : "has"
+
+Shooter ..> PatternBase : "_shootPattern"
+Mover ..> PatternBase : "_movePattern"
+
+Shooter ..> EnemyBullet : "creates instance of"
+Bullet o-- "1" BulletProperty
+EnemyBullet --> BulletProperty : "uses"
+
+PlayerController ..> PlayerShot : "creates"
+PlayerHitbox --> PlayerController : "calls OnHit"
+EnemyController ..> EnemyLifeGaugeController : "creates"
+EnemyLifeGaugeController --> Health : "observes"
+
+@enduml

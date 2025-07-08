@@ -15,7 +15,7 @@ MonoBehaviour:
   overrideBullet: {fileID: 0}
   sequence:
   - pattern: {fileID: 11400000, guid: 42edb18b964426341aee19b7d112cfe0, type: 2}
-    delay: 2
+    delay: 1.5
     overrideBullet: {fileID: 0}
   - pattern: {fileID: 11400000, guid: 8030166b5e8853a4a97cc0d551a849af, type: 2}
     delay: 0

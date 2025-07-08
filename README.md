@@ -19,8 +19,13 @@ Developing
 - BulletとEnemyをShootable、Movable Interfaceにまとめられるように
 - 壁面、発射口、弾自身などから現れる弾幕を実現できるように
 - オブジェクトプーリングの実装
-- EnemyPropertyとBulletPropertyをEntityPropertyとしてまとめる
-- EnemyとBulletをEntityとしてまとめる
+
+- 最終リファクタリング
+    - MoverとShooterをActorに統合
+    - ActorにAnimator機能を追加する
+    - Enemy, Bullet, PlayerをGameEntity基本単位として表現
+    - EnemyPropertyとBulletPropertyをEntityPropertyとしてまとめ、Playerもこれで管理できるように
+    - ActorをActionControllerにし、GameEntiry全体の行動制御を担うように。PlayerController, EnemyControllerは不要に
 
 # v0.2～実装予定
 - 自機ライフの実装

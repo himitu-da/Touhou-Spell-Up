@@ -1,0 +1,80 @@
+@startuml ClassDiagramRefactoring
+' ステレオタイプの色設定
+skinparam class {
+    BackgroundColor<<MonoBehaviour>> LightBlue
+    BackgroundColor<<ScriptableObject>> LightGreen
+}
+
+' --- データ層 ---
+class GameEntityProperty <<ScriptableObject>> {
+  + EntityType type
+  + float maxHealth
+  + float moveSpeed
+  + float lifeTime
+  ' ... and other static properties
+}
+
+' --- ロジック層 (MonoBehaviour) ---
+class GameEntity <<MonoBehaviour>> {
+  + GameEntityProperty property
+  - float currentHealth
+  + TakeDamage()
+  + Die()
+}
+note right of GameEntity
+  全てのオブジェクト(Player, Enemy, Bullet)の
+  基点となるクラス。
+  動的なデータ（現在のHPなど）を管理する。
+end note
+
+class ActionController <<MonoBehaviour>> {
+  + PatternBase movePattern
+  + PatternBase shootPattern
+  + ExecutePatterns()
+}
+note right of ActionController
+  GameEntityにアタッチされ、
+  Patternに基づいた行動
+  （移動、弾発射）を実行する。
+end note
+
+class PlayerInput <<MonoBehaviour>> {
+  + OnMove()
+  + OnShot()
+}
+note right of PlayerInput
+  プレイヤーの入力に応じて
+  ActionControllerを操作する。
+end note
+
+class BulletBehavior <<MonoBehaviour>> {
+  + Move()
+}
+note right of BulletBehavior
+  弾特有の振る舞い
+  （直進、消滅など）を定義する。
+end note
+
+class DanmakuGameManager <<MonoBehaviour>>
+
+' --- パターン (ScriptableObject) ---
+abstract class PatternBase <<ScriptableObject>> {
+  + Execute(ActionController controller)
+}
+' (Patternの継承関係は既存と同様なので省略)
+
+
+' --- 関係性 ---
+GameEntity --> "1" GameEntityProperty : "has"
+
+GameEntity "1" o-- "0..1" ActionController
+GameEntity "1" o-- "0..1" PlayerInput
+GameEntity "1" o-- "0..1" BulletBehavior
+
+ActionController ..> PatternBase : "executes"
+ActionController ..> GameEntity : "creates bullet"
+
+PlayerInput ..> ActionController : "controls"
+GameEntity --> DanmakuGameManager : "notifies death"
+
+@enduml
