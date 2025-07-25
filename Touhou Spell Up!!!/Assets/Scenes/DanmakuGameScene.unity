@@ -941,7 +941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 407949552ad35a343bd3ec0a2cfdbbcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _shootPattern: {fileID: 11400000, guid: c9a712096f923e74c8f30667229968ca, type: 2}
+  _shootPattern: {fileID: 11400000, guid: 7d30fb9850dba3847b54acbb47425cff, type: 2}
   _bullet: {fileID: 0}
 --- !u!114 &1629254601
 MonoBehaviour:

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BLTP_SatelliteA
   m_EditorClassIdentifier: 
   speed: 5
-  lifeTime: 6
+  lifeTime: 20
   shootPattern: {fileID: 0}
-  movePattern: {fileID: 11400000, guid: 8dcce370f06e01548addf21824dd7f74, type: 2}
+  movePattern: {fileID: 11400000, guid: f824cef077a9f2e44a9f2f35c3cddfea, type: 2}

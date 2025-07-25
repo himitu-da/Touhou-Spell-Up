@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: BLT_SatelliteA
   m_EditorClassIdentifier: 
   prefab: {fileID: 8358218248195228109, guid: ec6a97990289a034aaeb676a711af676, type: 3}
-  property: {fileID: 11400000, guid: 7f52206da49ae374ba11e1e3bae33032, type: 2}
+  property: {fileID: 11400000, guid: c0ba6182148e83e4fa9aa62ca51d8059, type: 2}

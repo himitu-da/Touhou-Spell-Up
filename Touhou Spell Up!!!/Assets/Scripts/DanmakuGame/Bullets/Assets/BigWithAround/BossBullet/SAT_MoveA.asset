@@ -16,8 +16,8 @@ MonoBehaviour:
   _afterAwaitSeconds: 0
   spawnPointType: 0
   positionOffset: {x: 0, y: 0, z: 0}
-  initialRadius: 1
-  radialSpeed: 0.5
-  angularSpeed: 45
-  tangentialSpeed: 0
+  initialRadius: 0
+  radialSpeed: 2
+  angularSpeed: 3
+  tangentialSpeed: 2
   followShooter: 1

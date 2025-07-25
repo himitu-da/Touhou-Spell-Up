@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _beforeAwaitSeconds: 0
   _afterAwaitSeconds: 0
-  _bullet: {fileID: 11400000, guid: c934e7ee65e066c46b78e2286f670443, type: 2}
+  _bullet: {fileID: 11400000, guid: 13cf083f02df34f4a92c14d191ae4d05, type: 2}
   spawnPointType: 0
   positionOffset: {x: 0, y: 0, z: 0}
   followShooterPosition: 0
@@ -25,6 +25,9 @@ MonoBehaviour:
   wayCount: 12
   interval: 0
   totalAngle: 90
-  allRound: 0
+  allRound: 1
   rotationDirection: 0
   avoidAtPlayer: 0
+  sharedAngle: {fileID: 0}
+  isKeepAngle: 1
+  accumulatingOffset: 3

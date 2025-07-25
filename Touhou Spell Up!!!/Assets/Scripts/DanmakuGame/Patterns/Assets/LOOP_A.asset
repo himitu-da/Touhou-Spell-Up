@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _beforeAwaitSeconds: 0
   _afterAwaitSeconds: 0
-  overrideBullet: {fileID: 0}
   pattern: {fileID: 11400000, guid: 73a5e34c854be0e43a035cbd3f51d9fc, type: 2}
-  interval: 1
+  interval: 3
   loopCount: 0
