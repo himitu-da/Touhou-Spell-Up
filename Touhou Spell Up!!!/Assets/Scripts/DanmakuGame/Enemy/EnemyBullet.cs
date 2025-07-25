@@ -11,39 +11,48 @@ public class EnemyBullet : MonoBehaviour
     public void Initialize(BulletProperty property, Shooter parentShooter)
     {
         this.Property = property;
-        if (property != null)
+        if (property == null) return;
+
+        this._lifeTime = property.LifeTime;
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        Shooter shooter = null;
+        Mover mover = null;
+
+        // 先にMoverを準備
+        if (property.MovePattern != null)
         {
-            this._lifeTime = property.LifeTime;
-            _cancellationTokenSource = new CancellationTokenSource();
+            mover = gameObject.AddComponent<Mover>();
+        }
 
-            Shooter shooter = null; // shooter変数を宣言
-            if (property.ShootPattern != null)
-            {
-                shooter = gameObject.AddComponent<Shooter>(); // Shooterを動的に追加
-                shooter.ParentShooter = parentShooter; // 親Shooterを設定
-                // ShootPatternを実行。Bulletは不要なのでnullを渡す
-                property.ShootPattern.Execute(null, shooter, _cancellationTokenSource.Token).Forget();
-            }
-            if (property.MovePattern != null)
-            {
-                var mover = gameObject.AddComponent<Mover>(); // Moverを動的に追加
-                
-                // shooterがnullの場合（ShootPatternがない場合）にShooterコンポーネントを追加
-                if (shooter == null)
-                {
-                    shooter = gameObject.AddComponent<Shooter>();
-                }
-                
-                shooter.ParentShooter = parentShooter; // 親Shooterを設定
+        // ShootPatternがある場合
+        if (property.ShootPattern != null)
+        {
+            shooter = gameObject.AddComponent<Shooter>();
+            shooter.ParentShooter = parentShooter;
 
-                // MovePatternを実行。今度はshooterを渡す
-                property.MovePattern.Execute(mover, shooter, _cancellationTokenSource.Token).Forget();
-            }
-            else
+            // Moverが存在すればそれを、なければ弾自身をIMovableとして渡す
+            // ただし、弾自身はIMovableを実装していないため、Moverを渡すのが正しい
+            IMovable bulletMover = mover ?? gameObject.AddComponent<Mover>();
+            property.ShootPattern.Execute(bulletMover, shooter, _cancellationTokenSource.Token).Forget();
+        }
+
+        // MovePatternがある場合
+        if (property.MovePattern != null)
+        {
+            // shooterがまだなければ追加
+            if (shooter == null)
             {
-                // MovePatternが指定されていない場合は、従来の直線移動をフォールバックとして実装
-                gameObject.AddComponent<StraightMoveForBullet>().Initialize(property.Speed);
+                shooter = gameObject.AddComponent<Shooter>();
+                shooter.ParentShooter = parentShooter;
             }
+            // 既に準備済みのmoverとshooterを渡す
+            property.MovePattern.Execute(mover, shooter, _cancellationTokenSource.Token).Forget();
+        }
+        else
+        {
+            // MovePatternがない場合のフォールバック
+            gameObject.AddComponent<StraightMoveForBullet>().Initialize(property.Speed);
         }
     }
 

@@ -31,7 +31,7 @@ public class Shooter : MonoBehaviour, IShootable, IMovable
 
         _cancellationTokenSource = new CancellationTokenSource();
         // 自身の情報を渡してShootPatternを実行
-        _shootPattern.Execute(GetComponent<Mover>(), this, _cancellationTokenSource.Token).Forget();
+        _shootPattern.Execute(this, this, _cancellationTokenSource.Token).Forget();
     }
 
     private void OnDestroy()
