@@ -40,9 +40,6 @@ PatternBase <|-- ParallelPattern
 PatternBase <|-- SequencePattern
 PatternBase <|-- FireAndForgetPattern
 
-class RandomShootPattern <<ScriptableObject>>
-
-
 class StraightMovePattern <<ScriptableObject>>
 class CurveMovePattern <<ScriptableObject>>
 class SatelliteMovePattern <<ScriptableObject>>
@@ -57,6 +54,9 @@ class SharedAngle <<ScriptableObject>>
 SharedResource <|-- SharedResource_T
 SharedResource_T <|-- SharedAngle
 note right of SharedAngle : T = float
+
+MultiWayPattern ..> SharedAngle : "uses (optional)"
+RotatingShotPattern ..> SharedAngle : "uses (optional)"
 
 ' --- 弾関連 ---
 class Bullet <<ScriptableObject>>

@@ -8,7 +8,7 @@ public class StraightMovePattern : MovePatternBase
     [SerializeField] private float _speed = 5f;
     [SerializeField] private float _duration = 2f; // 0以下で無限
 
-    public override async UniTask ExecuteMove(Mover mover, CancellationToken token)
+    public override async UniTask ExecuteMove(IMovable movable, CancellationToken token)
     {
         float elapsedTime = 0f;
 
@@ -19,7 +19,7 @@ public class StraightMovePattern : MovePatternBase
                 break;
             }
 
-            mover.transform.Translate(Vector3.up * _speed * Time.deltaTime);
+            movable.transform.Translate(Vector3.up * _speed * Time.deltaTime);
             elapsedTime += Time.deltaTime;
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }

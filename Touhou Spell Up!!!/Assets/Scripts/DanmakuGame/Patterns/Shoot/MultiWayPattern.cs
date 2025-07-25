@@ -30,7 +30,7 @@ public class MultiWayPattern : ShootPatternBase
     private float _localCurrentAngle;
     private bool _isInitialized = false;
 
-    public override async UniTask ExecuteShoot(Shooter shooter, CancellationToken token)
+    public override async UniTask ExecuteShoot(IMovable movable, IShootable shootable, CancellationToken token)
     {
         if (_bullet == null || _bullet.Prefab == null)
         {
@@ -44,7 +44,7 @@ public class MultiWayPattern : ShootPatternBase
         // 回転方向に応じて角度の増減を決定（反時計回りなら+1、時計回りなら-1）
         float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
 
-        Vector3 baseSpawnPosition = GetSpawnPosition(shooter);
+        Vector3 baseSpawnPosition = GetSpawnPosition(movable);
 
         // --- 実行開始時の中央角度を決定 ---
         float centerAngle;
@@ -55,10 +55,10 @@ public class MultiWayPattern : ShootPatternBase
         }
         else
         {
-            // SharedAngleがなければ、isKeepAngleのロジックを適用
+        // SharedAngleがなければ、isKeepAngleのロジックを適用
             if (!isKeepAngle || !_isInitialized)
             {
-                centerAngle = GetAimAngle(shooter, baseSpawnPosition) + directionOffset;
+                centerAngle = GetAimAngle(movable, baseSpawnPosition) + directionOffset;
                 _isInitialized = true; // 実行したので初期化済みに
             }
             else
@@ -82,14 +82,14 @@ public class MultiWayPattern : ShootPatternBase
             // 射撃中にシューターに追従する場合、基準位置を更新
             if (followShooterPosition)
             {
-                baseSpawnPosition = GetSpawnPosition(shooter);
+                baseSpawnPosition = GetSpawnPosition(movable);
             }
 
             // 常に自機を狙う場合、中央の角度を更新
             // ただし、角度共有・維持が有効な場合は、初回の角度決定にのみ影響し、ループ中の更新は行わない
             if (alwaysAimToPlayer && sharedAngle == null && !isKeepAngle)
             {
-                centerAngle = GetAimAngle(shooter, baseSpawnPosition) + directionOffset;
+                centerAngle = GetAimAngle(movable, baseSpawnPosition) + directionOffset;
             }
 
             // 全方位の場合、startAngleは不要（0度から開始するため）
@@ -101,7 +101,7 @@ public class MultiWayPattern : ShootPatternBase
             // 最終的な発射位置を計算
             Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, currentAngle);
 
-            shooter.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
+            shootable.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
 
             // intervalだけ待つ
             if (interval > 0)

@@ -5,7 +5,7 @@ using System.Threading;
 [CreateAssetMenu(fileName = "FGT_", menuName = "Touhou Spell Up/Danmaku/Forget")]
 public class ForgetPattern : PatternBase
 {
-    public override async UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token)
+    public override async UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
     {
         if (token.IsCancellationRequested) return;
 

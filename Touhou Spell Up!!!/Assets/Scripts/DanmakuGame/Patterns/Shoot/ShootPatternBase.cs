@@ -31,17 +31,17 @@ public abstract class ShootPatternBase : PatternBase
     [SerializeField] protected float spawnRadius = 0f;
 
     // ExecuteImplのシグネチャを変更
-    public override UniTask ExecuteImpl(Mover _, Shooter shooter, CancellationToken token)
+    public override UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
     {
         // 既存のExecuteImplのロジックをここに移動、またはサブクラスに委譲
         // このクラス自体は抽象なので、サブクラスに実装を強制する
-        return ExecuteShoot(shooter, token);
+        return ExecuteShoot(movable, shootable, token);
     }
 
     // サブクラスが実装するための新しい抽象メソッド
-    public abstract UniTask ExecuteShoot(Shooter shooter, CancellationToken token);
+    public abstract UniTask ExecuteShoot(IMovable movable, IShootable shootable, CancellationToken token);
 
-    protected float GetAimAngle(Shooter shooter, Vector3 spawnPosition)
+    protected float GetAimAngle(IMovable movable, Vector3 spawnPosition)
     {
         if (aimAtPlayer)
         {
@@ -50,12 +50,12 @@ public abstract class ShootPatternBase : PatternBase
         }
         else
         {
-            return shooter.transform.eulerAngles.z;
+            return movable.transform.eulerAngles.z;
         }
     }
 
     // 発射地点を計算するヘルパーメソッド
-    protected Vector3 GetSpawnPosition(Shooter shooter)
+    protected Vector3 GetSpawnPosition(IMovable movable)
     {
         switch (spawnPointType)
         {
@@ -63,16 +63,16 @@ public abstract class ShootPatternBase : PatternBase
                 return positionOffset;
 
             case SpawnPointType.RelativeToShooter:
-                return shooter.transform.position + positionOffset;
+                return movable.transform.position + positionOffset;
 
             case SpawnPointType.RelativeToPlayer:
                 // TODO: Playerの位置を取得する処理を実装
                 // 例: return PlayerFinder.GetPosition() + positionOffset;
                 Debug.LogWarning("RelativeToPlayer is not implemented yet.");
-                return shooter.transform.position + positionOffset; // Fallback
+                return movable.transform.position + positionOffset; // Fallback
 
             default:
-                return shooter.transform.position;
+                return movable.transform.position;
         }
     }
 

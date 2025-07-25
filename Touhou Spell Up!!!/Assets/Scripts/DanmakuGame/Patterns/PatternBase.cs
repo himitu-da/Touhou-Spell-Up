@@ -13,7 +13,7 @@ public abstract class PatternBase : ScriptableObject
 
     // MoverとShooterの両方を受け取り、弾の情報を引き継げるExecuteメソッド
     // このメソッドは仮想(virtual)とし、サブクラスでのオーバーライドを可能にする
-    public virtual async UniTask Execute(Mover mover, Shooter shooter, CancellationToken token)
+    public virtual async UniTask Execute(IMovable movable, IShootable shootable, CancellationToken token)
     {
         if (token.IsCancellationRequested) return;
 
@@ -25,7 +25,7 @@ public abstract class PatternBase : ScriptableObject
         if (token.IsCancellationRequested) return;
 
         // 実際の処理はExecuteImplに委譲する
-        await ExecuteImpl(mover, shooter, token);
+        await ExecuteImpl(movable, shootable, token);
 
         if (token.IsCancellationRequested) return;
 
@@ -36,5 +36,5 @@ public abstract class PatternBase : ScriptableObject
     }
 
     // サブクラスで具体的な処理を実装するための抽象メソッド
-    public abstract UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token);
+    public abstract UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token);
 }

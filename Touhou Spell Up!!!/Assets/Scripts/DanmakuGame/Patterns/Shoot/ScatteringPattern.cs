@@ -13,7 +13,7 @@ public class ScatteringPattern : ShootPatternBase
     [SerializeField, Range(0f, 360f)] private float totalAngle = 60f;
     [SerializeField] private bool allRound;
 
-    public override async UniTask ExecuteShoot(Shooter shooter, CancellationToken token)
+    public override async UniTask ExecuteShoot(IMovable movable, IShootable shootable, CancellationToken token)
     {
         if (_bullet == null || _bullet.Prefab == null)
         {
@@ -23,9 +23,9 @@ public class ScatteringPattern : ShootPatternBase
         // aimAtPlayerがfalseのときは無効化
         this.alwaysAimToPlayer = this.aimAtPlayer && this.alwaysAimToPlayer;
 
-        Vector3 baseSpawnPosition = GetSpawnPosition(shooter);
+        Vector3 baseSpawnPosition = GetSpawnPosition(movable);
 
-        float centerAngle = GetAimAngle(shooter, baseSpawnPosition) + directionOffset;
+        float centerAngle = GetAimAngle(movable, baseSpawnPosition) + directionOffset;
 
         float finalAngle = allRound ? 360f : totalAngle;
 
@@ -38,12 +38,12 @@ public class ScatteringPattern : ShootPatternBase
 
             if (followShooterPosition)
             {
-                baseSpawnPosition = GetSpawnPosition(shooter);
+                baseSpawnPosition = GetSpawnPosition(movable);
             }
 
             if (alwaysAimToPlayer)
             {
-                centerAngle = GetAimAngle(shooter, baseSpawnPosition) + directionOffset;
+                centerAngle = GetAimAngle(movable, baseSpawnPosition) + directionOffset;
             }
 
             float scatterAngle = centerAngle + Random.Range(startAngle, endAngle);
@@ -52,7 +52,7 @@ public class ScatteringPattern : ShootPatternBase
             // 最終的な発射位置を計算
             Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, scatterAngle);
 
-            shooter.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
+            shootable.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
 
             // intervalだけ待つ
             if (interval > 0)

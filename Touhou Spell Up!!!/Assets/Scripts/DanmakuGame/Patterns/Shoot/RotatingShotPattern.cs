@@ -26,7 +26,7 @@ public class RotatingShotPattern : ShootPatternBase
     private bool _isInitialized = false;
 
 
-    public override async UniTask ExecuteShoot(Shooter shooter, CancellationToken token)
+    public override async UniTask ExecuteShoot(IMovable movable, IShootable shootable, CancellationToken token)
     {
         if (_bullet == null || _bullet.Prefab == null)
         {
@@ -36,7 +36,7 @@ public class RotatingShotPattern : ShootPatternBase
 
         float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
 
-        Vector3 baseSpawnPosition = GetSpawnPosition(shooter);
+        Vector3 baseSpawnPosition = GetSpawnPosition(movable);
 
         // --- 実行開始時の角度を決定 ---
         float currentAngle;
@@ -50,7 +50,7 @@ public class RotatingShotPattern : ShootPatternBase
         // SharedAngleがなければ、isKeepAngleのロジックを適用
             if (!isKeepAngle || !_isInitialized)
             {
-                currentAngle = GetAimAngle(shooter, baseSpawnPosition) + startAngle;
+                currentAngle = GetAimAngle(movable, baseSpawnPosition) + startAngle;
                 _isInitialized = true; // 実行したので初期化済みに
             }
             else
@@ -68,12 +68,12 @@ public class RotatingShotPattern : ShootPatternBase
 
             if (followShooterPosition)
             {
-                baseSpawnPosition = GetSpawnPosition(shooter);
+                baseSpawnPosition = GetSpawnPosition(movable);
             }
 
             if (alwaysAimToPlayer)
             {
-                currentAngle = GetAimAngle(shooter, baseSpawnPosition) + startAngle;
+                currentAngle = GetAimAngle(movable, baseSpawnPosition) + startAngle;
             }
 
             // 弾を発射する角度を決定（ループの初回は発射してから角度を足す）
@@ -84,7 +84,7 @@ public class RotatingShotPattern : ShootPatternBase
             // 最終的な発射位置を計算
             Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, shotAngle);
 
-            shooter.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
+            shootable.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
 
             if (intervalTime > 0)
             {

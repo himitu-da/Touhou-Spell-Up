@@ -14,7 +14,7 @@ public class CurveMovePattern : MovePatternBase
     [SerializeField] private bool overrideInitialDirection = false;
     [SerializeField] private float initialDirection = -90f; // 下向き（度）
 
-    public override async UniTask ExecuteMove(Mover mover, CancellationToken token)
+    public override async UniTask ExecuteMove(IMovable movable, CancellationToken token)
     {
         // 初期角度の決定
         float currentAngle;
@@ -25,11 +25,12 @@ public class CurveMovePattern : MovePatternBase
         else
         {
             // 現在の角度（ShootPatternで設定された角度）を使用
-            currentAngle = mover.transform.eulerAngles.z;
+            currentAngle = movable.transform.eulerAngles.z;
         }
 
         // EnemyBulletからspeedを取得する試み
-        var bulletComponent = mover.GetComponent<EnemyBullet>();
+        var monoBehaviour = movable as MonoBehaviour;
+        var bulletComponent = monoBehaviour?.GetComponent<EnemyBullet>();
         float moveSpeed = speed;
         if (!overrideSpeed && bulletComponent != null && bulletComponent.Property != null)
         {
@@ -37,14 +38,14 @@ public class CurveMovePattern : MovePatternBase
         }
 
 
-        while (!token.IsCancellationRequested && mover != null)
+        while (!token.IsCancellationRequested && movable != null)
         {
             // 角度を徐々に変化
             currentAngle += angleChangeRate * Time.deltaTime;
-            mover.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+            movable.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
 
             // オブジェクトの前方（この場合はローカルのY軸正方向、つまり画像の上方向）に移動
-            mover.transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
+            movable.transform.Translate(Vector3.down * moveSpeed * Time.deltaTime);
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }

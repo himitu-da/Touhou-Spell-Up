@@ -13,7 +13,7 @@ public class LoopPattern : PatternBase
     [SerializeField, Min(0)]
     private int loopCount = 0;
 
-    public override async UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token)
+    public override async UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
     {
         if (pattern == null)
         {
@@ -23,7 +23,7 @@ public class LoopPattern : PatternBase
 
         for (int i = 0; !token.IsCancellationRequested; ) {
             // 子パターンの実行
-            await pattern.Execute(mover, shooter, token);
+            await pattern.Execute(movable, shootable, token);
 
             if (interval > 0)
             {

@@ -2,7 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-public class Shooter : MonoBehaviour
+public class Shooter : MonoBehaviour, IShootable, IMovable
 {
     [SerializeField]
     private PatternBase _shootPattern;

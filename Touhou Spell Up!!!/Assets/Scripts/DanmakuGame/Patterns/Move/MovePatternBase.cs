@@ -4,12 +4,12 @@ using System.Threading;
 
 public abstract class MovePatternBase : PatternBase
 {
-    public override UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token)
+    public override UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
     {
         // 実際の処理はさらにサブクラスのExecuteMoveに委譲する
-        return ExecuteMove(mover, token);
+        return ExecuteMove(movable, token);
     }
 
     // サブクラスが実装するための新しい抽象メソッド
-    public abstract UniTask ExecuteMove(Mover mover, CancellationToken token);
+    public abstract UniTask ExecuteMove(IMovable movable, CancellationToken token);
 }

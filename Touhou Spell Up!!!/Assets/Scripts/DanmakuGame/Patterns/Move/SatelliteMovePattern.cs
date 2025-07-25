@@ -18,47 +18,48 @@ public class SatelliteMovePattern : MovePatternBase
     [Header("追跡設定")]
     [SerializeField] private bool followShooter = true; // 親を追跡するか
 
-    public override UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token)
+    public override UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
     {
-        if (shooter == null)
+        var shooterComponent = shootable as Shooter;
+        if (shooterComponent == null)
         {
-            Debug.LogError("SatelliteMovePattern requires a Shooter component on the moving object.", mover);
+            Debug.LogError("SatelliteMovePattern requires a Shooter component on the moving object.", movable as MonoBehaviour);
             return UniTask.CompletedTask;
         }
 
-        Shooter centerShooter = shooter.ParentShooter;
+        Shooter centerShooter = shooterComponent.ParentShooter;
         if (centerShooter == null)
         {
             // 親が設定されていない場合、自分自身を基準点とする（デバッグ用）
-            Debug.LogWarning("SatelliteMovePattern requires a parent Shooter, but it is not set. Using self as center.", shooter);
-            centerShooter = shooter;
+            Debug.LogWarning("SatelliteMovePattern requires a parent Shooter, but it is not set. Using self as center.", shooterComponent);
+            centerShooter = shooterComponent;
         }
 
         // 実際の処理はExecuteSatelliteMoveに委譲
-        return ExecuteSatelliteMove(mover, centerShooter, token);
+        return ExecuteSatelliteMove(movable, centerShooter, token);
     }
 
     // このパターンはShooter（中心点）が必須なため、Shooterを引数に取る
-    private async UniTask ExecuteSatelliteMove(Mover mover, Shooter centerShooter, CancellationToken token)
+    private async UniTask ExecuteSatelliteMove(IMovable movable, IMovable centerMovable, CancellationToken token)
     {
-        if (mover == null) return;
+        if (movable == null) return;
 
-        Vector3 centerPosition = GetSpawnPosition(centerShooter);
+        Vector3 centerPosition = GetSpawnPosition(centerMovable);
 
         // 初期位置と角度を設定
         float radius = initialRadius;
         // 初期角度はMoverの現在の向きから取得する
-        float currentAngle = mover.transform.rotation.eulerAngles.z;
+        float currentAngle = movable.transform.rotation.eulerAngles.z;
 
         // 弾の初期位置を計算して設定
         Vector3 initialDirection = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
-        mover.transform.position = centerPosition + initialDirection * radius;
+        movable.transform.position = centerPosition + initialDirection * radius;
 
-        while (!token.IsCancellationRequested && mover != null)
+        while (!token.IsCancellationRequested && movable != null)
         {
-            if (followShooter && centerShooter != null)
+            if (followShooter && centerMovable != null)
             {
-                centerPosition = GetSpawnPosition(centerShooter);
+                centerPosition = GetSpawnPosition(centerMovable);
             }
 
             // 1. 半径を更新
@@ -76,22 +77,22 @@ public class SatelliteMovePattern : MovePatternBase
 
             // 3. 新しい位置を計算
             Vector3 newDirection = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
-            mover.transform.position = centerPosition + newDirection * radius;
+            movable.transform.position = centerPosition + newDirection * radius;
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
 
     // このMovePatternはExecuteImplで処理が完結するため、MovePatternBaseの抽象メソッドは空実装でよい
-    public override UniTask ExecuteMove(Mover mover, CancellationToken token)
+    public override UniTask ExecuteMove(IMovable movable, CancellationToken token)
     {
         // このメソッドは呼ばれない想定
-        Debug.LogWarning("SatelliteMovePattern.ExecuteMove(Mover, CancellationToken) was called. This should not happen.", mover);
+        Debug.LogWarning("SatelliteMovePattern.ExecuteMove(IMovable, CancellationToken) was called. This should not happen.", movable as MonoBehaviour);
         return UniTask.CompletedTask;
     }
 
     // 発射地点を計算するヘルパーメソッド（ShootPatternBaseから拝借）
-    protected Vector3 GetSpawnPosition(Shooter shooter)
+    protected Vector3 GetSpawnPosition(IMovable movable)
     {
         switch (spawnPointType)
         {
@@ -99,29 +100,29 @@ public class SatelliteMovePattern : MovePatternBase
                 return positionOffset;
 
             case SpawnPointType.RelativeToShooter:
-                if (shooter != null)
+                if (movable != null)
                 {
-                    return shooter.transform.position + positionOffset;
+                    return movable.transform.position + positionOffset;
                 }
                 else
                 {
-                    Debug.LogWarning("Shooter is null, but spawnPointType is RelativeToShooter. Falling back to absolute position.");
+                    Debug.LogWarning("Movable is null, but spawnPointType is RelativeToShooter. Falling back to absolute position.");
                     return positionOffset;
                 }
 
             case SpawnPointType.RelativeToPlayer:
                 // TODO: Playerの位置を取得する処理を実装
                 Debug.LogWarning("RelativeToPlayer is not implemented yet.");
-                if (shooter != null)
+                if (movable != null)
                 {
-                    return shooter.transform.position + positionOffset; // Fallback
+                    return movable.transform.position + positionOffset; // Fallback
                 }
                 return positionOffset; // Fallback
 
             default:
-                if (shooter != null)
+                if (movable != null)
                 {
-                    return shooter.transform.position;
+                    return movable.transform.position;
                 }
                 return Vector3.zero;
         }

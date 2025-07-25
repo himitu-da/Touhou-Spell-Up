@@ -8,14 +8,14 @@ public class FireAndForgetPattern : PatternBase
 {
     [SerializeField] private List<PatternBase> _patterns = new List<PatternBase>();
 
-    public override UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token)
+    public override UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
     {
         if (token.IsCancellationRequested) return UniTask.CompletedTask;
 
         foreach (var pattern in _patterns)
         {
             // awaitを使用しない
-            pattern.Execute(mover, shooter, token).Forget();
+            pattern.Execute(movable, shootable, token).Forget();
         }
 
         return UniTask.CompletedTask;

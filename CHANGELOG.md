@@ -170,3 +170,5 @@
 - 弾幕を発射した場合、その発射を行ったShooterを渡すようにする（親子関係）
 - 撃つときの移動に関して、初期方向と初期位置は「ShootPatternBase」、初期以外は「MovePatternBase」に統一
 - SharedResourceをMultiWayPatternのDirectionOffsetでも使用できるように
+
+## [v0.1.7] - 2025-07-2X

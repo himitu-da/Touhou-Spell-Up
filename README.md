@@ -1,5 +1,9 @@
 Developing
 
+- IMovableとIShootableの作成し、既存の基底クラスと実現クラスに適用（`PatternBase`およびその全ての派生クラスが、`Mover`と`Shooter`の具象クラスではなく、`IMovable`と`IShootable`インターフェースに依存）
+
+---
+
 - ノードベースで弾幕パターンを作成可能に
 
 - 弾幕に対してトリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時）を追加できるように
@@ -11,7 +15,7 @@ Developing
 
 - 時間発狂やHP発狂を作れるように
 - ShootPatternやそれを継承したクラスにおけるBulletの表示をShotに変更
-- IMovableとIShootableの作成
+
 - BulletとEnemyをShootable、Movable Interfaceにまとめられるように
 - 壁面、発射口、弾自身などから現れる弾幕を実現できるように
 - オブジェクトプーリングの実装

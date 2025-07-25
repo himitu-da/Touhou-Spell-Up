@@ -2,7 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-public class Mover : MonoBehaviour
+public class Mover : MonoBehaviour, IMovable
 {
     [SerializeField]
     private PatternBase _movePattern;
