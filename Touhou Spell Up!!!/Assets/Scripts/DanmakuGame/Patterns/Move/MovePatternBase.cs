@@ -4,7 +4,7 @@ using System.Threading;
 
 public abstract class MovePatternBase : PatternBase
 {
-    public override UniTask ExecuteImpl(Mover mover, Shooter _, Bullet __, CancellationToken token)
+    public override UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token)
     {
         // 実際の処理はさらにサブクラスのExecuteMoveに委譲する
         return ExecuteMove(mover, token);

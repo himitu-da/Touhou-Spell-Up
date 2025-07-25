@@ -10,6 +10,14 @@ public class Shooter : MonoBehaviour
     [SerializeField]
     private Bullet _bullet; // このShooterが使用する基本の弾
 
+    private Shooter _parentShooter;
+
+    public Shooter ParentShooter
+    {
+        get => _parentShooter;
+        set => _parentShooter = value;
+    }
+
     private CancellationTokenSource _cancellationTokenSource;
 
     private void Start()
@@ -23,7 +31,7 @@ public class Shooter : MonoBehaviour
 
         _cancellationTokenSource = new CancellationTokenSource();
         // 自身の情報を渡してShootPatternを実行
-        _shootPattern.Execute(GetComponent<Mover>(), this, _bullet, _cancellationTokenSource.Token).Forget();
+        _shootPattern.Execute(GetComponent<Mover>(), this, _cancellationTokenSource.Token).Forget();
     }
 
     private void OnDestroy()
@@ -49,8 +57,8 @@ public class Shooter : MonoBehaviour
         var enemyBullet = bulletInstance.GetComponent<EnemyBullet>();
         if (enemyBullet != null)
         {
-            // bullet.Property (BulletProperty) を渡して初期化
-            enemyBullet.Initialize(bullet.Property);
+            // bullet.Property (BulletProperty) と親Shooter（自身）を渡して初期化
+            enemyBullet.Initialize(bullet.Property, this);
         }
     }
 }

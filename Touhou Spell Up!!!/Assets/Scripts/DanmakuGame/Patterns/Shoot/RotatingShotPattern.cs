@@ -26,9 +26,9 @@ public class RotatingShotPattern : ShootPatternBase
     private bool _isInitialized = false;
 
 
-    public override async UniTask ExecuteShoot(Shooter shooter, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteShoot(Shooter shooter, CancellationToken token)
     {
-        if (bulletToUse == null || bulletToUse.Prefab == null)
+        if (_bullet == null || _bullet.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
@@ -36,7 +36,7 @@ public class RotatingShotPattern : ShootPatternBase
 
         float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
 
-        Vector3 spawnPosition = GetSpawnPosition(shooter);
+        Vector3 baseSpawnPosition = GetSpawnPosition(shooter);
 
         // --- 実行開始時の角度を決定 ---
         float currentAngle;
@@ -47,10 +47,10 @@ public class RotatingShotPattern : ShootPatternBase
         }
         else
         {
-            // SharedAngleがなければ、isKeepAngleのロジックを適用
+        // SharedAngleがなければ、isKeepAngleのロジックを適用
             if (!isKeepAngle || !_isInitialized)
             {
-                currentAngle = startAngle;
+                currentAngle = GetAimAngle(shooter, baseSpawnPosition) + startAngle;
                 _isInitialized = true; // 実行したので初期化済みに
             }
             else
@@ -60,21 +60,39 @@ public class RotatingShotPattern : ShootPatternBase
             }
         }
         // --------------------------
+        // 0のときは無限に撃つ
 
-        for (int i = 0; i < shotCount; i++)
+        for (int i = 0; ; i++)
         {
             if (token.IsCancellationRequested) break;
+
+            if (followShooterPosition)
+            {
+                baseSpawnPosition = GetSpawnPosition(shooter);
+            }
+
+            if (alwaysAimToPlayer)
+            {
+                currentAngle = GetAimAngle(shooter, baseSpawnPosition) + startAngle;
+            }
 
             // 弾を発射する角度を決定（ループの初回は発射してから角度を足す）
             float shotAngle = currentAngle + (directionMultiplier * intervalAngle * i);
 
             Quaternion rotation = Quaternion.Euler(0, 0, shotAngle);
 
-            shooter.InstantiateBullet(bulletToUse, spawnPosition, rotation);
+            // 最終的な発射位置を計算
+            Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, shotAngle);
+
+            shooter.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
 
             if (intervalTime > 0)
             {
                 await UniTask.Delay((int)(intervalTime * 1000), cancellationToken: token);
+            }
+            if (shotCount > 0)
+            {
+                if (i >= shotCount) break;
             }
         }
 

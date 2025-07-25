@@ -15,13 +15,12 @@ class Mover <<MonoBehaviour>>
 
 ' --- パターン関連 ---
 abstract class PatternBase <<ScriptableObject>>
-abstract class ShootablePattern <<ScriptableObject>>
 abstract class MovePatternBase <<ScriptableObject>>
-PatternBase <|-- ShootablePattern
+class ForgetPattern <<ScriptableObject>>
 PatternBase <|-- MovePatternBase
-
+PatternBase <|-- ForgetPattern
 abstract class ShootPatternBase <<ScriptableObject>>
-ShootablePattern <|-- ShootPatternBase
+PatternBase <|-- ShootPatternBase
 
 class BasicShotPattern <<ScriptableObject>>
 class MultiWayPattern <<ScriptableObject>>
@@ -35,12 +34,21 @@ ShootPatternBase <|-- ScatteringPattern
 class LoopPattern <<ScriptableObject>>
 class ParallelPattern <<ScriptableObject>>
 class SequencePattern <<ScriptableObject>>
-ShootablePattern <|-- LoopPattern
-ShootablePattern <|-- ParallelPattern
-ShootablePattern <|-- SequencePattern
+class FireAndForgetPattern <<ScriptableObject>>
+PatternBase <|-- LoopPattern
+PatternBase <|-- ParallelPattern
+PatternBase <|-- SequencePattern
+PatternBase <|-- FireAndForgetPattern
+
+class RandomShootPattern <<ScriptableObject>>
+
 
 class StraightMovePattern <<ScriptableObject>>
+class CurveMovePattern <<ScriptableObject>>
+class SatelliteMovePattern <<ScriptableObject>>
 MovePatternBase <|-- StraightMovePattern
+MovePatternBase <|-- CurveMovePattern
+MovePatternBase <|-- SatelliteMovePattern
 
 ' --- 共有リソース関連 ---
 abstract class SharedResource <<ScriptableObject>>

@@ -1,31 +1,33 @@
 Developing
 
-- LoopPatternでループ回数の指定ができるように
-- 射撃システムとの連携（射撃が一巡してから移動等）
-- Composite群において、「中身の実装に関わらず次に進める」というようなものを追加する
-- ShootPatternにおいて、射撃位置を常に敵機に追随するかを選べるように
+- ノードベースで弾幕パターンを作成可能に
+
+- 弾幕に対してトリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時）を追加できるように
 
 - 射撃位置にMoverが適用できるようにするかを検討
-- ShootPatternBaseに自機狙いを指定する項目を増やすかどうか検討
 - ワインダーパターンを作成
-- へにょり弾を打てるように
+
+- SatelliteMovePatternでフーリエ変換や楕円を指定可能に
+
 - 時間発狂やHP発狂を作れるように
-- ChainedShotPatternを実装し、弾が次の弾や弾幕を打てるように
-    - 最初に撃つ弾
-    - トリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時
 - ShootPatternやそれを継承したクラスにおけるBulletの表示をShotに変更
-- Override Bulletに弾幕パターンを入れられるように（柔軟性）
 - IMovableとIShootableの作成
 - BulletとEnemyをShootable、Movable Interfaceにまとめられるように
 - 壁面、発射口、弾自身などから現れる弾幕を実現できるように
 - オブジェクトプーリングの実装
+- SharedResourceを使用し、すべてのint型もしくはfloat型のSerializeFieldを置換する
+- SharedResourceに発射ごとに1ずつ変わる、特定の関数を動く、のような処理を追加する
+    - これによって更に柔軟な出現位置を実現できる
 
 - 最終リファクタリング
-    - MoverとShooterをActorに統合
-    - ActorにAnimator機能を追加する
-    - Enemy, Bullet, PlayerをGameEntity基本単位として表現
+    - Enemy, Bullet, PlayerをGameEntity基本単位として表現（PatternBaseをこれに含めるかの是非を決める）
     - EnemyPropertyとBulletPropertyをEntityPropertyとしてまとめ、Playerもこれで管理できるように
-    - ActorをActionControllerにし、GameEntiry全体の行動制御を担うように。PlayerController, EnemyControllerは不要に
+    - MoverとShooterをActionControllerに統合し、GameEntiry全体の行動制御を担うように。PlayerController, EnemyControllerは不要に
+    - ActionControllerにAnimator機能を追加する
+
+- PatternBaseを保管するライブラリを作成
+- Override Bulletの対象をEntityに変更
+    - Override Bulletに弾幕パターンを入れられるように（柔軟性）
 
 # v0.2～実装予定
 - 自機ライフの実装

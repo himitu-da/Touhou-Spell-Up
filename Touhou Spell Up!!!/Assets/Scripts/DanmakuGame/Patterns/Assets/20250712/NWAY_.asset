@@ -10,15 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c7d318de5afe304383d78cb17036400, type: 3}
-  m_Name: NWAY_Simple5right
+  m_Name: NWAY_
   m_EditorClassIdentifier: 
+  _beforeAwaitSeconds: 0
+  _afterAwaitSeconds: 0
   overrideBullet: {fileID: 11400000, guid: 3e7e8f26e42fbda4ebbd6b973950412a, type: 2}
   spawnPointType: 0
-  positionOffset: {x: 5, y: 0, z: 0}
-  wayCount: 7
+  positionOffset: {x: 0, y: 0, z: 0}
+  followShooterPosition: 0
+  directionOffset: 0
+  aimAtPlayer: 0
+  alwaysAimToPlayer: 0
+  spawnRadius: 0
+  wayCount: 15
   interval: 0
-  totalAngle: 75
-  allRound: 0
+  totalAngle: 90
+  allRound: 1
   rotationDirection: 0
-  aimAtPlayer: 1
   avoidAtPlayer: 0

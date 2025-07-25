@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edd4ec64db6ab0445998cea85f782abe, type: 3}
+  m_Name: SEQ_C
+  m_EditorClassIdentifier: 
+  _beforeAwaitSeconds: 0
+  _afterAwaitSeconds: 0
+  sequence:
+  - pattern: {fileID: 11400000, guid: f5268fbd3ad5da14abbe0abe9485ded2, type: 2}
+    delay: 0.5
+  - pattern: {fileID: 11400000, guid: 9c5fe67622037ba4eaeca9feca5ab9e9, type: 2}
+    delay: 0.5

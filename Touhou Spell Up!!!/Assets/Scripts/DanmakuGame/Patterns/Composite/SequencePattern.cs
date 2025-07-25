@@ -5,7 +5,7 @@ using System.Threading;
 using System; // TimeSpanのために追加
 
 [CreateAssetMenu(fileName = "SEQ_", menuName = "Touhou Spell Up/Danmaku/Composite/Sequence")]
-public class SequencePattern : ShootablePattern
+public class SequencePattern : PatternBase
 {
     [System.Serializable]
     public class PatternStep
@@ -14,13 +14,13 @@ public class SequencePattern : ShootablePattern
         [Tooltip("このパターンの実行前に待機する時間（秒）")]
         public float delay;
 
-        [Tooltip("このパターンでのみ使用する弾を上書きする")]
-        public Bullet overrideBullet;
+        // [Tooltip("このパターンでのみ使用する弾を上書きする")]
+        // public Bullet overrideBullet;
     }
 
     [SerializeField] private List<PatternStep> sequence;
 
-    public override async UniTask ExecuteImpl(Mover mover, Shooter shooter, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token)
     {
         foreach (var step in sequence)
         {
@@ -38,12 +38,8 @@ public class SequencePattern : ShootablePattern
 
             if (step.pattern != null)
             {
-                // このステップで最終的に使う弾を決定
-                // ステップ固有の上書きがあれば最優先、なければパターン全体で使う弾を引き継ぐ
-                Bullet finalBulletForStep = step.overrideBullet != null ? step.overrideBullet : bulletToUse;
-
                 // 子パターンのUniTaskを実行し、完了を待つ
-                await step.pattern.Execute(mover, shooter, finalBulletForStep, token);
+                await step.pattern.Execute(mover, shooter, token);
             }
         }
     }

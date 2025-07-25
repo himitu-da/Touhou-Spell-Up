@@ -3,15 +3,17 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 
 [CreateAssetMenu(fileName = "LOOP_", menuName = "Touhou Spell Up/Danmaku/Composite/Loop")]
-public class LoopPattern : ShootablePattern
+public class LoopPattern : PatternBase
 {
     [SerializeField]
     private PatternBase pattern;
 
     [SerializeField, Min(0.0f)]
     private float interval = 1.0f;
+    [SerializeField, Min(0)]
+    private int loopCount = 0;
 
-    public override async UniTask ExecuteImpl(Mover mover, Shooter shooter, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteImpl(Mover mover, Shooter shooter, CancellationToken token)
     {
         if (pattern == null)
         {
@@ -19,15 +21,23 @@ public class LoopPattern : ShootablePattern
             return;
         }
 
-        while (!token.IsCancellationRequested)
-        {
+        for (int i = 0; !token.IsCancellationRequested; ) {
             // 子パターンの実行
-            await pattern.Execute(mover, shooter, bulletToUse, token);
+            await pattern.Execute(mover, shooter, token);
 
             if (interval > 0)
             {
-            // 指定された間隔だけ待機
-            await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
+                // 指定された間隔だけ待機
+                await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
+            }
+
+            if (loopCount > 0)
+            {
+                i++;
+                if (i >= loopCount)
+                {
+                    break;
+                }
             }
         }
     }

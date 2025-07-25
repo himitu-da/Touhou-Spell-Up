@@ -13,28 +13,19 @@ public class ScatteringPattern : ShootPatternBase
     [SerializeField, Range(0f, 360f)] private float totalAngle = 60f;
     [SerializeField] private bool allRound;
 
-    [Header("自機狙い")]
-    [SerializeField] private bool aimAtPlayer = false;
-    [SerializeField] private bool alwaysAimToPlayer = false;
-
-    public override async UniTask ExecuteShoot(Shooter shooter, Bullet bulletToUse, CancellationToken token)
+    public override async UniTask ExecuteShoot(Shooter shooter, CancellationToken token)
     {
-        if (bulletToUse == null || bulletToUse.Prefab == null)
+        if (_bullet == null || _bullet.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
         }
         // aimAtPlayerがfalseのときは無効化
-        alwaysAimToPlayer = aimAtPlayer && alwaysAimToPlayer;
+        this.alwaysAimToPlayer = this.aimAtPlayer && this.alwaysAimToPlayer;
 
-        Vector3 spawnPosition = GetSpawnPosition(shooter);
+        Vector3 baseSpawnPosition = GetSpawnPosition(shooter);
 
-        float centerAngle = shooter.transform.eulerAngles.z;
-        if (aimAtPlayer)
-        {
-            centerAngle = AngleUtility.GetAngleToPlayer(spawnPosition);
-        }
-        centerAngle += directionOffset;
+        float centerAngle = GetAimAngle(shooter, baseSpawnPosition) + directionOffset;
 
         float finalAngle = allRound ? 360f : totalAngle;
 
@@ -45,15 +36,23 @@ public class ScatteringPattern : ShootPatternBase
         {
             if (token.IsCancellationRequested) break;
 
+            if (followShooterPosition)
+            {
+                baseSpawnPosition = GetSpawnPosition(shooter);
+            }
+
+            if (alwaysAimToPlayer)
+            {
+                centerAngle = GetAimAngle(shooter, baseSpawnPosition) + directionOffset;
+            }
+
             float scatterAngle = centerAngle + Random.Range(startAngle, endAngle);
             Quaternion rotation = Quaternion.Euler(0, 0, scatterAngle);
 
-            var bulletInstance = Instantiate(bulletToUse.Prefab, spawnPosition, rotation);
-            var enemyBullet = bulletInstance.GetComponent<EnemyBullet>();
-            if (enemyBullet != null)
-            {
-                enemyBullet.Initialize(bulletToUse.Property);
-            }
+            // 最終的な発射位置を計算
+            Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, scatterAngle);
+
+            shooter.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
 
             // intervalだけ待つ
             if (interval > 0)
@@ -61,10 +60,6 @@ public class ScatteringPattern : ShootPatternBase
                 await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
             }
 
-            if (alwaysAimToPlayer)
-            {
-               centerAngle = AngleUtility.GetAngleToPlayer(spawnPosition);
-            }
         }
 
         await UniTask.CompletedTask;

@@ -25,7 +25,7 @@ public class Mover : MonoBehaviour
         }
 
         _cancellationTokenSource = new CancellationTokenSource();
-        _movePattern.Execute(this, _shooter, null, _cancellationTokenSource.Token).Forget();
+        _movePattern.Execute(this, _shooter, _cancellationTokenSource.Token).Forget();
     }
 
     private void OnDestroy()
