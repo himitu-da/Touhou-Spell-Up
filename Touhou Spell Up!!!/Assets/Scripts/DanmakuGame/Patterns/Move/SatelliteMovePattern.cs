@@ -18,7 +18,7 @@ public class SatelliteMovePattern : MovePatternBase
     [Header("追跡設定")]
     [SerializeField] private bool followShooter = true; // 親を追跡するか
 
-    public override UniTask ExecuteImpl(EntityController controller, CancellationToken token)
+    public override UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
         if (controller == null)
         {
@@ -26,7 +26,7 @@ public class SatelliteMovePattern : MovePatternBase
             return UniTask.CompletedTask;
         }
 
-        EntityController centerController = controller.ParentActor;
+        GameEntityController centerController = controller.ParentActor;
         if (centerController == null)
         {
             // 親が設定されていない場合、自分自身を基準点とする（デバッグ用）
@@ -39,7 +39,7 @@ public class SatelliteMovePattern : MovePatternBase
     }
 
     // このパターンはActor（中心点）が必須なため、Actorを引数に取る
-    private async UniTask ExecuteSatelliteMove(EntityController controller, EntityController centerController, CancellationToken token)
+    private async UniTask ExecuteSatelliteMove(GameEntityController controller, GameEntityController centerController, CancellationToken token)
     {
         if (controller == null) return;
 
@@ -83,7 +83,7 @@ public class SatelliteMovePattern : MovePatternBase
     }
 
     // このMovePatternはExecuteImplで処理が完結するため、MovePatternBaseの抽象メソッドは空実装でよい
-    public override UniTask ExecuteMove(EntityController controller, CancellationToken token)
+    public override UniTask ExecuteMove(GameEntityController controller, CancellationToken token)
     {
         // このメソッドは呼ばれない想定
         Debug.LogWarning("SatelliteMovePattern.ExecuteMove(EntityController, CancellationToken) was called. This should not happen.", controller);
@@ -91,7 +91,7 @@ public class SatelliteMovePattern : MovePatternBase
     }
 
     // 発射地点を計算するヘルパーメソッド（ShootPatternBaseから拝借）
-    protected Vector3 GetSpawnPosition(EntityController controller)
+    protected Vector3 GetSpawnPosition(GameEntityController controller)
     {
         switch (spawnPointType)
         {

@@ -24,14 +24,15 @@ public static class AngleUtility
     /// <returns>プレイヤーへの角度。プレイヤーが見つからない場合は0を返す。</returns>
     public static float GetAngleToPlayer(Vector3 fromPosition, float offset = 90f)
     {
-        if (PlayerController.Instance != null)
+        var player = Object.FindFirstObjectByType<PlayerController>();
+        if (player != null)
         {
-            return GetAngleToTarget(fromPosition, PlayerController.Instance.transform.position, offset);
+            return GetAngleToTarget(fromPosition, player.transform.position, offset);
         }
         else
         {
             // プレイヤーが見つからない場合のデフォルトの挙動
-            Debug.LogWarning("PlayerController.Instanceが見つかりませんでした。");
+            Debug.LogWarning("PlayerControllerが見つかりませんでした。");
             return 0f;
         }
     }

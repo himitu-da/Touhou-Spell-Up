@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48dfc7c9189a43a4298fb5ca23efea3a, type: 3}
-  m_Name: Player
+  m_Script: {fileID: 11500000, guid: dae897c254c7b8b4abe9cf15c8b41089, type: 3}
+  m_Name: BLT_
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  property: {fileID: 11400000, guid: d79b02a3b0e99b745ab681108e35c620, type: 2}
+  prefab: {fileID: 652089954478125638, guid: 69cb42a9338b46f46a37019cb795d4e7, type: 3}
+  property: {fileID: 11400000, guid: 4ed712b1f007341499dd7a0e1e493cc7, type: 2}

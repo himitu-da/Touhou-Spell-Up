@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider2D))]
-public class EnemyController : EntityController
+public class EnemyController : GameEntityController
 {
     [SerializeField] GameObject lifeGaugePrefab;
     private GameObject _lifeGaugeInstance;

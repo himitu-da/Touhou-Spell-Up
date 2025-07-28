@@ -20,7 +20,7 @@ public class SequencePattern : PatternBase
 
     [SerializeField] private List<PatternStep> sequence;
 
-    public override async UniTask ExecuteImpl(EntityController controller, CancellationToken token)
+    public override async UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
         foreach (var step in sequence)
         {

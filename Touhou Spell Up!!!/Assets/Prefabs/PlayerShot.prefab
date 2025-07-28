@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8810076891901800255}
   - component: {fileID: 8130265619405818135}
   - component: {fileID: 8532589659638935641}
-  - component: {fileID: 1736313065527529647}
+  - component: {fileID: 1902570260481599588}
   m_Layer: 0
   m_Name: PlayerShot
   m_TagString: Untagged
@@ -154,7 +154,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1736313065527529647
+--- !u!114 &1902570260481599588
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -163,9 +163,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 652089954478125638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9b6df7e83930234ea4fc686f8321698, type: 3}
+  m_Script: {fileID: 11500000, guid: ad6a4442f1842604984c577473c340b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 35
-  lifeTime: 4
-  shotDamage: 1
+  _entity: {fileID: 0}

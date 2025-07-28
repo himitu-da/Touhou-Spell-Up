@@ -16,7 +16,7 @@ public class ParallelPattern : PatternBase
 
     [SerializeField] private List<ParallelStep> patterns;
 
-    public override async UniTask ExecuteImpl(EntityController controller, CancellationToken token)
+    public override async UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
         if (patterns == null || patterns.Count == 0)
         {

@@ -1,8 +1,8 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Player", menuName = "Touhou-Spell-Up/Player", order = 1)]
-public class Player : ScriptableObject
+public class Player : GameEntity
 {
-    [SerializeField] private PlayerProperty playerProperty;
-    public PlayerProperty PlayerProperty => playerProperty;
+    public PlayerProperty PlayerProperty => property as PlayerProperty;
+    public override GameEntityProperty Property => PlayerProperty;
 }

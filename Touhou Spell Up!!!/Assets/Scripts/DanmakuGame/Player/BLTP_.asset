@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48dfc7c9189a43a4298fb5ca23efea3a, type: 3}
-  m_Name: Player
+  m_Script: {fileID: 11500000, guid: 4b84b4aee6ad1b24ea33e11bad69f00c, type: 3}
+  m_Name: BLTP_
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  property: {fileID: 11400000, guid: d79b02a3b0e99b745ab681108e35c620, type: 2}
+  shootPattern: {fileID: 0}
+  movePattern: {fileID: 11400000, guid: f5260c4d8aff8bf4eb4b4f6e958b8fd7, type: 2}
+  lifeTime: 6
+  attackPower: 1

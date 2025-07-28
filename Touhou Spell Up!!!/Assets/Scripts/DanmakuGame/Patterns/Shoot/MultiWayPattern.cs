@@ -29,7 +29,7 @@ public class MultiWayPattern : ShootPatternBase
     private float _localCurrentAngle;
     private bool _isInitialized = false;
 
-    public override async UniTask ExecuteShootFromPoint(EntityController controller, EmissionData emissionData, CancellationToken token)
+    public override async UniTask ExecuteShootFromPoint(GameEntityController controller, EmissionData emissionData, CancellationToken token)
     {
         if (_entity == null || _entity.Prefab == null)
         {

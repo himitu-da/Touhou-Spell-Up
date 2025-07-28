@@ -1,4 +1,4 @@
-Developing
+## Developed
 
 - PlayerHitboxは削除し、PlayerControllerがアタッチされたオブジェクト自身が行う
 - Hitboxオブジェクトは削除
@@ -6,12 +6,8 @@ Developing
 - PlayerとPlayerPropertyを作成
 - shotprefabやhitboxmarker以外のフィールドをplayerpropertyで設定できるように変更
 
----
-
-
-
-
-- EntityをGameEntityに統一（名称ゆれ）
+- PlayerPropertyに「高速移動時」「低速移動時」の弾の振る舞いを決めるための「PatternBase」を設定
+    - このPropertyで設定するのは1発分の弾（Instantiate(shotPrefab, transform.position, Quaternion.identity)に相当）
 
 - Player関連のリファクタリング
     - PlayerもGameEntityのサブクラスに
@@ -20,26 +16,37 @@ Developing
 - PlayerControllerのシングルトンへの依存を削除
 - PlayerShotをStraightMovePattern、BulletPropertyのライフタイム、EntityControllerのダメージ通知機能を用いて表現（PlayerShotを削除）
 - PlayerHitboxは削除し、PlayerControllerがアタッチされたオブジェクト自身が行う
+- `BulletProperty`に「攻撃力」の概念を追加
+- `BulletController`を修正し、自機の弾が"Enemy"タグを持つオブジェクトに衝突した際に`TakeDamage`メソッドを呼び出すように
+- `PlayerController`のシングルトン削除に伴い、`AngleUtility`がプレイヤーを見つけられるように`FindFirstObjectByType`を使用するよう修正
+- リファクタリングの過程で失われていた、プレイヤー被弾時の`DanmakuGameManager.GameOver()`呼び出し処理を復元
+- `PlayerController`で、継承元の`_entity`フィールドと重複していた`player`フィールドを削除し、インスペクター上の設定項目を整理
+
+- EntityをGameEntityに統一（名称ゆれ）。EntityControllerをGameEntityControllerに
+
+- 射撃位置にMoverが適用できるようにするかを検討
+    - ※弾が弾を撃てるようになったのでそれで代替可能
+
+- Override Bulletの対象をEntityに変更
+    - Override Bulletに弾幕パターンを入れられるように（柔軟性）
+    - ※Override Bulletは既に配置。一方で、EntityがEntityを生成することができるようになっている（EntityはPatternBaseを実行できる）
+
+## Developing
 
 - EntityControllerにAnimator機能を追加する
 
-- 弾幕に対してトリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時）を追加できるように
+- 各種Propertyに対してトリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時）を追加できるように
 
-- 射撃位置にMoverが適用できるようにするかを検討
+
 - ワインダーパターンを作成
 
 - SatelliteMovePatternでフーリエ変換や楕円を指定可能に
 
 - 時間発狂やHP発狂を作れるように
 
-- オブジェクトプーリングの実装
 - SharedResourceを使用し、すべてのint型もしくはfloat型のSerializeFieldを置換する
 - SharedResourceに発射ごとに1ずつ変わる、特定の関数を動く、のような処理を追加する
     - これによって更に柔軟な出現位置を実現できる
-
-- PatternBaseを保管するライブラリを作成
-- Override Bulletの対象をEntityに変更
-    - Override Bulletに弾幕パターンを入れられるように（柔軟性）
 
 後回し：
 
@@ -49,6 +56,7 @@ Developing
     - 生成したNodeはScriptableObjectで、既存の具象クラスと同じように入れ子でも使えるようにする（追加する際に、Patternの一覧から選べるようにする）
     - Pattern Graphでは、ルートノード（ParallelPattern）であるStartを初期配置して、そこからつなげる
         - すべてのPatternBase、ShootPatternBase、MovePatternBaseのサブクラスが追加・入れ子可能
+- PatternBaseを保管するライブラリを作成
 
 Bullet・BulletProperty・
 Bullet、BulletProperty、
@@ -64,6 +72,7 @@ Bullet、BulletProperty、
     - これによって各ShootPatternは点・線・面であることを意識せずに撃つことができるようになる
 
 # v0.2～実装予定
+- オブジェクトプーリングの実装
 - 自機ライフの実装
 - 敵機複数弾幕の実装（体力がなくなると次の弾幕に移行）
 - ローディングシーン、タイトルシーン（スタート画面、トップ画面）を設定

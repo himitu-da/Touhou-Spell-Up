@@ -544,8 +544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9930e3c6c5381e4fa640308ed35062e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 11400000, guid: 67792246908d20c488026a83136a9416, type: 2}
-  shotPrefab: {fileID: 652089954478125638, guid: 69cb42a9338b46f46a37019cb795d4e7, type: 3}
+  _entity: {fileID: 11400000, guid: 67792246908d20c488026a83136a9416, type: 2}
   hitboxMarker: {fileID: 52255542}
 --- !u!114 &1078971736
 MonoBehaviour:

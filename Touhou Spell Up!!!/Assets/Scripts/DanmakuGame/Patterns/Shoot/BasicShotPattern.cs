@@ -5,7 +5,7 @@ using System.Threading;
 [CreateAssetMenu(fileName = "BASIC_", menuName = "Touhou Spell Up/Danmaku/Shoot/Basic Shot")]
 public class BasicShotPattern : ShootPatternBase
 {
-    public override async UniTask ExecuteShootFromPoint(EntityController controller, EmissionData emissionData, CancellationToken token)
+    public override async UniTask ExecuteShootFromPoint(GameEntityController controller, EmissionData emissionData, CancellationToken token)
     {
         if (_entity == null || _entity.Prefab == null)
         {

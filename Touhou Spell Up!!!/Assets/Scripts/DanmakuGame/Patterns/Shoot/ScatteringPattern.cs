@@ -13,7 +13,7 @@ public class ScatteringPattern : ShootPatternBase
     [SerializeField, Range(0f, 360f)] private float totalAngle = 60f;
     [SerializeField] private bool allRound;
 
-    public override async UniTask ExecuteShoot(EntityController controller, CancellationToken token)
+    public override async UniTask ExecuteShoot(GameEntityController controller, CancellationToken token)
     {
         if (_entity == null || _entity.Prefab == null)
         {
@@ -86,7 +86,7 @@ public class ScatteringPattern : ShootPatternBase
     }
 
     // このメソッドはExecuteShootでロジックを実装したため、空にするか例外をスローする
-    public override UniTask ExecuteShootFromPoint(EntityController controller, EmissionData emissionData, CancellationToken token)
+    public override UniTask ExecuteShootFromPoint(GameEntityController controller, EmissionData emissionData, CancellationToken token)
     {
         // このパターンでは、ExecuteShootで全て処理するため、ここは使用しない
         return UniTask.CompletedTask;

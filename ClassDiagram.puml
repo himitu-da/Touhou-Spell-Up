@@ -4,37 +4,129 @@ skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
     BackgroundColor<<ScriptableObject>> LightGreen
     BackgroundColor<<Interface>> LightYellow
+    BackgroundColor<<static>> LightGray
 }
 
 ' --- インターフェース定義 ---
 interface IMovable <<Interface>>
 interface IShootable <<Interface>>
 
-' --- クラスの定義 ---
-class DanmakuGameManager <<MonoBehaviour>>
-class PlayerController <<MonoBehaviour>>
+' --- マネージャー ---
+class DanmakuGameManager <<MonoBehaviour>> {
+    +Instance : DanmakuGameManager
+    +GameOver()
+}
+
+' --- エンティティ基盤 ---
+abstract class EntityController <<MonoBehaviour>> {
+    #_entity : GameEntity
+    +Property : GameEntityProperty
+    +ParentActor : EntityController
+    +Initialize(GameEntity)
+    +InstantiateProperty(GameEntity, Vector3, Quaternion)
+}
+IMovable <|.. EntityController
+IShootable <|.. EntityController
+
+class GameEntity <<ScriptableObject>> {
+    +Prefab : GameObject
+    #property : GameEntityProperty
+}
+EntityController o-- GameEntity : "_entity"
+
+class GameEntityProperty <<ScriptableObject>> {
+    #shootPattern : PatternBase
+    #movePattern : PatternBase
+}
+GameEntity o-- "1" GameEntityProperty : "property"
+
+
+' --- Player ---
+class PlayerController <<MonoBehaviour>> {
+    -hitboxMarker : GameObject
+    +OnHit()
+}
+EntityController <|-- PlayerController
+PlayerController ..> DanmakuGameManager : "calls GameOver"
+
+class Player <<ScriptableObject>>
+GameEntity <|-- Player
+
+class PlayerProperty <<ScriptableObject>> {
+    +MoveSpeed : float
+    +MoveSpeedSlow : float
+    +ShotInterval : float
+    +ShotPatternNormal : PatternBase
+    +ShotPatternSlow : PatternBase
+}
+GameEntityProperty <|-- PlayerProperty
+PlayerProperty o-- "shotPatternNormal" PatternBase
+PlayerProperty o-- "shotPatternSlow" PatternBase
+PlayerController ..> PlayerProperty : "uses"
+
+
+' --- Enemy ---
 class EnemyController <<MonoBehaviour>> {
     +MaxHealth : float
     +CurrentHealth : float
     +TakeDamage(float)
 }
+EntityController <|-- EnemyController
+
+class Enemy <<ScriptableObject>>
+GameEntity <|-- Enemy
+
+class EnemyProperty <<ScriptableObject>> {
+    +MaxHealth : int
+}
+GameEntityProperty <|-- EnemyProperty
+EnemyController ..> EnemyProperty : "uses"
+
+
+' --- Bullet ---
+class BulletController <<MonoBehaviour>> {
+    - _isPlayerShot : bool
+    +Initialize(GameEntity, EntityController)
+}
+EntityController <|-- BulletController
+BulletController ..> EnemyController : "calls TakeDamage"
+
+class Bullet <<ScriptableObject>>
+GameEntity <|-- Bullet
+
+class BulletProperty <<ScriptableObject>> {
+    +LifeTime : float
+    +AttackPower : float
+}
+GameEntityProperty <|-- BulletProperty
+BulletController ..> BulletProperty : "uses"
+
 
 ' --- パターン関連 ---
 abstract class PatternBase <<ScriptableObject>> {
     +Execute(EntityController, CancellationToken) : UniTask
     #ExecuteImpl(EntityController, CancellationToken) : UniTask
 }
+GameEntityProperty o-- "shootPattern" PatternBase
+GameEntityProperty o-- "movePattern" PatternBase
+PatternBase ..> EntityController : "uses"
+
 abstract class MovePatternBase <<ScriptableObject>>
 PatternBase <|-- MovePatternBase
+class StraightMovePattern <<ScriptableObject>>
+class CurveMovePattern <<ScriptableObject>>
+class SatelliteMovePattern <<ScriptableObject>>
+MovePatternBase <|-- StraightMovePattern
+MovePatternBase <|-- CurveMovePattern
+MovePatternBase <|-- SatelliteMovePattern
+
 abstract class ShootPatternBase <<ScriptableObject>> {
     #_entity : GameEntity
-    #spawnPointType : SpawnPointType
     #emissionShape : EmissionShape
-    #aimAtPlayer : bool
     +ExecuteShoot(EntityController, CancellationToken) : UniTask
-    #ExecuteShootFromPoint(EntityController, EmissionData, CancellationToken) : UniTask
 }
 PatternBase <|-- ShootPatternBase
+ShootPatternBase o-- EmissionShape : "emissionShape"
 
 class BasicShotPattern <<ScriptableObject>>
 class MultiWayPattern <<ScriptableObject>>
@@ -62,13 +154,6 @@ class ForgetPattern <<ScriptableObject>>
 PatternBase <|-- FireAndForgetPattern
 PatternBase <|-- ForgetPattern
 
-class StraightMovePattern <<ScriptableObject>>
-class CurveMovePattern <<ScriptableObject>>
-class SatelliteMovePattern <<ScriptableObject>>
-MovePatternBase <|-- StraightMovePattern
-MovePatternBase <|-- CurveMovePattern
-MovePatternBase <|-- SatelliteMovePattern
-
 ' --- 発生源シェイプ ---
 abstract class EmissionShape <<ScriptableObject>> {
     +GetEmissions(EntityController) : List<EmissionData>
@@ -79,7 +164,6 @@ class PlaneEmissionShape <<ScriptableObject>>
 EmissionShape <|-- PointEmissionShape
 EmissionShape <|-- LineEmissionShape
 EmissionShape <|-- PlaneEmissionShape
-ShootPatternBase o-- EmissionShape : "emissionShape"
 
 ' --- 共有リソース関連 ---
 abstract class SharedResource <<ScriptableObject>>
@@ -92,73 +176,14 @@ note right of SharedAngle : T = float
 MultiWayPattern ..> SharedAngle : "uses (optional)"
 RotatingShotPattern ..> SharedAngle : "uses (optional)"
 
-' --- エンティティ関連 ---
-class GameEntity <<ScriptableObject>> {
-    +Prefab : GameObject
-    #property : GameEntityProperty
-}
-class GameEntityProperty <<ScriptableObject>> {
-    #shootPattern : PatternBase
-    #movePattern : PatternBase
-}
-class Enemy <<ScriptableObject>> {
-    +PropertyTyped : EnemyProperty
-}
-class EnemyProperty <<ScriptableObject>> {
-    +MaxHealth : int
-}
-class Bullet <<ScriptableObject>> {
-    +Property : BulletProperty
-}
-class BulletProperty <<ScriptableObject>> {
-    +LifeTime : float
-}
-abstract class EntityController <<MonoBehaviour>> {
-    #_entity : GameEntity
-    +Property : GameEntityProperty
-    +ParentActor : EntityController
-    +Initialize(GameEntity)
-    +InstantiateProperty(GameEntity, Vector3, Quaternion)
-}
-class BulletController <<MonoBehaviour>> {
-    +Initialize(GameEntity, EntityController)
-}
-
-GameEntity <|-- Bullet
-GameEntity <|-- Enemy
-GameEntityProperty <|-- BulletProperty
-GameEntityProperty <|-- EnemyProperty
-EntityController <|-- BulletController
-EntityController <|-- EnemyController
-
-IMovable <|.. EntityController
-IShootable <|.. EntityController
-
 ' --- その他 ---
-class PlayerShot <<Mono MonoBehaviour>>
-class PlayerHitbox <<MonoBehaviour>>
 class EnemyLifeGaugeController <<MonoBehaviour>>
 class EmissionData
+class AngleUtility <<static>>
 
-' 関連
-PlayerController --> DanmakuGameManager : "calls"
-
-' << NEW RELATIONS >>
-EntityController o-- GameEntity : "_entity"
-GameEntity o-- "1" GameEntityProperty : "property"
-Enemy --|> GameEntity
-EnemyProperty --|> GameEntityProperty
-GameEntityProperty o-- PatternBase : "shootPattern"
-GameEntityProperty o-- PatternBase : "movePattern"
-PatternBase ..> EntityController : "uses"
-EnemyController ..> EnemyProperty : "uses"
-EntityController ..> BulletController : "creates instance of"
-ShootPatternBase ..> EmissionData : "creates"
-
-PlayerController ..> PlayerShot : "creates"
-PlayerShot ..> EnemyController : "calls TakeDamage"
-PlayerHitbox --> PlayerController : "calls OnHit"
 EnemyController ..> EnemyLifeGaugeController : "creates"
 EnemyLifeGaugeController --> EnemyController : "observes"
+ShootPatternBase ..> EmissionData : "creates"
+AngleUtility ..> PlayerController : "finds"
 
 @enduml

@@ -1,28 +1,31 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Cysharp.Threading.Tasks;
 
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : GameEntityController
 {
-    [SerializeField] private Player player;
-    [SerializeField] GameObject shotPrefab;
     [SerializeField] GameObject hitboxMarker;
 
-    public static PlayerController Instance { get; private set; }
-    float _shotTimer;
-    Vector2 _moveInput;
-    bool _isShotPressed, _isSlowMovePressed;
+    private PlayerProperty _playerProperty;
+    private float _shotTimer;
+    private Vector2 _moveInput;
+    private bool _isShotPressed, _isSlowMovePressed;
 
     void Awake()
     {
-        if (Instance == null)
+        Initialize(_entity);
+    }
+
+    public override void Initialize(GameEntity entity)
+    {
+        base.Initialize(entity);
+        _playerProperty = entity.Property as PlayerProperty;
+        if (_playerProperty == null)
         {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
+            Debug.LogError("PlayerProperty is not set.", this);
+            enabled = false;
         }
     }
 
@@ -44,12 +47,12 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // -------- 移動 --------
-        float currentSpeed = _isSlowMovePressed ? player.PlayerProperty.MoveSpeedSlow : player.PlayerProperty.MoveSpeed;
+        float currentSpeed = _isSlowMovePressed ? _playerProperty.MoveSpeedSlow : _playerProperty.MoveSpeed;
         Vector2 delta = _moveInput * currentSpeed * Time.deltaTime;
 
         // 範囲外に出る場合はクランプする
         Vector2 nextPosition = (Vector2)transform.position + delta;
-        var movableArea = player.PlayerProperty.MovableArea;
+        var movableArea = _playerProperty.MovableArea;
         nextPosition.x = Mathf.Clamp(nextPosition.x, movableArea.xMin, movableArea.xMax);
         nextPosition.y = Mathf.Clamp(nextPosition.y, movableArea.yMin, movableArea.yMax);
 
@@ -57,16 +60,19 @@ public class PlayerController : MonoBehaviour
 
         // -------- ショット --------
         _shotTimer += Time.deltaTime;
-        if (_isShotPressed && _shotTimer >= player.PlayerProperty.ShotInterval)
+        if (_isShotPressed && _shotTimer >= _playerProperty.ShotInterval)
         {
             _shotTimer = 0f;
-            Instantiate(shotPrefab, transform.position, Quaternion.identity);
+            var shotPattern = _isSlowMovePressed ? _playerProperty.ShotPatternSlow : _playerProperty.ShotPatternNormal;
+            if (shotPattern != null)
+            {
+                shotPattern.Execute(this, _cancellationTokenSource.Token).Forget();
+            }
         }
 
         hitboxMarker.SetActive(_isSlowMovePressed);
     }
 
-    // Hitboxから呼ばれる
     public void OnHit()
     {
         DanmakuGameManager.Instance.GameOver();

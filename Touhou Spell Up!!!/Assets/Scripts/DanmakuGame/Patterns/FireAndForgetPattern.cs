@@ -8,7 +8,7 @@ public class FireAndForgetPattern : PatternBase
 {
     [SerializeField] private List<PatternBase> _patterns = new List<PatternBase>();
 
-    public override UniTask ExecuteImpl(EntityController controller, CancellationToken token)
+    public override UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
         if (token.IsCancellationRequested) return UniTask.CompletedTask;
 

@@ -2,14 +2,14 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-public abstract class EntityController : MonoBehaviour, IMovable, IShootable
+public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
 {
     [SerializeField] protected GameEntity _entity;
     public GameEntityProperty Property { get; protected set; }
     protected CancellationTokenSource _cancellationTokenSource;
 
-    private EntityController _parentActor;
-    public EntityController ParentActor
+    private GameEntityController _parentActor;
+    public GameEntityController ParentActor
     {
         get => _parentActor;
         set => _parentActor = value;

@@ -13,7 +13,7 @@ public class LoopPattern : PatternBase
     [SerializeField, Min(0)]
     private int loopCount = 0;
 
-    public override async UniTask ExecuteImpl(EntityController controller, CancellationToken token)
+    public override async UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
         if (pattern == null)
         {

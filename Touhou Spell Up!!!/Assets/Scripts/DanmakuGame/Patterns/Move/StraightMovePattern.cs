@@ -8,7 +8,7 @@ public class StraightMovePattern : MovePatternBase
     [SerializeField] private float _speed = 5f;
     [SerializeField] private float _duration = 2f; // 0以下で無限
 
-    public override async UniTask ExecuteMove(EntityController controller, CancellationToken token)
+    public override async UniTask ExecuteMove(GameEntityController controller, CancellationToken token)
     {
         float elapsedTime = 0f;
 

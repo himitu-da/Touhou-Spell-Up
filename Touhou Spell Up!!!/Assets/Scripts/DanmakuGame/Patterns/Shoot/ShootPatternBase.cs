@@ -40,7 +40,7 @@ public abstract class ShootPatternBase : PatternBase
     [SerializeField] protected float spawnRadius = 0f;
 
     // ExecuteImplのシグネチャを変更
-    public override UniTask ExecuteImpl(EntityController controller, CancellationToken token)
+    public override UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
         // 既存のExecuteImplのロジックをここに移動、またはサブクラスに委譲
         // このクラス自体は抽象なので、サブクラスに実装を強制する
@@ -48,7 +48,7 @@ public abstract class ShootPatternBase : PatternBase
     }
 
     // ShootPatternの本体。EmissionShapeの有無で処理を分岐し、最終的にExecuteShootFromPointを呼び出す
-    public virtual async UniTask ExecuteShoot(EntityController controller, CancellationToken token)
+    public virtual async UniTask ExecuteShoot(GameEntityController controller, CancellationToken token)
     {
         var emissions = new List<EmissionData>();
 
@@ -82,9 +82,9 @@ public abstract class ShootPatternBase : PatternBase
     }
 
     // サブクラスは、このメソッドを実装して「１つの発生源からどのように弾を撃つか」を定義する
-    public abstract UniTask ExecuteShootFromPoint(EntityController controller, EmissionData emissionData, CancellationToken token);
+    public abstract UniTask ExecuteShootFromPoint(GameEntityController controller, EmissionData emissionData, CancellationToken token);
 
-    protected float GetAimAngle(EntityController controller, Vector3 spawnPosition)
+    protected float GetAimAngle(GameEntityController controller, Vector3 spawnPosition)
     {
         if (aimAtPlayer)
         {
@@ -98,7 +98,7 @@ public abstract class ShootPatternBase : PatternBase
     }
 
     // 発射地点を計算するヘルパーメソッド
-    protected Vector3 GetSpawnPosition(EntityController controller)
+    protected Vector3 GetSpawnPosition(GameEntityController controller)
     {
         switch (spawnPointType)
         {

@@ -12,7 +12,7 @@ public abstract class PatternBase : ScriptableObject
     [SerializeField] private float _afterAwaitSeconds = 0f;
 
     // EntityControllerを受け取るようにシグネチャを変更
-    public virtual async UniTask Execute(EntityController controller, CancellationToken token)
+    public virtual async UniTask Execute(GameEntityController controller, CancellationToken token)
     {
         if (token.IsCancellationRequested) return;
 
@@ -35,5 +35,5 @@ public abstract class PatternBase : ScriptableObject
     }
 
     // サブクラスで具体的な処理を実装するための抽象メソッド
-    public abstract UniTask ExecuteImpl(EntityController controller, CancellationToken token);
+    public abstract UniTask ExecuteImpl(GameEntityController controller, CancellationToken token);
 }

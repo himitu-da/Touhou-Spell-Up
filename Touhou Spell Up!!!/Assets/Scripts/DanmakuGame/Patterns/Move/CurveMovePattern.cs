@@ -13,7 +13,7 @@ public class CurveMovePattern : MovePatternBase
     [SerializeField] private bool overrideInitialDirection = false;
     [SerializeField] private float initialDirection = -90f; // 下向き（度）
 
-    public override async UniTask ExecuteMove(EntityController controller, CancellationToken token)
+    public override async UniTask ExecuteMove(GameEntityController controller, CancellationToken token)
     {
         // 初期角度の決定
         float currentAngle;
