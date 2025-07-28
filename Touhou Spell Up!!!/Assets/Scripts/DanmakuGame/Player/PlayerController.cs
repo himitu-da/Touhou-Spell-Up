@@ -1,14 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] float moveSpeed = 12f;
-    [SerializeField] float moveSpeedSlow = 6f; 
+    [SerializeField] private Player player;
     [SerializeField] GameObject shotPrefab;
     [SerializeField] GameObject hitboxMarker;
-    [SerializeField] float shotInterval = 0.15f;
-    [SerializeField] Rect movableArea;
 
     public static PlayerController Instance { get; private set; }
     float _shotTimer;
@@ -45,12 +44,12 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // -------- 移動 --------
-        float currentSpeed = _isSlowMovePressed ? moveSpeedSlow : moveSpeed;
+        float currentSpeed = _isSlowMovePressed ? player.PlayerProperty.MoveSpeedSlow : player.PlayerProperty.MoveSpeed;
         Vector2 delta = _moveInput * currentSpeed * Time.deltaTime;
 
         // 範囲外に出る場合はクランプする
         Vector2 nextPosition = (Vector2)transform.position + delta;
-
+        var movableArea = player.PlayerProperty.MovableArea;
         nextPosition.x = Mathf.Clamp(nextPosition.x, movableArea.xMin, movableArea.xMax);
         nextPosition.y = Mathf.Clamp(nextPosition.y, movableArea.yMin, movableArea.yMax);
 
@@ -58,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
         // -------- ショット --------
         _shotTimer += Time.deltaTime;
-        if (_isShotPressed && _shotTimer >= shotInterval)
+        if (_isShotPressed && _shotTimer >= player.PlayerProperty.ShotInterval)
         {
             _shotTimer = 0f;
             Instantiate(shotPrefab, transform.position, Quaternion.identity);
@@ -72,5 +71,14 @@ public class PlayerController : MonoBehaviour
     {
         DanmakuGameManager.Instance.GameOver();
         Destroy(gameObject);
+    }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        // 敵弾に当たったらゲームオーバー
+        if (col.CompareTag("EnemyBullet"))
+        {
+            OnHit();
+        }
     }
 }

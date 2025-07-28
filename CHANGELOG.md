@@ -207,5 +207,7 @@
 - Health機能（体力管理、ダメージ処理）はEnemyControllerに統合（EnemyLifeGaugeControllerの参照も変更）
 - 最大体力をEnemyPropertyで指定できるように
 - コンパイルエラーを解消
+- ShootPatternやそれを継承したクラスにおけるBulletの表示をEntityに変更
+- BulletとEnemyをShootable、Movable Interfaceにまとめられるように
 
 ## [v0.1.8] - 2025-08-XX

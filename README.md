@@ -1,12 +1,27 @@
 Developing
 
+- PlayerHitboxは削除し、PlayerControllerがアタッチされたオブジェクト自身が行う
+- Hitboxオブジェクトは削除
+
+- PlayerとPlayerPropertyを作成
+- shotprefabやhitboxmarker以外のフィールドをplayerpropertyで設定できるように変更
+
 ---
 
-- 最終リファクタリング
-    - Enemy, Bullet, PlayerをGameEntity基本単位として表現
-    - EnemyPropertyとBulletPropertyをEntityPropertyとしてまとめ、Playerもこれで管理できるように
-    - ActorをActionControllerに統合し、GameEntiry全体の行動制御を担うように。PlayerController, EnemyControllerはサブクラスに
-    - ActionControllerにAnimator機能を追加する
+
+
+
+- EntityをGameEntityに統一（名称ゆれ）
+
+- Player関連のリファクタリング
+    - PlayerもGameEntityのサブクラスに
+    - EntityPropertyのサブクラスとしてPlayerPropertyを用意
+    - PlayerControllerはEntityControllerのサブクラスに
+- PlayerControllerのシングルトンへの依存を削除
+- PlayerShotをStraightMovePattern、BulletPropertyのライフタイム、EntityControllerのダメージ通知機能を用いて表現（PlayerShotを削除）
+- PlayerHitboxは削除し、PlayerControllerがアタッチされたオブジェクト自身が行う
+
+- EntityControllerにAnimator機能を追加する
 
 - 弾幕に対してトリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時）を追加できるように
 
@@ -16,8 +31,7 @@ Developing
 - SatelliteMovePatternでフーリエ変換や楕円を指定可能に
 
 - 時間発狂やHP発狂を作れるように
-- ShootPatternやそれを継承したクラスにおけるBulletの表示をShotに変更
-- BulletとEnemyをShootable、Movable Interfaceにまとめられるように
+
 - オブジェクトプーリングの実装
 - SharedResourceを使用し、すべてのint型もしくはfloat型のSerializeFieldを置換する
 - SharedResourceに発射ごとに1ずつ変わる、特定の関数を動く、のような処理を追加する
