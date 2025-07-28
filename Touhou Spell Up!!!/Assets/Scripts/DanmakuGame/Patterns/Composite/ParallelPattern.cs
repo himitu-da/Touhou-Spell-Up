@@ -16,7 +16,7 @@ public class ParallelPattern : PatternBase
 
     [SerializeField] private List<ParallelStep> patterns;
 
-    public override async UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
+    public override async UniTask ExecuteImpl(EntityController controller, CancellationToken token)
     {
         if (patterns == null || patterns.Count == 0)
         {
@@ -30,7 +30,7 @@ public class ParallelPattern : PatternBase
             if (step.pattern != null)
             {
                 // awaitせず、タスクだけをリストに追加していく
-                tasks.Add(step.pattern.Execute(movable, shootable, token));
+                tasks.Add(step.pattern.Execute(controller, token));
             }
         }
         // UniTask.WhenAllで、リスト内の全てのタスクが完了するのを待つ

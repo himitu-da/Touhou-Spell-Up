@@ -18,10 +18,10 @@ public class PlayerShot : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Health health = col.GetComponent<Health>();
-        if (health != null)
+        EnemyController enemy = col.GetComponent<EnemyController>();
+        if (enemy != null)
         {
-            health.TakeDamage(shotDamage); // 敵のHPを減らす
+            enemy.TakeDamage(shotDamage); // 敵のHPを減らす
             Destroy(gameObject);             // 弾は消える
             return;
         }

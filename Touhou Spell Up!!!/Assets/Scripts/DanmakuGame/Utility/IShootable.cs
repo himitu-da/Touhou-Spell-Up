@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface IShootable
 {
-    void InstantiateBullet(Bullet bullet, Vector3 position, Quaternion rotation);
+    void InstantiateProperty(GameEntity entity, Vector3 position, Quaternion rotation);
 }

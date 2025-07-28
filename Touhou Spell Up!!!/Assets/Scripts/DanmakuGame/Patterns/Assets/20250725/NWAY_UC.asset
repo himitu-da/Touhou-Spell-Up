@@ -9,16 +9,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3820d39d8630a224dba9f9ea6ea5bf39, type: 3}
-  m_Name: BASIC_A
+  m_Script: {fileID: 11500000, guid: 1c7d318de5afe304383d78cb17036400, type: 3}
+  m_Name: NWAY_UC
   m_EditorClassIdentifier: 
   _beforeAwaitSeconds: 0
   _afterAwaitSeconds: 0
-  _bullet: {fileID: 11400000, guid: 999b0a9ad815cf24e8a0083a0628b32f, type: 2}
+  _entity: {fileID: 11400000, guid: a4f0f6c358864c6459a1963c7d0bde5a, type: 2}
   spawnPointType: 0
   positionOffset: {x: 0, y: 0, z: 0}
   followShooterPosition: 0
+  emissionShape: {fileID: 0}
+  sequential: 0
+  emissionInterval: 0.1
   directionOffset: 0
-  aimAtPlayer: 1
+  aimAtPlayer: 0
   alwaysAimToPlayer: 0
-  spawnRadius: 1
+  spawnRadius: 0
+  wayCount: 12
+  totalAngle: 90
+  allRound: 1
+  rotationDirection: 0
+  avoidAtPlayer: 0
+  sharedAngle: {fileID: 0}
+  isKeepAngle: 1
+  accumulatingOffset: -3

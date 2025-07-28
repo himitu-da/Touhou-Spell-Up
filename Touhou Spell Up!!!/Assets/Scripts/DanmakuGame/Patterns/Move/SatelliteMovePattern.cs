@@ -18,48 +18,47 @@ public class SatelliteMovePattern : MovePatternBase
     [Header("追跡設定")]
     [SerializeField] private bool followShooter = true; // 親を追跡するか
 
-    public override UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
+    public override UniTask ExecuteImpl(EntityController controller, CancellationToken token)
     {
-        var shooterComponent = shootable as Shooter;
-        if (shooterComponent == null)
+        if (controller == null)
         {
-            Debug.LogError("SatelliteMovePattern requires a Shooter component on the moving object.", movable as MonoBehaviour);
+            Debug.LogError("SatelliteMovePattern requires a controller.", this);
             return UniTask.CompletedTask;
         }
 
-        Shooter centerShooter = shooterComponent.ParentShooter;
-        if (centerShooter == null)
+        EntityController centerController = controller.ParentActor;
+        if (centerController == null)
         {
             // 親が設定されていない場合、自分自身を基準点とする（デバッグ用）
-            Debug.LogWarning("SatelliteMovePattern requires a parent Shooter, but it is not set. Using self as center.", shooterComponent);
-            centerShooter = shooterComponent;
+            Debug.LogWarning("SatelliteMovePattern requires a parent Actor, but it is not set. Using self as center.", controller);
+            centerController = controller;
         }
 
         // 実際の処理はExecuteSatelliteMoveに委譲
-        return ExecuteSatelliteMove(movable, centerShooter, token);
+        return ExecuteSatelliteMove(controller, centerController, token);
     }
 
-    // このパターンはShooter（中心点）が必須なため、Shooterを引数に取る
-    private async UniTask ExecuteSatelliteMove(IMovable movable, IMovable centerMovable, CancellationToken token)
+    // このパターンはActor（中心点）が必須なため、Actorを引数に取る
+    private async UniTask ExecuteSatelliteMove(EntityController controller, EntityController centerController, CancellationToken token)
     {
-        if (movable == null) return;
+        if (controller == null) return;
 
-        Vector3 centerPosition = GetSpawnPosition(centerMovable);
+        Vector3 centerPosition = GetSpawnPosition(centerController);
 
         // 初期位置と角度を設定
         float radius = initialRadius;
         // 初期角度はMoverの現在の向きから取得する
-        float currentAngle = movable.transform.rotation.eulerAngles.z;
+        float currentAngle = controller.transform.rotation.eulerAngles.z;
 
         // 弾の初期位置を計算して設定
         Vector3 initialDirection = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
-        movable.transform.position = centerPosition + initialDirection * radius;
+        controller.transform.position = centerPosition + initialDirection * radius;
 
-        while (!token.IsCancellationRequested && movable != null)
+        while (!token.IsCancellationRequested && controller != null)
         {
-            if (followShooter && centerMovable != null)
+            if (followShooter && centerController != null)
             {
-                centerPosition = GetSpawnPosition(centerMovable);
+                centerPosition = GetSpawnPosition(centerController);
             }
 
             // 1. 半径を更新
@@ -77,22 +76,22 @@ public class SatelliteMovePattern : MovePatternBase
 
             // 3. 新しい位置を計算
             Vector3 newDirection = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
-            movable.transform.position = centerPosition + newDirection * radius;
+            controller.transform.position = centerPosition + newDirection * radius;
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
 
     // このMovePatternはExecuteImplで処理が完結するため、MovePatternBaseの抽象メソッドは空実装でよい
-    public override UniTask ExecuteMove(IMovable movable, CancellationToken token)
+    public override UniTask ExecuteMove(EntityController controller, CancellationToken token)
     {
         // このメソッドは呼ばれない想定
-        Debug.LogWarning("SatelliteMovePattern.ExecuteMove(IMovable, CancellationToken) was called. This should not happen.", movable as MonoBehaviour);
+        Debug.LogWarning("SatelliteMovePattern.ExecuteMove(EntityController, CancellationToken) was called. This should not happen.", controller);
         return UniTask.CompletedTask;
     }
 
     // 発射地点を計算するヘルパーメソッド（ShootPatternBaseから拝借）
-    protected Vector3 GetSpawnPosition(IMovable movable)
+    protected Vector3 GetSpawnPosition(EntityController controller)
     {
         switch (spawnPointType)
         {
@@ -100,9 +99,9 @@ public class SatelliteMovePattern : MovePatternBase
                 return positionOffset;
 
             case SpawnPointType.RelativeToShooter:
-                if (movable != null)
+                if (controller != null)
                 {
-                    return movable.transform.position + positionOffset;
+                    return controller.transform.position + positionOffset;
                 }
                 else
                 {
@@ -113,16 +112,16 @@ public class SatelliteMovePattern : MovePatternBase
             case SpawnPointType.RelativeToPlayer:
                 // TODO: Playerの位置を取得する処理を実装
                 Debug.LogWarning("RelativeToPlayer is not implemented yet.");
-                if (movable != null)
+                if (controller != null)
                 {
-                    return movable.transform.position + positionOffset; // Fallback
+                    return controller.transform.position + positionOffset; // Fallback
                 }
                 return positionOffset; // Fallback
 
             default:
-                if (movable != null)
+                if (controller != null)
                 {
-                    return movable.transform.position;
+                    return controller.transform.position;
                 }
                 return Vector3.zero;
         }

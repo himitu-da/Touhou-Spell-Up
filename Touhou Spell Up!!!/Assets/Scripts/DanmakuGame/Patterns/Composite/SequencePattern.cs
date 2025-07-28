@@ -20,7 +20,7 @@ public class SequencePattern : PatternBase
 
     [SerializeField] private List<PatternStep> sequence;
 
-    public override async UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token)
+    public override async UniTask ExecuteImpl(EntityController controller, CancellationToken token)
     {
         foreach (var step in sequence)
         {
@@ -39,7 +39,7 @@ public class SequencePattern : PatternBase
             if (step.pattern != null)
             {
                 // 子パターンのUniTaskを実行し、完了を待つ
-                await step.pattern.Execute(movable, shootable, token);
+                await step.pattern.Execute(controller, token);
             }
         }
     }

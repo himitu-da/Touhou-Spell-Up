@@ -13,22 +13,33 @@ public class ScatteringPattern : ShootPatternBase
     [SerializeField, Range(0f, 360f)] private float totalAngle = 60f;
     [SerializeField] private bool allRound;
 
-    public override async UniTask ExecuteShoot(IMovable movable, IShootable shootable, CancellationToken token)
+    public override async UniTask ExecuteShoot(EntityController controller, CancellationToken token)
     {
-        if (_bullet == null || _bullet.Prefab == null)
+        if (_entity == null || _entity.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
         }
-        // aimAtPlayerがfalseのときは無効化
-        this.alwaysAimToPlayer = this.aimAtPlayer && this.alwaysAimToPlayer;
 
-        Vector3 baseSpawnPosition = GetSpawnPosition(movable);
+        var emissions = new List<EmissionData>();
+        if (emissionShape != null)
+        {
+            emissions.AddRange(emissionShape.GetEmissions(controller));
+        }
+        else
+        {
+            // EmissionShapeがない場合は、従来通り単一の発生源を追加
+            emissions.Add(new EmissionData { localPosition = positionOffset, localAngle = 0 });
+        }
 
-        float centerAngle = GetAimAngle(movable, baseSpawnPosition) + directionOffset;
+        if (emissions.Count == 0)
+        {
+            Debug.LogWarning("発生源がありません。", this);
+            return;
+        }
 
+        bool useAlwaysAim = this.aimAtPlayer && this.alwaysAimToPlayer;
         float finalAngle = allRound ? 360f : totalAngle;
-
         float startAngle = -finalAngle / 2;
         float endAngle = finalAngle / 2;
 
@@ -36,32 +47,48 @@ public class ScatteringPattern : ShootPatternBase
         {
             if (token.IsCancellationRequested) break;
 
+            // 発生源をランダムに選択
+            EmissionData emissionData = emissions[Random.Range(0, emissions.Count)];
+
+            Vector3 baseSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
             if (followShooterPosition)
             {
-                baseSpawnPosition = GetSpawnPosition(movable);
+                baseSpawnPosition = GetSpawnPosition(controller) + controller.transform.rotation * emissionData.localPosition;
             }
 
-            if (alwaysAimToPlayer)
+            float centerAngle;
+            if (aimAtPlayer)
             {
-                centerAngle = GetAimAngle(movable, baseSpawnPosition) + directionOffset;
+                centerAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f;
+            }
+            else
+            {
+                centerAngle = controller.transform.eulerAngles.z + emissionData.localAngle;
+            }
+            centerAngle += directionOffset;
+
+            if (useAlwaysAim)
+            {
+                centerAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f + directionOffset;
             }
 
             float scatterAngle = centerAngle + Random.Range(startAngle, endAngle);
             Quaternion rotation = Quaternion.Euler(0, 0, scatterAngle);
 
-            // 最終的な発射位置を計算
             Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, scatterAngle);
+            controller.InstantiateProperty(_entity, finalSpawnPosition, rotation);
 
-            shootable.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
-
-            // intervalだけ待つ
             if (interval > 0)
             {
                 await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
             }
-
         }
+    }
 
-        await UniTask.CompletedTask;
+    // このメソッドはExecuteShootでロジックを実装したため、空にするか例外をスローする
+    public override UniTask ExecuteShootFromPoint(EntityController controller, EmissionData emissionData, CancellationToken token)
+    {
+        // このパターンでは、ExecuteShootで全て処理するため、ここは使用しない
+        return UniTask.CompletedTask;
     }
 }

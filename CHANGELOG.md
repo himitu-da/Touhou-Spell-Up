@@ -171,4 +171,41 @@
 - 撃つときの移動に関して、初期方向と初期位置は「ShootPatternBase」、初期以外は「MovePatternBase」に統一
 - SharedResourceをMultiWayPatternのDirectionOffsetでも使用できるように
 
-## [v0.1.7] - 2025-07-2X
+## [v0.1.7] - 2025-07-28
+- IMovableとIShootableの作成し、既存の基底クラスと実現クラスに適用（`PatternBase`およびその全ての派生クラスが、`Mover`と`Shooter`の具象クラスではなく、`IMovable`と`IShootable`インターフェースに依存）
+
+- 発生源を「点・線・面」として指定するためのEmissionData構造体、EmissionShape抽象クラス、EmissionShapeクラス（PointEmissionShape、LineEmissionShape、PlaneEmissionShape）を作成
+- `ShootPatternBase`を修正し、`EmissionShape`から取得した各射出点(`EmissionData`)を処理する共通の仕組みを導入
+- `MultiWayPattern`を修正し、`EmissionShape`から渡された各点を基準として、N-Way弾を発射するように
+- ShootPatternBaseを修正し、ExecuteShootFromPointを導入した
+
+- 壁面、発射口、弾自身などから現れる弾幕を実現できるように
+- MoverとShooterをActorとして統合
+- BulletはBulletPropertyのMovePatternがない場合は動き処理をしないように変更し、BulletPropertyから移動速度を削除
+- CurveMovePatternがBulletPropertyのSpeedフィールドを参照していたが、これをCurveMovePatternの自分自身のフィールドを参照するように変更（フィールド追加）
+
+- BulletとBulletPropertyの親クラス「GameEntity」「GameEntityProperty」を作成し、それを継承するようにする
+    - 配置場所は、danmakugameのscriptsにて
+    - フィールドとプロパティを移動
+- BulletとBulletPropertyの関連する部分をGameEntityやGameEntityPropertyに変更
+    - Actorの_bulletフィールドを_entityに変更（型も変更）
+    - InstantiateBulletをInstantiatePropertyに変更
+    - EnemyBulletのPropertyをEntityPropertyに変更
+    - IShootable、PatternBase具象クラスのBullet参照をGameEntityに変更
+
+- EntityControllerを作成し、EnemyBulletをBulletControllerに改名し、EnemyControllerはEntityControllerを継承
+- EnemyBulletコンポーネントをBulletControllerコンポーネントに変更
+- ActorはBulletControllerを参照するように
+
+- EntityControllerがActorの責務を担い、Entityのコンポーネント数を削減
+- `EntityController`が`IMovable`と`IShootable`を実装
+- `Pattern`関連クラス（`PatternBase`, `ShootPatternBase`, `MovePatternBase`およびその派生クラス）のメソッドシグネチャを、`IMovable`/`IShootable`の代わりに`EntityController`を引数に取るように変更
+- `EnemyController`から`Actor`への依存（`RequireComponent`）を削除
+- Actorを削除
+
+- EnemyPropertyとEnemyの作成（GameEntityとそのPropertyを継承）
+- Health機能（体力管理、ダメージ処理）はEnemyControllerに統合（EnemyLifeGaugeControllerの参照も変更）
+- 最大体力をEnemyPropertyで指定できるように
+- コンパイルエラーを解消
+
+## [v0.1.8] - 2025-08-XX

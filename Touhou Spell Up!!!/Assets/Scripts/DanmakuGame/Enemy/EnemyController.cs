@@ -1,38 +1,65 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider2D))]
-[RequireComponent(typeof(Health))]
-[RequireComponent(typeof(Shooter))]
-public class EnemyController : MonoBehaviour
+public class EnemyController : EntityController
 {
     [SerializeField] GameObject lifeGaugePrefab;
-
-    private Health _health;
     private GameObject _lifeGaugeInstance;
+
+    // Health Properties
+    public float MaxHealth { get; private set; }
+    public float CurrentHealth { get; private set; }
+    public UnityAction<float, float> OnHealthChanged;
+    public float HealthPercentage => CurrentHealth / MaxHealth;
 
     void Start()
     {
-        _health = GetComponent<Health>();
+        Initialize(_entity);
+
+        if (Property is EnemyProperty enemyProperty)
+        {
+            MaxHealth = enemyProperty.MaxHealth;
+        }
+        CurrentHealth = MaxHealth;
+
         if (lifeGaugePrefab != null)
         {
             _lifeGaugeInstance = Instantiate(lifeGaugePrefab, transform.position, Quaternion.identity, transform);
             
-            // 生成したインスタンスからCanvasコンポーネントを取得
             var canvas = _lifeGaugeInstance.GetComponent<Canvas>();
             if (canvas != null)
             {
-                // Render ModeをWorld Spaceに設定
                 canvas.renderMode = RenderMode.WorldSpace;
-                // メインカメラをEvent Cameraに設定
                 canvas.worldCamera = Camera.main;
             }
 
             var lifeGaugeController = _lifeGaugeInstance.GetComponent<EnemyLifeGaugeController>();
             if (lifeGaugeController != null)
             {
-                lifeGaugeController.Initialize(_health);
+                lifeGaugeController.Initialize(this);
             }
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        CurrentHealth -= damage;
+        if (CurrentHealth < 0)
+        {
+            CurrentHealth = 0;
+        }
+
+        OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+
+        if (CurrentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        Destroy(gameObject);
     }
 }

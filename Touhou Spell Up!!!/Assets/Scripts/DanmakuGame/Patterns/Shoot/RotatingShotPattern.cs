@@ -25,82 +25,79 @@ public class RotatingShotPattern : ShootPatternBase
     private float _localCurrentAngle;
     private bool _isInitialized = false;
 
-
-    public override async UniTask ExecuteShoot(IMovable movable, IShootable shootable, CancellationToken token)
+    public override async UniTask ExecuteShootFromPoint(EntityController controller, EmissionData emissionData, CancellationToken token)
     {
-        if (_bullet == null || _bullet.Prefab == null)
+        if (_entity == null || _entity.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
         }
 
         float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
-
-        Vector3 baseSpawnPosition = GetSpawnPosition(movable);
+        Vector3 baseSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
 
         // --- 実行開始時の角度を決定 ---
         float currentAngle;
         if (sharedAngle != null)
         {
-            // SharedAngleが設定されていれば、常にその値から開始
             currentAngle = sharedAngle.Value;
         }
         else
         {
-        // SharedAngleがなければ、isKeepAngleのロジックを適用
             if (!isKeepAngle || !_isInitialized)
             {
-                currentAngle = GetAimAngle(movable, baseSpawnPosition) + startAngle;
-                _isInitialized = true; // 実行したので初期化済みに
+                if (aimAtPlayer)
+                {
+                    currentAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f;
+                }
+                else
+                {
+                    currentAngle = controller.transform.eulerAngles.z + emissionData.localAngle;
+                }
+                currentAngle += startAngle;
+                _isInitialized = true;
             }
             else
             {
-                // 引き継ぎが有効で、初期化済みなら前回の値を復元
                 currentAngle = _localCurrentAngle;
             }
         }
         // --------------------------
-        // 0のときは無限に撃つ
 
         for (int i = 0; ; i++)
         {
             if (token.IsCancellationRequested) break;
 
-            if (followShooterPosition)
+            Vector3 currentSpawnPosition = baseSpawnPosition;
+            if (followShooterPosition && emissionShape == null)
             {
-                baseSpawnPosition = GetSpawnPosition(movable);
+                currentSpawnPosition = GetSpawnPosition(controller);
             }
 
+            float loopStartAngle = currentAngle;
             if (alwaysAimToPlayer)
             {
-                currentAngle = GetAimAngle(movable, baseSpawnPosition) + startAngle;
+                loopStartAngle = AngleUtility.GetAngleToPlayer(currentSpawnPosition) + 180f + startAngle;
             }
 
-            // 弾を発射する角度を決定（ループの初回は発射してから角度を足す）
-            float shotAngle = currentAngle + (directionMultiplier * intervalAngle * i);
-
+            float shotAngle = loopStartAngle + (directionMultiplier * intervalAngle * i);
             Quaternion rotation = Quaternion.Euler(0, 0, shotAngle);
+            Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(currentSpawnPosition, shotAngle);
 
-            // 最終的な発射位置を計算
-            Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, shotAngle);
-
-            shootable.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
+            controller.InstantiateProperty(_entity, finalSpawnPosition, rotation);
 
             if (intervalTime > 0)
             {
                 await UniTask.Delay((int)(intervalTime * 1000), cancellationToken: token);
             }
-            if (shotCount > 0)
+            if (shotCount > 0 && i >= shotCount - 1) // shotCountが1ならi=0で終了
             {
-                if (i >= shotCount) break;
+                break;
             }
         }
 
         // --- 次回実行のために最後の角度を保存 ---
-        // この実行で回転した最終的な角度を計算
         float lastAngle = currentAngle + (directionMultiplier * intervalAngle * shotCount);
-
-        // isKeepAngleかsharedAngleが有効な場合、次回のためにオフセットを加算して保存する
         if (sharedAngle != null)
         {
             sharedAngle.Value = lastAngle + accumulatingOffset;

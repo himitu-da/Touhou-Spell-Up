@@ -786,9 +786,6 @@ GameObject:
   - component: {fileID: 1629254595}
   - component: {fileID: 1629254597}
   - component: {fileID: 1629254598}
-  - component: {fileID: 1629254600}
-  - component: {fileID: 1629254601}
-  - component: {fileID: 1629254599}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -914,49 +911,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421d8442025816849bece32b5cf760d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _entity: {fileID: 11400000, guid: 29c4c4139997f3c4daeef9192eea1fa8, type: 2}
   lifeGaugePrefab: {fileID: 6845083702458507679, guid: b33681019a1032140a6bf80759c2caf7, type: 3}
---- !u!114 &1629254599
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629254594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd90d1309d4c9be44b4ccedf4bd00c04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 50
-  currentHealth: 0
---- !u!114 &1629254600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629254594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 407949552ad35a343bd3ec0a2cfdbbcd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _shootPattern: {fileID: 11400000, guid: 7d30fb9850dba3847b54acbb47425cff, type: 2}
-  _bullet: {fileID: 0}
---- !u!114 &1629254601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1629254594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f63d3788df799044390a59a614745cc6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _movePattern: {fileID: 0}
-  _shooter: {fileID: 0}
 --- !u!1 &1648173143
 GameObject:
   m_ObjectHideFlags: 0

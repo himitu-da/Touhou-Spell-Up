@@ -47,14 +47,6 @@ note right of PlayerInput
   ActionControllerを操作する。
 end note
 
-class BulletBehavior <<MonoBehaviour>> {
-  + Move()
-}
-note right of BulletBehavior
-  弾特有の振る舞い
-  （直進、消滅など）を定義する。
-end note
-
 class DanmakuGameManager <<MonoBehaviour>>
 
 ' --- パターン (ScriptableObject) ---

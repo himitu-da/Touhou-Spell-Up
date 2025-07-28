@@ -9,7 +9,6 @@ public class MultiWayPattern : ShootPatternBase
 {
     [Header("N-Way弾の設定")]
     [SerializeField, Range(1, 100)] private int wayCount = 5;
-    [SerializeField, Range(0f, 20f)] private float interval = 0.5f;
     [SerializeField, Range(0f, 360f)] private float totalAngle = 90f;
     [SerializeField] private bool allRound;
     [SerializeField] private RotationDirection rotationDirection = RotationDirection.CounterClockwise;
@@ -30,13 +29,18 @@ public class MultiWayPattern : ShootPatternBase
     private float _localCurrentAngle;
     private bool _isInitialized = false;
 
-    public override async UniTask ExecuteShoot(IMovable movable, IShootable shootable, CancellationToken token)
+    public override async UniTask ExecuteShootFromPoint(EntityController controller, EmissionData emissionData, CancellationToken token)
     {
-        if (_bullet == null || _bullet.Prefab == null)
+        if (_entity == null || _entity.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
         }
+
+        // --- 基準位置と基準角度をEmissionDataから決定 ---
+        // IMovableの回転を考慮したローカル位置をワールド位置に変換
+        Vector3 baseSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
+        float baseAngle = controller.transform.eulerAngles.z;
 
         // 全方位でないなら自機外しはfalse
         avoidAtPlayer = allRound && avoidAtPlayer;
@@ -44,74 +48,69 @@ public class MultiWayPattern : ShootPatternBase
         // 回転方向に応じて角度の増減を決定（反時計回りなら+1、時計回りなら-1）
         float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
 
-        Vector3 baseSpawnPosition = GetSpawnPosition(movable);
-
         // --- 実行開始時の中央角度を決定 ---
         float centerAngle;
         if (sharedAngle != null)
         {
-            // SharedAngleが設定されていれば、常にその値から開始
             centerAngle = sharedAngle.Value;
         }
         else
         {
-        // SharedAngleがなければ、isKeepAngleのロジックを適用
             if (!isKeepAngle || !_isInitialized)
             {
-                centerAngle = GetAimAngle(movable, baseSpawnPosition) + directionOffset;
-                _isInitialized = true; // 実行したので初期化済みに
+                // aimAtPlayerが有効なら、各射出点から自機を狙う
+                if (aimAtPlayer)
+                {
+                    centerAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f;
+                }
+                else
+                {
+                    // そうでなければ、EmissionDataの角度を基準にする
+                    centerAngle = baseAngle + emissionData.localAngle;
+                }
+                centerAngle += directionOffset; // 共通のオフセットを加算
+                _isInitialized = true;
             }
             else
             {
-                // 引き継ぎが有効で、初期化済みなら前回の値を復元
                 centerAngle = _localCurrentAngle;
             }
         }
         // --------------------------
 
         float finalAngle = allRound ? 360f : totalAngle;
-
         float startAngle = -finalAngle / 2 * directionMultiplier;
-        // 全方位の場合は最後の弾が最初と重ならないようにする
         float angleStep = allRound ? finalAngle / wayCount : ((wayCount > 1) ? finalAngle / (wayCount - 1) : 0f);
 
         for (int i = 0; i < wayCount; i++)
         {
             if (token.IsCancellationRequested) break;
 
-            // 射撃中にシューターに追従する場合、基準位置を更新
-            if (followShooterPosition)
+            Vector3 currentSpawnPosition = baseSpawnPosition;
+            // 射撃中にシューターに追従する場合、基準位置を更新 (EmissionShape使用時は各点が基準なので追従は複雑)
+            if (followShooterPosition && emissionShape == null)
             {
-                baseSpawnPosition = GetSpawnPosition(movable);
+                currentSpawnPosition = GetSpawnPosition(controller);
             }
 
+            float loopCenterAngle = centerAngle;
             // 常に自機を狙う場合、中央の角度を更新
-            // ただし、角度共有・維持が有効な場合は、初回の角度決定にのみ影響し、ループ中の更新は行わない
             if (alwaysAimToPlayer && sharedAngle == null && !isKeepAngle)
             {
-                centerAngle = GetAimAngle(movable, baseSpawnPosition) + directionOffset;
+                loopCenterAngle = AngleUtility.GetAngleToPlayer(currentSpawnPosition) + 180f + directionOffset;
             }
 
-            // 全方位の場合、startAngleは不要（0度から開始するため）
-            // 全方位の自機外しの場合、angleStepの半分だけずらす
-            // directionMultiplierで回転方向を制御
-            float currentAngle = centerAngle + (allRound ? 0 : startAngle) + (avoidAtPlayer ? angleStep / 2 : 0) + (angleStep * i * directionMultiplier);
+            float currentAngle = loopCenterAngle + (allRound ? 0 : startAngle) + (avoidAtPlayer ? angleStep / 2 : 0) + (angleStep * i * directionMultiplier);
             Quaternion rotation = Quaternion.Euler(0, 0, currentAngle);
 
-            // 最終的な発射位置を計算
-            Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, currentAngle);
+            Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(currentSpawnPosition, currentAngle);
+            controller.InstantiateProperty(_entity, finalSpawnPosition, rotation);
 
-            shootable.InstantiateBullet(_bullet, finalSpawnPosition, rotation);
-
-            // intervalだけ待つ
-            if (interval > 0)
-            {
-                await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
-            }
+            // N-Way弾を順次発射する機能はShootPatternBaseのsequentialとは意味が違うため、ここでは一旦無効化
+            // もしN-Way弾自体の順次発射が必要なら、別途interval設定が必要
         }
 
         // --- 次回実行のために最後の角度を保存 ---
-        // isKeepAngleかsharedAngleが有効な場合、次回のためにオフセットを加算して保存する
         if (sharedAngle != null)
         {
             sharedAngle.Value = centerAngle + accumulatingOffset;

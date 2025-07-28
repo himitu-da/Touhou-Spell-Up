@@ -1,0 +1,81 @@
+@startuml ClassDiagram_Overview
+' ステレオタイプの色設定
+skinparam class {
+    BackgroundColor<<MonoBehaviour>> LightBlue
+    BackgroundColor<<ScriptableObject>> LightGreen
+    BackgroundColor<<Interface>> LightYellow
+}
+
+' --- インターフェース定義 ---
+interface IMovable <<Interface>>
+interface IShootable <<Interface>>
+
+' --- クラスの定義 ---
+class DanmakuGameManager <<MonoBehaviour>>
+class PlayerController <<MonoBehaviour>>
+class EnemyController <<MonoBehaviour>>
+
+' --- パターン関連 ---
+abstract class PatternBase <<ScriptableObject>>
+abstract class MovePatternBase <<ScriptableObject>>
+abstract class ShootPatternBase <<ScriptableObject>>
+class LoopPattern <<ScriptableObject>>
+class ParallelPattern <<ScriptableObject>>
+class SequencePattern <<ScriptableObject>>
+
+' --- 発生源シェイプ ---
+abstract class EmissionShape <<ScriptableObject>>
+
+' --- 共有リソース関連 ---
+abstract class SharedResource <<ScriptableObject>>
+abstract class "SharedResource<T>" as SharedResource_T <<ScriptableObject>>
+
+' --- エンティティ関連 ---
+class GameEntity <<ScriptableObject>>
+class GameEntityProperty <<ScriptableObject>>
+class Enemy <<ScriptableObject>>
+class EnemyProperty <<ScriptableObject>>
+class Bullet <<ScriptableObject>>
+class BulletProperty <<ScriptableObject>>
+abstract class EntityController <<MonoBehaviour>>
+class BulletController <<MonoBehaviour>>
+
+' --- その他 ---
+class EnemyLifeGaugeController <<MonoBehaviour>>
+class EmissionData
+
+' --- 継承関係 ---
+PatternBase <|-- MovePatternBase
+PatternBase <|-- ShootPatternBase
+PatternBase <|-- LoopPattern
+PatternBase <|-- ParallelPattern
+PatternBase <|-- SequencePattern
+SharedResource <|-- SharedResource_T
+GameEntity <|-- Bullet
+GameEntity <|-- Enemy
+GameEntityProperty <|-- BulletProperty
+GameEntityProperty <|-- EnemyProperty
+EntityController <|-- BulletController
+EntityController <|-- EnemyController
+IMovable <|.. EntityController
+IShootable <|.. EntityController
+
+' --- 関連 ---
+PlayerController --> DanmakuGameManager : "calls"
+EntityController o-- GameEntity : "_entity"
+GameEntity o-- "1" GameEntityProperty : "property"
+GameEntityProperty o-- PatternBase : "shootPattern"
+GameEntityProperty o-- PatternBase : "movePattern"
+PatternBase ..> EntityController : "uses"
+EnemyController ..> EnemyProperty : "uses"
+EntityController ..> BulletController : "creates instance of"
+ShootPatternBase o-- EmissionShape : "emissionShape"
+ShootPatternBase ..> EmissionData : "creates"
+EnemyController ..> EnemyLifeGaugeController : "creates"
+EnemyLifeGaugeController --> EnemyController : "observes"
+LoopPattern o-- "1" PatternBase : "pattern"
+ParallelPattern o-- "*" PatternBase : "patterns"
+SequencePattern o-- "*" PatternBase : "patterns"
+ShootPatternBase ..> SharedResource : "uses"
+
+@enduml

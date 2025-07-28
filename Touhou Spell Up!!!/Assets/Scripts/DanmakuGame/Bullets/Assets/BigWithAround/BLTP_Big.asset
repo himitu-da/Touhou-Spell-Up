@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b84b4aee6ad1b24ea33e11bad69f00c, type: 3}
   m_Name: BLTP_Big
   m_EditorClassIdentifier: 
-  speed: 4
-  lifeTime: 6
   shootPattern: {fileID: 11400000, guid: ef0ab74b9ec10a64c9f5e5c264e1e881, type: 2}
-  movePattern: {fileID: 0}
+  movePattern: {fileID: 11400000, guid: 4efcacb898423b749bd2d02435982f62, type: 2}
+  lifeTime: 6

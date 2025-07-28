@@ -11,9 +11,8 @@ public abstract class PatternBase : ScriptableObject
     [Tooltip("ExecuteImplの実行後に待機する時間（秒）")]
     [SerializeField] private float _afterAwaitSeconds = 0f;
 
-    // MoverとShooterの両方を受け取り、弾の情報を引き継げるExecuteメソッド
-    // このメソッドは仮想(virtual)とし、サブクラスでのオーバーライドを可能にする
-    public virtual async UniTask Execute(IMovable movable, IShootable shootable, CancellationToken token)
+    // EntityControllerを受け取るようにシグネチャを変更
+    public virtual async UniTask Execute(EntityController controller, CancellationToken token)
     {
         if (token.IsCancellationRequested) return;
 
@@ -25,7 +24,7 @@ public abstract class PatternBase : ScriptableObject
         if (token.IsCancellationRequested) return;
 
         // 実際の処理はExecuteImplに委譲する
-        await ExecuteImpl(movable, shootable, token);
+        await ExecuteImpl(controller, token);
 
         if (token.IsCancellationRequested) return;
 
@@ -36,5 +35,5 @@ public abstract class PatternBase : ScriptableObject
     }
 
     // サブクラスで具体的な処理を実装するための抽象メソッド
-    public abstract UniTask ExecuteImpl(IMovable movable, IShootable shootable, CancellationToken token);
+    public abstract UniTask ExecuteImpl(EntityController controller, CancellationToken token);
 }
