@@ -1,4 +1,4 @@
-## Developed
+# Developed
 
 - PlayerHitboxは削除し、PlayerControllerがアタッチされたオブジェクト自身が行う
 - Hitboxオブジェクトは削除
@@ -31,24 +31,30 @@
     - Override Bulletに弾幕パターンを入れられるように（柔軟性）
     - ※Override Bulletは既に配置。一方で、EntityがEntityを生成することができるようになっている（EntityはPatternBaseを実行できる）
 
-## Developing
+# Developing
+
+## v0.1～実装予定
+
+- フォルダ整理
+- メニューの命名規則の統一
+- イベント駆動システムの採用
+
+- 位置、向き、速度を管轄するMovementStateを作成し、MovePatternはそれを変更する責務に、Controllerは反映させる役割に
 
 - EntityControllerにAnimator機能を追加する
 
 - 各種Propertyに対してトリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時）を追加できるように
 
-
-- ワインダーパターンを作成
-
+- ワインダー（壁）パターンを作成
+- ホーミングパターンを作成
 - SatelliteMovePatternでフーリエ変換や楕円を指定可能に
-
+- WinderMovePatternを作成
+- AccelerationMovePatternを作成（速度変化を指定）
 - 時間発狂やHP発狂を作れるように
 
 - SharedResourceを使用し、すべてのint型もしくはfloat型のSerializeFieldを置換する
 - SharedResourceに発射ごとに1ずつ変わる、特定の関数を動く、のような処理を追加する
     - これによって更に柔軟な出現位置を実現できる
-
-後回し：
 
 - ノードベースで弾幕パターンを作成可能に（Graph Editorの作成）
 - Patternをノードで作成可能にして、同一の設定項目を表示
@@ -58,11 +64,6 @@
         - すべてのPatternBase、ShootPatternBase、MovePatternBaseのサブクラスが追加・入れ子可能
 - PatternBaseを保管するライブラリを作成
 
-Bullet・BulletProperty・
-Bullet、BulletProperty、
-    - Bullet Graphでは、「Prefab」と「BulletProperty」を指定するための2つのノードを初期設定して、そこからつなげる
-    - BulletProperty Graphでは、Patternを指定するためのルートノード（ParallelPattern）を初期設定して、そこからつなげる
-
 - ShootPatternの具象クラスから、点・線・面の弾を撃つことを補助するためのShotUtilityを作成する
     - ShotUtilityクラスでは、与えられたEmissionDataとshooterによって、初期設定を行い、shootメソッドで撃つ
     - ShotUtilityクラスの責務は、1セットのパターンを点・線・面で撃つかの補助を行うこと
@@ -71,7 +72,7 @@ Bullet、BulletProperty、
     - Shootメソッドに提供するのは、「撃つ玉」と「撃ち方（角度計算方法・回数・頻度）」の2つ
     - これによって各ShootPatternは点・線・面であることを意識せずに撃つことができるようになる
 
-# v0.2～実装予定
+## v0.2～実装予定
 - オブジェクトプーリングの実装
 - 自機ライフの実装
 - 敵機複数弾幕の実装（体力がなくなると次の弾幕に移行）
@@ -86,7 +87,7 @@ Bullet、BulletProperty、
 - 特殊ルールシステムの試作
 - 問題データ管理のシステムを作成
 
-# v0.3～実装予定
+## v0.3～実装予定
 - ゲームのデザインコンセプトの検討
 - セリフ、キャラクター台詞を実装
 - Optionを実装し、キーコンフィグや音量調節ができるように
