@@ -1,35 +1,6 @@
 # Developed
 
-- PlayerHitboxは削除し、PlayerControllerがアタッチされたオブジェクト自身が行う
-- Hitboxオブジェクトは削除
 
-- PlayerとPlayerPropertyを作成
-- shotprefabやhitboxmarker以外のフィールドをplayerpropertyで設定できるように変更
-
-- PlayerPropertyに「高速移動時」「低速移動時」の弾の振る舞いを決めるための「PatternBase」を設定
-    - このPropertyで設定するのは1発分の弾（Instantiate(shotPrefab, transform.position, Quaternion.identity)に相当）
-
-- Player関連のリファクタリング
-    - PlayerもGameEntityのサブクラスに
-    - EntityPropertyのサブクラスとしてPlayerPropertyを用意
-    - PlayerControllerはEntityControllerのサブクラスに
-- PlayerControllerのシングルトンへの依存を削除
-- PlayerShotをStraightMovePattern、BulletPropertyのライフタイム、EntityControllerのダメージ通知機能を用いて表現（PlayerShotを削除）
-- PlayerHitboxは削除し、PlayerControllerがアタッチされたオブジェクト自身が行う
-- `BulletProperty`に「攻撃力」の概念を追加
-- `BulletController`を修正し、自機の弾が"Enemy"タグを持つオブジェクトに衝突した際に`TakeDamage`メソッドを呼び出すように
-- `PlayerController`のシングルトン削除に伴い、`AngleUtility`がプレイヤーを見つけられるように`FindFirstObjectByType`を使用するよう修正
-- リファクタリングの過程で失われていた、プレイヤー被弾時の`DanmakuGameManager.GameOver()`呼び出し処理を復元
-- `PlayerController`で、継承元の`_entity`フィールドと重複していた`player`フィールドを削除し、インスペクター上の設定項目を整理
-
-- EntityをGameEntityに統一（名称ゆれ）。EntityControllerをGameEntityControllerに
-
-- 射撃位置にMoverが適用できるようにするかを検討
-    - ※弾が弾を撃てるようになったのでそれで代替可能
-
-- Override Bulletの対象をEntityに変更
-    - Override Bulletに弾幕パターンを入れられるように（柔軟性）
-    - ※Override Bulletは既に配置。一方で、EntityがEntityを生成することができるようになっている（EntityはPatternBaseを実行できる）
 
 # Developing
 
