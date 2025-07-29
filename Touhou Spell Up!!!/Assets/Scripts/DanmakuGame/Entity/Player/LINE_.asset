@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ce9ae404c853749aa9dde8dbbda4cf, type: 3}
+  m_Name: LINE_
+  m_EditorClassIdentifier: 
+  sharedAngle: {fileID: 0}
+  angleMode: 0
+  baseAngleOffset: 0
+  startOffset: {x: -0.75, y: 0, z: 0}
+  endOffset: {x: 0.75, y: 0, z: 0}
+  pointCount: 3

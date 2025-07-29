@@ -1,25 +1,67 @@
 # Developed
 
+- フォルダ整理
+    - GameEntity、GameEntityProperty、GameEntityControllerはDanmakuフォルダの直下
+    - 各具象クラスはそれぞれEnemy、Bullet、Playerフォルダの直下
+- メニューの命名規則の変更
+    - ルートをTouhou Spell Upではなく、Danmakuに変更し、ディレクトリ構造を一新
+        Danmaku/
+        ├── Entity/
+        │   ├── Player/
+        │   │   ├── Player
+        │   │   └── PlayerProperty
+        │   ├── Enemy/
+        │   │   ├── Enemy
+        │   │   └── EnemyProperty
+        │   └── Bullet/
+        │       ├── Bullet
+        │       └── BulletProperty
+        ├── Pattern/
+        │   ├── Move/
+        │   │   ├── Straight
+        │   │   ├── Curve
+        │   │   └── Satellite
+        │   ├── Shoot/
+        │   │   ├── Basic Shot
+        │   │   ├── Multi-Way
+        │   │   ├── RotatingShot
+        │   │   └── Scattering
+        │   ├── Emission/
+        │   │   ├── Point
+        │   │   ├── Line
+        │   │   └── Plane
+        │   ├── Composite/
+        │   │   ├── Sequence
+        │   │   ├── Parallel
+        │   │   └── Loop
+        │   └── Other/
+        │       ├── FireAndForget
+        │       └── Forget
+        └── Resource/
+        └── Angle (float)
 
 
 # Developing
 
 ## v0.1～実装予定
 
-- フォルダ整理
-- メニューの命名規則の統一
 - イベント駆動システムの採用
 
 - 位置、向き、速度を管轄するMovementStateを作成し、MovePatternはそれを変更する責務に、Controllerは反映させる役割に
 
-- EntityControllerにAnimator機能を追加する
+- AnimatePatternを抽象クラスを追加する（ShootPatternは撃つ方法の責務、MovePatternは移動の方法の責務、AnimatePatternは見た目変化の方法の責務）
+- EntityControllerにAnimateを司る部分を追加
 
 - 各種Propertyに対してトリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時）を追加できるように
 
-- ワインダー（壁）パターンを作成
-- ホーミングパターンを作成
+- LaserShootPatternを作成（レーザー弾）
+    - LaserEntity、LaserController、LaserPropertyを作成（レーザーの挙動はMovePatternを使用）
+    - 頭、胴体、尾の3つの部分からなり、ひとつ前を追跡する（連結）
+
 - SatelliteMovePatternでフーリエ変換や楕円を指定可能に
-- WinderMovePatternを作成
+- HomingMovePatternを作成（追従弾）
+- WinderMovePatternを作成（巻きつけ弾）
+- ReflectionMovePatternを作成（反射弾）
 - AccelerationMovePatternを作成（速度変化を指定）
 - 時間発狂やHP発狂を作れるように
 

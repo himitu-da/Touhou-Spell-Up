@@ -1,4 +1,5 @@
 @startuml ClassDiagram_Overview
+' v2025.07.29
 ' ステレオタイプの色設定
 skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
@@ -12,10 +13,11 @@ interface IMovable <<Interface>>
 interface IShootable <<Interface>>
 
 ' --- マネージャー ---
+class SystemManager <<MonoBehaviour>>
 class DanmakuGameManager <<MonoBehaviour>>
 
 ' --- エンティティ基盤 ---
-abstract class EntityController <<MonoBehaviour>>
+abstract class GameEntityController <<MonoBehaviour>>
 class GameEntity <<ScriptableObject>>
 class GameEntityProperty <<ScriptableObject>>
 
@@ -41,15 +43,17 @@ abstract class ShootPatternBase <<ScriptableObject>>
 class LoopPattern <<ScriptableObject>>
 class ParallelPattern <<ScriptableObject>>
 class SequencePattern <<ScriptableObject>>
+abstract class EmissionShape <<ScriptableObject>>
+class SharedAngle <<ScriptableObject>>
 
 ' --- その他 ---
 class EnemyLifeGaugeController <<MonoBehaviour>>
 class AngleUtility <<static>>
 
 ' --- 継承関係 ---
-EntityController <|-- PlayerController
-EntityController <|-- EnemyController
-EntityController <|-- BulletController
+GameEntityController <|-- PlayerController
+GameEntityController <|-- EnemyController
+GameEntityController <|-- BulletController
 GameEntity <|-- Player
 GameEntity <|-- Enemy
 GameEntity <|-- Bullet
@@ -61,16 +65,18 @@ PatternBase <|-- ShootPatternBase
 PatternBase <|-- LoopPattern
 PatternBase <|-- ParallelPattern
 PatternBase <|-- SequencePattern
-IMovable <|.. EntityController
-IShootable <|.. EntityController
+IMovable <|.. GameEntityController
+IShootable <|.. GameEntityController
 
 ' --- 関連 ---
 PlayerController ..> DanmakuGameManager : "calls"
-EntityController o-- GameEntity : "_entity"
-GameEntity o-- "1" GameEntityProperty : "property"
-GameEntityProperty o-- PatternBase : "shootPattern"
-GameEntityProperty o-- PatternBase : "movePattern"
-PatternBase ..> EntityController : "uses"
+GameEntityController o-- GameEntity : " _entity"
+GameEntity o-- "1" GameEntityProperty : " property"
+GameEntityProperty o-- PatternBase : "ShootPattern"
+GameEntityProperty o-- PatternBase : "MovePattern"
+PatternBase ..> GameEntityController : "uses"
+ShootPatternBase o-- EmissionShape : "emissionShape"
+ShootPatternBase ..> SharedAngle : "uses"
 BulletController ..> EnemyController : "calls TakeDamage"
 EnemyController ..> EnemyLifeGaugeController : "creates"
 AngleUtility ..> PlayerController : "finds"

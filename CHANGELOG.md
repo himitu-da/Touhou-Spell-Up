@@ -241,3 +241,5 @@
 - Override Bulletの対象をEntityに変更
     - Override Bulletに弾幕パターンを入れられるように（柔軟性）
     - ※Override Bulletは既に配置。一方で、EntityがEntityを生成することができるようになっている（EntityはPatternBaseを実行できる）
+
+## [v0.1.9] - 2025-08-XX
