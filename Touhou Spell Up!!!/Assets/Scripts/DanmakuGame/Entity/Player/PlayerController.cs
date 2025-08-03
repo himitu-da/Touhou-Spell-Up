@@ -44,8 +44,10 @@ public class PlayerController : GameEntityController
         _isSlowMovePressed = value.isPressed;
     }
 
-    void Update()
+    protected override void Update()
     {
+        // プレイヤーの移動はMovePatternを使わないため、base.Update()は呼び出さない
+
         // -------- 移動 --------
         float currentSpeed = _isSlowMovePressed ? _playerProperty.MoveSpeedSlow : _playerProperty.MoveSpeed;
         Vector2 delta = _moveInput * currentSpeed * Time.deltaTime;

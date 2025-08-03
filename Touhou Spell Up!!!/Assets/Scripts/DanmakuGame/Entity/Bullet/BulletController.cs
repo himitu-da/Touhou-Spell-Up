@@ -23,8 +23,10 @@ public class BulletController : GameEntityController
         }
     }
 
-    void Update()
+    protected override void Update()
     {
+        base.Update(); // 基底クラスのUpdateを呼び出して移動処理を行う
+
         _lifeTime -= Time.deltaTime;
         if (_lifeTime <= 0)
         {

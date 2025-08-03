@@ -1,15 +1,18 @@
 # Developed
-
-
-
+- 位置、向き、速度を管轄するMovementStateを作成し、MovePatternはそれを変更する責務に、Controllerは反映させる役割に
+    - `MovementState` クラスを新規作成。`Position`, `Rotation`, `Velocity` を保持し、エンティティの移動状態を管理
+    - `MovePattern` の責務を、`MovementState` を変更することに限定。`MovePattern` は `MonoBehaviour` に依存しない純粋な計算ロジックに
+    - `GameEntityController` の責務を、`MovementState` の値（速度・位置・向き）を `transform` に反映させることに限定しました
+    - 各 `GameEntityController` が初期化時に自身の `MovementState` インスタンスを生成する
+    - `PatternBase` およびその派生クラス（`MovePatternBase`, `StraightMovePattern`, `CurveMovePattern` など）のシグネチャを、新しい `MovementState` を扱うように更新
+    - `SatelliteMovePattern` のような親オブジェクトに依存する特殊な移動パターンも、新しい設計の上で動作するように修正
+    - `GameEntityController` に `Update` メソッドを追加したことに伴い、サブクラスである `PlayerController` と `BulletController` で発生していたメソッドの隠蔽に関する警告（CS0114）を、`override` キーワードを追加して解消
 
 # Developing
 
 ## v0.1～実装予定
 
-- EntityPropertyに与えられる「Pattern」について、イベント駆動システムにするようにするための「TriggeredPattern」を作成し（「トリガー条件TriggeredBase（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時）」）とPatternBaseを追加できるように
-
-- 位置、向き、速度を管轄するMovementStateを作成し、MovePatternはそれを変更する責務に、Controllerは反映させる役割に
+- EntityPropertyに与えられる「Pattern」について、イベント駆動システムにするようにするための「TriggeredPattern」を作成し（「トリガー条件TriggeredBase（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時、壁衝突時）」）とPatternBaseを追加できるように
 
 - AnimatePatternを抽象クラスを追加する（ShootPatternは撃つ方法の責務、MovePatternは移動の方法の責務、AnimatePatternは見た目変化の方法の責務）
 - EntityControllerにAnimateを司る部分を追加

@@ -18,6 +18,7 @@ public class SatelliteMovePattern : MovePatternBase
     [Header("追跡設定")]
     [SerializeField] private bool followShooter = true; // 親を追跡するか
 
+    // MovementStateだけでは親を取得できないため、GameEntityController版のExecuteImplをoverrideする
     public override UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
         if (controller == null)
@@ -29,64 +30,65 @@ public class SatelliteMovePattern : MovePatternBase
         GameEntityController centerController = controller.ParentActor;
         if (centerController == null)
         {
-            // 親が設定されていない場合、自分自身を基準点とする（デバッグ用）
             Debug.LogWarning("SatelliteMovePattern requires a parent Actor, but it is not set. Using self as center.", controller);
             centerController = controller;
         }
 
-        // 実際の処理はExecuteSatelliteMoveに委譲
-        return ExecuteSatelliteMove(controller, centerController, token);
+        // publicプロパティ経由でMovementStateを取得
+        MovementState state = controller.MovementState;
+        if (state == null)
+        {
+            Debug.LogError("MovementState is null in GameEntityController.", this);
+            return UniTask.CompletedTask;
+        }
+
+        return ExecuteSatelliteMove(state, centerController, token);
     }
 
-    // このパターンはActor（中心点）が必須なため、Actorを引数に取る
-    private async UniTask ExecuteSatelliteMove(GameEntityController controller, GameEntityController centerController, CancellationToken token)
+    private async UniTask ExecuteSatelliteMove(MovementState state, GameEntityController centerController, CancellationToken token)
     {
-        if (controller == null) return;
-
         Vector3 centerPosition = GetSpawnPosition(centerController);
 
-        // 初期位置と角度を設定
         float radius = initialRadius;
-        // 初期角度はMoverの現在の向きから取得する
-        float currentAngle = controller.transform.rotation.eulerAngles.z;
+        float currentAngle = state.Rotation.eulerAngles.z;
 
         // 弾の初期位置を計算して設定
         Vector3 initialDirection = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
-        controller.transform.position = centerPosition + initialDirection * radius;
+        state.Position = centerPosition + initialDirection * radius;
 
-        while (!token.IsCancellationRequested && controller != null)
+        while (!token.IsCancellationRequested)
         {
             if (followShooter && centerController != null)
             {
                 centerPosition = GetSpawnPosition(centerController);
             }
 
-            // 1. 半径を更新
             radius += radialSpeed * Time.deltaTime;
 
-            // 2. 角度を更新
             float angularSpeedDelta = angularSpeed * Time.deltaTime;
             float tangentialSpeedDelta = 0f;
-            if (radius > 0.001f) // 半径がほぼ0の場合は接線速度による回転は発生しない
+            if (radius > 0.001f)
             {
-                // 接線速度を角速度（度数法）に変換
                 tangentialSpeedDelta = (tangentialSpeed / radius) * Mathf.Rad2Deg * Time.deltaTime;
             }
             currentAngle += angularSpeedDelta + tangentialSpeedDelta;
 
-            // 3. 新しい位置を計算
+            // 向きは更新せず、位置だけを更新する
             Vector3 newDirection = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
-            controller.transform.position = centerPosition + newDirection * radius;
+            state.Position = centerPosition + newDirection * radius;
+            // このパターンではVelocityは直接制御しない
+            state.Velocity = Vector3.zero;
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
 
-    // このMovePatternはExecuteImplで処理が完結するため、MovePatternBaseの抽象メソッドは空実装でよい
-    public override UniTask ExecuteMove(GameEntityController controller, CancellationToken token)
+    // MovePatternBaseの抽象メソッドを実装
+    public override UniTask ExecuteMove(MovementState state, CancellationToken token)
     {
-        // このメソッドは呼ばれない想定
-        Debug.LogWarning("SatelliteMovePattern.ExecuteMove(EntityController, CancellationToken) was called. This should not happen.", controller);
+        // このパターンは親Actorが必須なため、MovementStateだけでは実行できない。
+        // ExecuteImpl(GameEntityController, ...)が代わりに呼ばれる。
+        Debug.LogError("SatelliteMovePattern.ExecuteMove(MovementState, CancellationToken) should not be called directly.", this);
         return UniTask.CompletedTask;
     }
 

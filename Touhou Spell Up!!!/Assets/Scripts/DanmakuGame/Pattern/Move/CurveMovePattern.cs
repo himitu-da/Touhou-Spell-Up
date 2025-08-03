@@ -13,28 +13,23 @@ public class CurveMovePattern : MovePatternBase
     [SerializeField] private bool overrideInitialDirection = false;
     [SerializeField] private float initialDirection = -90f; // 下向き（度）
 
-    public override async UniTask ExecuteMove(GameEntityController controller, CancellationToken token)
+    public override async UniTask ExecuteMove(MovementState state, CancellationToken token)
     {
         // 初期角度の決定
-        float currentAngle;
         if (overrideInitialDirection)
         {
-            currentAngle = initialDirection;
-        }
-        else
-        {
-            // 現在の角度（ShootPatternで設定された角度）を使用
-            currentAngle = controller.transform.eulerAngles.z;
+            state.Rotation = Quaternion.Euler(0, 0, initialDirection);
         }
 
-        while (!token.IsCancellationRequested && controller != null)
+        while (!token.IsCancellationRequested)
         {
             // 角度を徐々に変化
+            float currentAngle = state.Rotation.eulerAngles.z;
             currentAngle += angleChangeRate * Time.deltaTime;
-            controller.transform.rotation = Quaternion.Euler(0, 0, currentAngle);
+            state.Rotation = Quaternion.Euler(0, 0, currentAngle);
 
-            // オブジェクトの前方（この場合はローカルのY軸正方向、つまり画像の上方向）に移動
-            controller.transform.Translate(Vector3.down * speed * Time.deltaTime);
+            // 向きに基づいて速度を設定
+            state.Velocity = state.Rotation * Vector3.up * speed;
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }

@@ -11,29 +11,39 @@ public abstract class PatternBase : ScriptableObject
     [Tooltip("ExecuteImplの実行後に待機する時間（秒）")]
     [SerializeField] private float _afterAwaitSeconds = 0f;
 
-    // EntityControllerを受け取るようにシグネチャを変更
+    // GameEntityControllerを受け取るExecuteメソッド
     public virtual async UniTask Execute(GameEntityController controller, CancellationToken token)
     {
         if (token.IsCancellationRequested) return;
-
-        if (_beforeAwaitSeconds > 0)
-        {
-            await UniTask.Delay(System.TimeSpan.FromSeconds(_beforeAwaitSeconds), cancellationToken: token);
-        }
-
+        if (_beforeAwaitSeconds > 0) await UniTask.Delay(System.TimeSpan.FromSeconds(_beforeAwaitSeconds), cancellationToken: token);
         if (token.IsCancellationRequested) return;
 
-        // 実際の処理はExecuteImplに委譲する
         await ExecuteImpl(controller, token);
 
         if (token.IsCancellationRequested) return;
+        if (_afterAwaitSeconds > 0) await UniTask.Delay(System.TimeSpan.FromSeconds(_afterAwaitSeconds), cancellationToken: token);
+    }
 
-        if (_afterAwaitSeconds > 0)
-        {
-            await UniTask.Delay(System.TimeSpan.FromSeconds(_afterAwaitSeconds), cancellationToken: token);
-        }
+    // MovementStateを受け取るExecuteメソッドのオーバーロード
+    public virtual async UniTask Execute(MovementState state, CancellationToken token)
+    {
+        if (token.IsCancellationRequested) return;
+        if (_beforeAwaitSeconds > 0) await UniTask.Delay(System.TimeSpan.FromSeconds(_beforeAwaitSeconds), cancellationToken: token);
+        if (token.IsCancellationRequested) return;
+
+        await ExecuteImpl(state, token);
+
+        if (token.IsCancellationRequested) return;
+        if (_afterAwaitSeconds > 0) await UniTask.Delay(System.TimeSpan.FromSeconds(_afterAwaitSeconds), cancellationToken: token);
     }
 
     // サブクラスで具体的な処理を実装するための抽象メソッド
     public abstract UniTask ExecuteImpl(GameEntityController controller, CancellationToken token);
+
+    // MovementStateを受け取るExecuteImplのオーバーロード（デフォルト実装は例外をスロー）
+    public virtual UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    {
+        // このメソッドはMovePattern系のクラスでoverrideされることを想定
+        throw new System.NotImplementedException($"{this.GetType().Name} does not implement ExecuteImpl for MovementState.");
+    }
 }

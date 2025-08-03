@@ -5,6 +5,8 @@ using System.Threading;
 public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
 {
     [SerializeField] protected GameEntity _entity;
+    protected MovementState _movementState;
+    public MovementState MovementState => _movementState; // SatelliteMovePatternから参照するためにpublicにする
     public GameEntityProperty Property { get; protected set; }
     protected CancellationTokenSource _cancellationTokenSource;
 
@@ -22,6 +24,15 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
 
         this._entity = entity;
         this.Property = entity.Property;
+        
+        // MovementStateをnewで生成する
+        _movementState = new MovementState
+        {
+            // 初期位置と向きを設定
+            Position = transform.position,
+            Rotation = transform.rotation
+        };
+
         if (this.Property == null) return;
 
         _cancellationTokenSource = new CancellationTokenSource();
@@ -29,7 +40,16 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         // パターンを実行
         if (Property.MovePattern != null)
         {
-            Property.MovePattern.Execute(this, _cancellationTokenSource.Token).Forget();
+            // SatelliteMovePatternは親Actorの位置を必要とする特殊なケースなため、
+            // GameEntityControllerを渡して実行する
+            if (Property.MovePattern is SatelliteMovePattern)
+            {
+                Property.MovePattern.Execute(this, _cancellationTokenSource.Token).Forget();
+            }
+            else
+            {
+                Property.MovePattern.Execute(_movementState, _cancellationTokenSource.Token).Forget();
+            }
         }
         if (Property.ShootPattern != null)
         {
@@ -63,6 +83,18 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
             // entity.Property (GameEntityProperty) と親Actor（自身）を渡して初期化
             bulletController.Initialize(entity, this);
         }
+    }
+
+    protected virtual void Update()
+    {
+        if (_movementState == null) return;
+
+        // 速度に基づいて位置を更新
+        _movementState.Position += _movementState.Velocity * Time.deltaTime;
+
+        // MovementStateをtransformに反映
+        transform.position = _movementState.Position;
+        transform.rotation = _movementState.Rotation;
     }
 
     protected virtual void OnDestroy()

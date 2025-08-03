@@ -6,22 +6,15 @@ using System.Threading;
 public class StraightMovePattern : MovePatternBase
 {
     [SerializeField] private float _speed = 5f;
-    [SerializeField] private float _duration = 2f; // 0以下で無限
+    // durationは不要になるため削除
 
-    public override async UniTask ExecuteMove(GameEntityController controller, CancellationToken token)
+    public override UniTask ExecuteMove(MovementState state, CancellationToken token)
     {
-        float elapsedTime = 0f;
-
-        while (!token.IsCancellationRequested)
-        {
-            if (_duration > 0 && elapsedTime >= _duration)
-            {
-                break;
-            }
-
-            controller.transform.Translate(Vector3.up * _speed * Time.deltaTime);
-            elapsedTime += Time.deltaTime;
-            await UniTask.Yield(PlayerLoopTiming.Update, token);
-        }
+        // 向き（Rotation）に基づいて速度を設定する
+        // 現在はスプライトが上向き前提なので、upベクトルを回転させて進行方向を決定
+        state.Velocity = state.Rotation * Vector3.up * _speed;
+        
+        // このパターンは状態を設定するだけなので、即座に完了する
+        return UniTask.CompletedTask;
     }
 }
