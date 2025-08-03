@@ -242,4 +242,44 @@
     - Override Bulletに弾幕パターンを入れられるように（柔軟性）
     - ※Override Bulletは既に配置。一方で、EntityがEntityを生成することができるようになっている（EntityはPatternBaseを実行できる）
 
-## [v0.1.9] - 2025-08-XX
+## [v0.1.9] - 2025-08-03
+- フォルダ整理
+    - GameEntity、GameEntityProperty、GameEntityControllerはDanmakuフォルダの直下
+    - 各具象クラスはそれぞれEnemy、Bullet、Playerフォルダの直下
+- メニューの命名規則の変更
+    - ルートをTouhou Spell Upではなく、Danmakuに変更し、ディレクトリ構造を一新
+        Danmaku/
+        ├── Entity/
+        │   ├── Player/
+        │   │   ├── Player
+        │   │   └── PlayerProperty
+        │   ├── Enemy/
+        │   │   ├── Enemy
+        │   │   └── EnemyProperty
+        │   └── Bullet/
+        │       ├── Bullet
+        │       └── BulletProperty
+        ├── Pattern/
+        │   ├── Move/
+        │   │   ├── Straight
+        │   │   ├── Curve
+        │   │   └── Satellite
+        │   ├── Shoot/
+        │   │   ├── Basic Shot
+        │   │   ├── Multi-Way
+        │   │   ├── RotatingShot
+        │   │   └── Scattering
+        │   ├── Emission/
+        │   │   ├── Point
+        │   │   ├── Line
+        │   │   └── Plane
+        │   ├── Composite/
+        │   │   ├── Sequence
+        │   │   ├── Parallel
+        │   │   └── Loop
+        │   └── Other/
+        │       ├── FireAndForget
+        │       └── Forget
+        └── Resource/
+        └── Angle (float)
+- HotReloadアセットの導入

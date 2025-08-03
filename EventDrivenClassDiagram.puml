@@ -1,0 +1,86 @@
+@startuml
+title Event-Driven Pattern Architecture
+
+class GameEntityProperty {
+  - List<TriggeredPattern> triggeredPatterns
+  + IReadOnlyList<TriggeredPattern> TriggeredPatterns
+}
+
+class TriggeredPattern {
+  + TriggerBase Trigger
+  + PatternBase Pattern
+  + bool HasBeenTriggered
+}
+
+abstract class TriggerBase {
+  + {abstract} void Initialize(GameEntityController controller)
+  + {abstract} bool IsTriggered()
+}
+
+class TimeTrigger extends TriggerBase {
+  - float delaySeconds
+  - float elapsedTime
+  + override void Initialize(GameEntityController controller)
+  + override bool IsTriggered()
+}
+
+class CollisionTrigger extends TriggerBase {
+  - string targetTag
+  - bool isCollided
+  + override void Initialize(GameEntityController controller)
+  + override bool IsTriggered()
+  + void OnCollisionEnter(Collision other)
+}
+
+class DistanceTrigger extends TriggerBase {
+  - Transform target
+  - float threshold
+  + override void Initialize(GameEntityController controller)
+  + override bool IsTriggered()
+}
+
+class LifetimeEndTrigger extends TriggerBase {
+  - bool isEnding
+  + override void Initialize(GameEntityController controller)
+  + override bool IsTriggered()
+  + void OnLifetimeEnd()
+}
+
+class ImmediateTrigger extends TriggerBase {
+  + override void Initialize(GameEntityController controller)
+  + override bool IsTriggered()
+}
+
+abstract class PatternBase {
+  + async UniTask Execute(GameEntityController controller, CancellationToken token)
+  + {abstract} UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
+}
+
+class GameEntityController {
+  - GameEntityProperty property
+  - List<TriggeredPattern> _activePatterns
+  - CancellationTokenSource _cancellationTokenSource
+  + void Initialize(GameEntity entity)
+  # void Update()
+  # void OnDestroy()
+}
+
+GameEntityProperty o-- "many" TriggeredPattern : contains
+TriggeredPattern o-- "1" TriggerBase : has a
+TriggeredPattern o-- "1" PatternBase : executes
+
+GameEntityController o-- "1" GameEntityProperty : uses
+
+note right of GameEntityController
+  Initialize:
+  - _activePatternsにproperty.TriggeredPatternsをコピー
+  - 各TriggerのInitializeを呼び出す
+
+  Update:
+  - _activePatternsをループ
+  - Trigger.IsTriggered()がtrueなら
+    - Pattern.Execute()を実行
+    - HasBeenTriggeredをtrueに設定
+end note
+
+@enduml
