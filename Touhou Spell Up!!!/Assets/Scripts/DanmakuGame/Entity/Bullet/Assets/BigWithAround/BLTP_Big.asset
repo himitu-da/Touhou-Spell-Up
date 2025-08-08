@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: BLTP_Big
   m_EditorClassIdentifier: 
   shootPattern: {fileID: 11400000, guid: ef0ab74b9ec10a64c9f5e5c264e1e881, type: 2}
-  movePattern: {fileID: 11400000, guid: 4efcacb898423b749bd2d02435982f62, type: 2}
+  movePattern: {fileID: 11400000, guid: 131f161f85f507541a247b10f7297cd7, type: 2}
   lifeTime: 6
+  attackPower: 10

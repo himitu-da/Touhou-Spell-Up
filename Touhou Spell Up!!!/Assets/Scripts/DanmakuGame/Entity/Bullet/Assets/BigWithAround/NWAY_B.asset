@@ -12,24 +12,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c7d318de5afe304383d78cb17036400, type: 3}
   m_Name: NWAY_B
   m_EditorClassIdentifier: 
-  _beforeAwaitSeconds: 0
-  _afterAwaitSeconds: 0
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
   _entity: {fileID: 11400000, guid: b268665330aba054b945e56940e5808a, type: 2}
   spawnPointType: 0
-  positionOffset: {x: 0, y: 0, z: 0}
-  followShooterPosition: 1
+  positionOffset:
+    useConstant: 1
+    constantValue: {x: 0, y: 0, z: 0}
+    parameter: {fileID: 0}
+  followShooterPosition:
+    useConstant: 1
+    constantValue: 1
+    parameter: {fileID: 0}
   emissionShape: {fileID: 0}
-  sequential: 0
-  emissionInterval: 0.1
-  directionOffset: 0
-  aimAtPlayer: 1
-  alwaysAimToPlayer: 0
-  spawnRadius: 0
-  wayCount: 8
-  totalAngle: 90
-  allRound: 1
+  sequential:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  emissionInterval:
+    useConstant: 1
+    constantValue: 0.1
+    parameter: {fileID: 0}
+  directionOffset:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  aimAtPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  alwaysAimToPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  spawnRadius:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  wayCount:
+    useConstant: 1
+    constantValue: 8
+    parameter: {fileID: 0}
+  totalAngle:
+    useConstant: 1
+    constantValue: 90
+    parameter: {fileID: 0}
+  allRound:
+    useConstant: 1
+    constantValue: 1
+    parameter: {fileID: 0}
   rotationDirection: 0
-  avoidAtPlayer: 0
-  sharedAngle: {fileID: 0}
-  isKeepAngle: 0
-  accumulatingOffset: 0
+  avoidAtPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  angleParameter: {fileID: 0}
+  initializeParameterOnStart:
+    useConstant: 1
+    constantValue: 1
+    parameter: {fileID: 0}
+  accumulatingOffset:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}

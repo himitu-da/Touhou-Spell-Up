@@ -7,23 +7,19 @@ using TouhouSpellUp.Danmaku;
 public class RotatingShotPattern : ShootPatternBase
 {
     [Header("基本設定")]
-    [SerializeField, Range(0f, 360f)] private float startAngle = 0f;
-    [SerializeField, Range(0f, 360f)] private float intervalAngle = 10f;
-    [SerializeField] private float intervalTime = 0.5f;
-    [SerializeField] private int shotCount = 1;
+    [SerializeField] private FloatReference startAngle = new FloatReference { useConstant = true, constantValue = 0f };
+    [SerializeField] private FloatReference intervalAngle = new FloatReference { useConstant = true, constantValue = 10f };
+    [SerializeField] private FloatReference intervalTime = new FloatReference { useConstant = true, constantValue = 0.5f };
+    [SerializeField] private IntReference shotCount = new IntReference { useConstant = true, constantValue = 1 };
     [SerializeField] private RotationDirection rotationDirection = RotationDirection.CounterClockwise;
 
-    [Header("角度の共有・維持設定")]
-    [Tooltip("（任意）設定すると、このアセットの値を共有の角度として使用します。")]
-    [SerializeField] private SharedAngle sharedAngle;
-    [Tooltip("SharedAngleが未設定の場合に、このパターン内でのみ角度を引き継ぐか。")]
-    [SerializeField] private bool isKeepAngle = false;
-    [Tooltip("実行ごとに加算されていくオフセット角度。isKeepAngle=trueかSharedAngleが設定されている場合のみ有効。")]
-    [SerializeField] private float accumulatingOffset = 0f;
-
-    // sharedAngleを使わない場合に、isKeepAngleを実現するための内部状態
-    private float _localCurrentAngle;
-    private bool _isInitialized = false;
+    [Header("角度の共有と更新")]
+    [Tooltip("角度の入出力に使用するパラメータ。未設定の場合は内部で角度を管理します。")]
+    [SerializeField] private AngleParameter angleParameter;
+    [Tooltip("実行開始時に、StartAngleの値でAngle Parameterを初期化するかどうか。")]
+    [SerializeField] private BoolReference initializeParameterOnStart = new BoolReference { useConstant = true, constantValue = true };
+    [Tooltip("実行後にAngle Parameterに加算するオフセット値。")]
+    [SerializeField] private FloatReference accumulatingOffset = new FloatReference { useConstant = true, constantValue = 0f };
 
     public override async UniTask ExecuteShootFromPoint(GameEntityController controller, EmissionData emissionData, CancellationToken token)
     {
@@ -34,33 +30,40 @@ public class RotatingShotPattern : ShootPatternBase
         }
 
         float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
-        Vector3 baseSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
-
+        
         // --- 実行開始時の角度を決定 ---
         float currentAngle;
-        if (sharedAngle != null)
+        Vector3 initialSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
+
+        if (angleParameter != null)
         {
-            currentAngle = sharedAngle.Value;
-        }
-        else
-        {
-            if (!isKeepAngle || !_isInitialized)
+            if (initializeParameterOnStart.Value)
             {
-                if (aimAtPlayer)
+                float initialAngle;
+                if (aimAtPlayer.Value)
                 {
-                    currentAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f;
+                    initialAngle = AngleUtility.GetAngleToPlayer(initialSpawnPosition) + 180f;
                 }
                 else
                 {
-                    currentAngle = controller.transform.eulerAngles.z + emissionData.localAngle;
+                    initialAngle = controller.transform.eulerAngles.z + emissionData.localAngle;
                 }
-                currentAngle += startAngle;
-                _isInitialized = true;
+                angleParameter.Value = initialAngle + startAngle.Value;
+            }
+            currentAngle = angleParameter.Value;
+        }
+        else
+        {
+            // パラメータが未設定の場合、従来通りに初期角度を計算
+            if (aimAtPlayer.Value)
+            {
+                currentAngle = AngleUtility.GetAngleToPlayer(initialSpawnPosition) + 180f;
             }
             else
             {
-                currentAngle = _localCurrentAngle;
+                currentAngle = controller.transform.eulerAngles.z + emissionData.localAngle;
             }
+            currentAngle += startAngle.Value;
         }
         // --------------------------
 
@@ -68,55 +71,42 @@ public class RotatingShotPattern : ShootPatternBase
         {
             if (token.IsCancellationRequested) break;
 
-            Vector3 currentSpawnPosition = baseSpawnPosition;
-            if (followShooterPosition && emissionShape == null)
+            Vector3 currentSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
+            if (followShooterPosition.Value && emissionShape == null)
             {
                 currentSpawnPosition = GetSpawnPosition(controller);
             }
 
             float loopStartAngle = currentAngle;
-            if (alwaysAimToPlayer)
+            if (alwaysAimToPlayer.Value)
             {
-                loopStartAngle = AngleUtility.GetAngleToPlayer(currentSpawnPosition) + 180f + startAngle;
+                loopStartAngle = AngleUtility.GetAngleToPlayer(currentSpawnPosition) + 180f + startAngle.Value;
             }
 
-            float shotAngle = loopStartAngle + (directionMultiplier * intervalAngle * i);
+            float shotAngle = loopStartAngle + (directionMultiplier * intervalAngle.Value * i);
             Quaternion rotation = Quaternion.Euler(0, 0, shotAngle);
             Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(currentSpawnPosition, shotAngle);
 
             controller.InstantiateProperty(_entity, finalSpawnPosition, rotation);
 
-            if (intervalTime > 0)
+            if (intervalTime.Value > 0)
             {
-                await UniTask.Delay((int)(intervalTime * 1000), cancellationToken: token);
+                await UniTask.Delay((int)(intervalTime.Value * 1000), cancellationToken: token);
             }
-            if (shotCount > 0 && i >= shotCount - 1) // shotCountが1ならi=0で終了
+            if (shotCount.Value > 0 && i >= shotCount.Value - 1)
             {
                 break;
             }
         }
 
         // --- 次回実行のために最後の角度を保存 ---
-        float lastAngle = currentAngle + (directionMultiplier * intervalAngle * shotCount);
-        if (sharedAngle != null)
+        if (angleParameter != null)
         {
-            sharedAngle.Value = lastAngle + accumulatingOffset;
-        }
-        else if (isKeepAngle)
-        {
-            _localCurrentAngle = lastAngle + accumulatingOffset;
+            float lastAngle = currentAngle + (directionMultiplier * intervalAngle.Value * shotCount.Value);
+            angleParameter.Value = lastAngle + accumulatingOffset.Value;
         }
         // ------------------------------------
 
         await UniTask.CompletedTask;
-    }
-
-    /// <summary>
-    /// 外部から内部状態をリセットするためのメソッド
-    /// </summary>
-    public void ResetState()
-    {
-        _isInitialized = false;
-        _localCurrentAngle = startAngle;
     }
 }

@@ -36,4 +36,23 @@ public class ParallelPattern : PatternBase
         // UniTask.WhenAllで、リスト内の全てのタスクが完了するのを待つ
         await UniTask.WhenAll(tasks);
     }
+
+    public override async UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    {
+        if (patterns == null || patterns.Count == 0)
+        {
+            return;
+        }
+
+        var tasks = new List<UniTask>();
+        foreach (var step in patterns)
+        {
+            if (token.IsCancellationRequested) return;
+            if (step.pattern != null)
+            {
+                tasks.Add(step.pattern.Execute(state, token));
+            }
+        }
+        await UniTask.WhenAll(tasks);
+    }
 }

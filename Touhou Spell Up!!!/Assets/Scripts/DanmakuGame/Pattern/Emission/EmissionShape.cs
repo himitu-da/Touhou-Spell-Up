@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public abstract class EmissionShape : ScriptableObject
 {
     [Tooltip("共有角度（オプション）。これを設定すると、生成される角度に適用。")]
-    [SerializeField] protected SharedAngle sharedAngle;
+    [SerializeField] protected AngleParameter sharedAngle;
 
     [Tooltip("角度モード: Fixed（固定）、AimToPlayer（各ポイントで自機狙い）、Radial（放射状）")]
     [SerializeField] protected AngleMode angleMode = AngleMode.Fixed;

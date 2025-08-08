@@ -8,10 +8,10 @@ public class ScatteringPattern : ShootPatternBase
 {
     [Header("ばらまき弾の設定")]
     // 分布方法＝正規分布、ランダムを将来的に追加する
-    [SerializeField, Range(1, 100)] private int scatterCount = 10;
-    [SerializeField, Range(0f, 10f)] private float interval = 0.5f;
-    [SerializeField, Range(0f, 360f)] private float totalAngle = 60f;
-    [SerializeField] private bool allRound;
+    [SerializeField] private IntReference scatterCount = new IntReference { useConstant = true, constantValue = 10 };
+    [SerializeField] private FloatReference interval = new FloatReference { useConstant = true, constantValue = 0.5f };
+    [SerializeField] private FloatReference totalAngle = new FloatReference { useConstant = true, constantValue = 60f };
+    [SerializeField] private BoolReference allRound = new BoolReference { useConstant = true, constantValue = false };
 
     public override async UniTask ExecuteShoot(GameEntityController controller, CancellationToken token)
     {
@@ -29,7 +29,7 @@ public class ScatteringPattern : ShootPatternBase
         else
         {
             // EmissionShapeがない場合は、従来通り単一の発生源を追加
-            emissions.Add(new EmissionData { localPosition = positionOffset, localAngle = 0 });
+            emissions.Add(new EmissionData { localPosition = positionOffset.Value, localAngle = 0 });
         }
 
         if (emissions.Count == 0)
@@ -38,12 +38,12 @@ public class ScatteringPattern : ShootPatternBase
             return;
         }
 
-        bool useAlwaysAim = this.aimAtPlayer && this.alwaysAimToPlayer;
-        float finalAngle = allRound ? 360f : totalAngle;
+        bool useAlwaysAim = this.aimAtPlayer.Value && this.alwaysAimToPlayer.Value;
+        float finalAngle = allRound.Value ? 360f : totalAngle.Value;
         float startAngle = -finalAngle / 2;
         float endAngle = finalAngle / 2;
 
-        for (int i = 0; i < scatterCount; i++)
+        for (int i = 0; i < scatterCount.Value; i++)
         {
             if (token.IsCancellationRequested) break;
 
@@ -51,13 +51,13 @@ public class ScatteringPattern : ShootPatternBase
             EmissionData emissionData = emissions[Random.Range(0, emissions.Count)];
 
             Vector3 baseSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
-            if (followShooterPosition)
+            if (followShooterPosition.Value)
             {
                 baseSpawnPosition = GetSpawnPosition(controller) + controller.transform.rotation * emissionData.localPosition;
             }
 
             float centerAngle;
-            if (aimAtPlayer)
+            if (aimAtPlayer.Value)
             {
                 centerAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f;
             }
@@ -65,11 +65,11 @@ public class ScatteringPattern : ShootPatternBase
             {
                 centerAngle = controller.transform.eulerAngles.z + emissionData.localAngle;
             }
-            centerAngle += directionOffset;
+            centerAngle += directionOffset.Value;
 
             if (useAlwaysAim)
             {
-                centerAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f + directionOffset;
+                centerAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f + directionOffset.Value;
             }
 
             float scatterAngle = centerAngle + Random.Range(startAngle, endAngle);
@@ -78,9 +78,9 @@ public class ScatteringPattern : ShootPatternBase
             Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, scatterAngle);
             controller.InstantiateProperty(_entity, finalSpawnPosition, rotation);
 
-            if (interval > 0)
+            if (interval.Value > 0)
             {
-                await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
+                await UniTask.Delay((int)(interval.Value * 1000), cancellationToken: token);
             }
         }
     }

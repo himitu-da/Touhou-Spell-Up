@@ -8,10 +8,10 @@ public class LoopPattern : PatternBase
     [SerializeField]
     private PatternBase pattern;
 
-    [SerializeField, Min(0.0f)]
-    private float interval = 1.0f;
-    [SerializeField, Min(0)]
-    private int loopCount = 0;
+    [SerializeField]
+    private FloatReference interval = new FloatReference { useConstant = true, constantValue = 1.0f };
+    [SerializeField]
+    private IntReference loopCount = new IntReference { useConstant = true, constantValue = 0 };
 
     public override async UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
@@ -25,16 +25,44 @@ public class LoopPattern : PatternBase
             // 子パターンの実行
             await pattern.Execute(controller, token);
 
-            if (interval > 0)
+            if (interval.Value > 0)
             {
                 // 指定された間隔だけ待機
-                await UniTask.Delay((int)(interval * 1000), cancellationToken: token);
+                await UniTask.Delay((int)(interval.Value * 1000), cancellationToken: token);
             }
 
-            if (loopCount > 0)
+            if (loopCount.Value > 0)
             {
                 i++;
-                if (i >= loopCount)
+                if (i >= loopCount.Value)
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    public override async UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    {
+        if (pattern == null)
+        {
+            Debug.LogError("Patternが設定されていません。", this);
+            return;
+        }
+
+        for (int i = 0; !token.IsCancellationRequested; )
+        {
+            await pattern.Execute(state, token);
+
+            if (interval.Value > 0)
+            {
+                await UniTask.Delay((int)(interval.Value * 1000), cancellationToken: token);
+            }
+
+            if (loopCount.Value > 0)
+            {
+                i++;
+                if (i >= loopCount.Value)
                 {
                     break;
                 }

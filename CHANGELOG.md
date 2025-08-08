@@ -293,3 +293,31 @@
     - `PatternBase` およびその派生クラス（`MovePatternBase`, `StraightMovePattern`, `CurveMovePattern` など）のシグネチャを、新しい `MovementState` を扱うように更新
     - `SatelliteMovePattern` のような親オブジェクトに依存する特殊な移動パターンも、新しい設計の上で動作するように修正
     - `GameEntityController` に `Update` メソッドを追加したことに伴い、サブクラスである `PlayerController` と `BulletController` で発生していたメソッドの隠蔽に関する警告（CS0114）を、`override` キーワードを追加して解消
+- Playerのtransformを取得することなど、Playerに関する便利機能をまとめたのPlayerUtilityを作成
+    - プレイヤーオブジェクトへのアクセスを効率化・一元化するための `PlayerUtility` クラスを新規に作成
+- PlayerUtilityを用いて、ShootPatternBaseのRelativeToPlayerを実装
+    - 発射地点 RelativeToPlayer の実装
+- HomingMovePatternを作成（追従弾）
+    - 指定した対象（プレイヤー）を追従して移動
+    - 従の強さを制御する「角速度 (`_angularSpeed`)」と「対象への移動速度 (`_homingSpeed`)」をパラメータとして設定可能
+    - 追従ループ内で常に対象の存在を確認し、対象がいない場合は安全に処理を停止
+- Composite Patternにおいて、MovementStateに対応する処理を実装
+
+## [v0.1.11] - 2025-08-08
+- RotatingPatternでdirectionOffsetが使われていなかった問題を修正
+- SharedResource抽象クラスを、GameParameterに名称変更
+    - SharedAngleもAngleParameterに変更。
+- SharedResourceフォルダをGameParameterに名称変更
+- GameParameterシステムの導入
+    - ゲーム内のあらゆるパラメータ（速度、角度、HPなど）を、固定値だけでなく、他のパラメータやゲーム状態から動的に計算できる柔軟なシステムを構築。
+- GameEntity、GameEntityProperty、GameEntityControllerのフォルダをEntityフォルダに移動
+- 具象クラスとしてConstantParameter、CalculatedParameter、GameStateParameterなどを作成
+- GameParameterReferenceクラスを作成し、PatternBaseのすべてのint、float、Vector2、Vector3️、bool、String型のSerializeFieldを置換する（カスタムエディタを使用）
+    - GameParameter具象クラスはScriptableObject、GameParameterReferenceはそれを読み取るクラス
+    - すべての値を共通して利用できるようになる
+    - カスタムインスペクタでは、「固定値」を扱うか「動的値」（GameParameter具象クラス）を扱うかを選択できる
+    - `RotatingShotPattern`と`MultiWayPattern`の複雑だった角度共有機能を、`GameParameter`システムを用いてシンプルで一貫性のある設計に統一。
+- CHANGELOGフォルダを作成し、バージョンごとにファイルを作成。テンプレート（_TEMPLATE）を追加
+
+# 重要
+以降の変更点は、ChangeLogフォルダに記載

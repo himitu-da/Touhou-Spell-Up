@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// 共有されるリソースの基底となる抽象クラス
 /// </summary>
-public abstract class SharedResource : ScriptableObject
+public abstract class GameParameter : ScriptableObject
 {
     /// <summary>
     /// 値を初期状態にリセットする
@@ -15,7 +15,7 @@ public abstract class SharedResource : ScriptableObject
 /// 型を指定できるジェネリック版の共有リソース
 /// </summary>
 /// <typeparam name="T">共有したい値の型</typeparam>
-public abstract class SharedResource<T> : SharedResource
+public abstract class GameParameter<T> : GameParameter
 {
     [Header("現在の値（実行時に変化）")]
     [SerializeField] protected T currentValue;

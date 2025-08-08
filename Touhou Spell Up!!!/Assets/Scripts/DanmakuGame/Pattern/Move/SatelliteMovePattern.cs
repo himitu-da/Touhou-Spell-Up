@@ -7,16 +7,16 @@ public class SatelliteMovePattern : MovePatternBase
 {
     [Header("中心点の設定")]
     [SerializeField] private SpawnPointType spawnPointType = SpawnPointType.RelativeToShooter;
-    [SerializeField] private Vector3 positionOffset = Vector3.zero;
+    [SerializeField] private Vector3Reference positionOffset = new Vector3Reference { useConstant = true, constantValue = Vector3.zero };
 
     [Header("移動設定")]
-    [SerializeField] private float initialRadius = 1f;    // 初期半径
-    [SerializeField] private float radialSpeed = 0f;      // 半径方向の速度 (ユニット/秒)
-    [SerializeField] private float angularSpeed = 90f;    // 角速度 (度/秒)
-    [SerializeField] private float tangentialSpeed = 0f;  // 接線速度 (ユニット/秒)
+    [SerializeField] private FloatReference initialRadius = new FloatReference { useConstant = true, constantValue = 1f };    // 初期半径
+    [SerializeField] private FloatReference radialSpeed = new FloatReference { useConstant = true, constantValue = 0f };      // 半径方向の速度 (ユニット/秒)
+    [SerializeField] private FloatReference angularSpeed = new FloatReference { useConstant = true, constantValue = 90f };    // 角速度 (度/秒)
+    [SerializeField] private FloatReference tangentialSpeed = new FloatReference { useConstant = true, constantValue = 0f };  // 接線速度 (ユニット/秒)
 
     [Header("追跡設定")]
-    [SerializeField] private bool followShooter = true; // 親を追跡するか
+    [SerializeField] private BoolReference followShooter = new BoolReference { useConstant = true, constantValue = true }; // 親を追跡するか
 
     // MovementStateだけでは親を取得できないため、GameEntityController版のExecuteImplをoverrideする
     public override UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
@@ -49,7 +49,7 @@ public class SatelliteMovePattern : MovePatternBase
     {
         Vector3 centerPosition = GetSpawnPosition(centerController);
 
-        float radius = initialRadius;
+        float radius = initialRadius.Value;
         float currentAngle = state.Rotation.eulerAngles.z;
 
         // 弾の初期位置を計算して設定
@@ -58,18 +58,18 @@ public class SatelliteMovePattern : MovePatternBase
 
         while (!token.IsCancellationRequested)
         {
-            if (followShooter && centerController != null)
+            if (followShooter.Value && centerController != null)
             {
                 centerPosition = GetSpawnPosition(centerController);
             }
 
-            radius += radialSpeed * Time.deltaTime;
+            radius += radialSpeed.Value * Time.deltaTime;
 
-            float angularSpeedDelta = angularSpeed * Time.deltaTime;
+            float angularSpeedDelta = angularSpeed.Value * Time.deltaTime;
             float tangentialSpeedDelta = 0f;
             if (radius > 0.001f)
             {
-                tangentialSpeedDelta = (tangentialSpeed / radius) * Mathf.Rad2Deg * Time.deltaTime;
+                tangentialSpeedDelta = (tangentialSpeed.Value / radius) * Mathf.Rad2Deg * Time.deltaTime;
             }
             currentAngle += angularSpeedDelta + tangentialSpeedDelta;
 
@@ -98,17 +98,17 @@ public class SatelliteMovePattern : MovePatternBase
         switch (spawnPointType)
         {
             case SpawnPointType.Absolute:
-                return positionOffset;
+                return positionOffset.Value;
 
             case SpawnPointType.RelativeToShooter:
                 if (controller != null)
                 {
-                    return controller.transform.position + positionOffset;
+                    return controller.transform.position + positionOffset.Value;
                 }
                 else
                 {
                     Debug.LogWarning("Movable is null, but spawnPointType is RelativeToShooter. Falling back to absolute position.");
-                    return positionOffset;
+                    return positionOffset.Value;
                 }
 
             case SpawnPointType.RelativeToPlayer:
@@ -116,9 +116,9 @@ public class SatelliteMovePattern : MovePatternBase
                 Debug.LogWarning("RelativeToPlayer is not implemented yet.");
                 if (controller != null)
                 {
-                    return controller.transform.position + positionOffset; // Fallback
+                    return controller.transform.position + positionOffset.Value; // Fallback
                 }
-                return positionOffset; // Fallback
+                return positionOffset.Value; // Fallback
 
             default:
                 if (controller != null)

@@ -18,7 +18,7 @@ public class BasicShotPattern : ShootPatternBase
 
         // 基準角度を計算
         float angle;
-        if (aimAtPlayer)
+        if (aimAtPlayer.Value)
         {
             angle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f;
         }
@@ -26,7 +26,7 @@ public class BasicShotPattern : ShootPatternBase
         {
             angle = controller.transform.eulerAngles.z + emissionData.localAngle;
         }
-        angle += directionOffset;
+        angle += directionOffset.Value;
 
         Quaternion spawnRotation = Quaternion.Euler(0, 0, angle);
 

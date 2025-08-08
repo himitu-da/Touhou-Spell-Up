@@ -1,5 +1,5 @@
 @startuml ClassDiagram_Overview
-' v2025.07.29
+' v0.1.11
 ' ステレオタイプの色設定
 skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
@@ -44,11 +44,17 @@ class LoopPattern <<ScriptableObject>>
 class ParallelPattern <<ScriptableObject>>
 class SequencePattern <<ScriptableObject>>
 abstract class EmissionShape <<ScriptableObject>>
-class SharedAngle <<ScriptableObject>>
+abstract class GameParameter <<ScriptableObject>>
+class AngleParameter <<ScriptableObject>>
+class ConstantFloatParameter <<ScriptableObject>>
+class CalculatedParameter <<ScriptableObject>>
+class GameStateParameter <<ScriptableObject>>
+class "GameParameterReference<T>" as GameParameterReference_T <<struct>>
 
 ' --- その他 ---
 class EnemyLifeGaugeController <<MonoBehaviour>>
 class AngleUtility <<static>>
+class PlayerUtility <<static>>
 
 ' --- 継承関係 ---
 GameEntityController <|-- PlayerController
@@ -65,6 +71,11 @@ PatternBase <|-- ShootPatternBase
 PatternBase <|-- LoopPattern
 PatternBase <|-- ParallelPattern
 PatternBase <|-- SequencePattern
+GameParameter <|-- AngleParameter
+GameParameter <|-- ConstantFloatParameter
+GameParameter <|-- CalculatedParameter
+GameParameter <|-- GameStateParameter
+GameParameterReference_T ..> GameParameter
 IMovable <|.. GameEntityController
 IShootable <|.. GameEntityController
 
@@ -76,9 +87,12 @@ GameEntityProperty o-- PatternBase : "ShootPattern"
 GameEntityProperty o-- PatternBase : "MovePattern"
 PatternBase ..> GameEntityController : "uses"
 ShootPatternBase o-- EmissionShape : "emissionShape"
-ShootPatternBase ..> SharedAngle : "uses"
+ShootPatternBase ..> AngleParameter : "uses"
+EmissionShape ..> AngleParameter : "uses"
 BulletController ..> EnemyController : "calls TakeDamage"
 EnemyController ..> EnemyLifeGaugeController : "creates"
 AngleUtility ..> PlayerController : "finds"
+PlayerUtility ..> PlayerController : "finds"
+ShootPatternBase ..> PlayerUtility : "uses"
 
 @enduml
