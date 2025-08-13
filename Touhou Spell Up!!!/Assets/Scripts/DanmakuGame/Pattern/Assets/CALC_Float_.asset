@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a90c1f7dc28b064a976f9c953779bb9, type: 3}
+  m_Name: CALC_Float_
+  m_EditorClassIdentifier: 
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _targetParameter: {fileID: 11400000, guid: f061905da6b361043960e65ad6e117a2, type: 2}
+  _referencedParameters:
+  - {fileID: 11400000, guid: f061905da6b361043960e65ad6e117a2, type: 2}
+  _expressionString: p0 - 50

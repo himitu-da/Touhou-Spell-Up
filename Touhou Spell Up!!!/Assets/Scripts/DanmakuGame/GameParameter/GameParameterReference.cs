@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TouhouSpellUp.Danmaku;
 
 /// <summary>
 /// GameParameterへの参照、または定数を保持するためのジェネリックな基底クラス。
@@ -46,3 +48,40 @@ public class Vector3Reference : GameParameterReference<Vector3> { }
 
 [System.Serializable]
 public class BoolReference : GameParameterReference<bool> { }
+
+[System.Serializable]
+public class RectReference : GameParameterReference<Rect> { }
+
+// --- ここから追加 ---
+[System.Serializable]
+public class GameEntityReference : GameParameterReference<GameEntity> { }
+
+[System.Serializable]
+public class GameEntityPropertyReference : GameParameterReference<GameEntityProperty> { }
+
+[System.Serializable]
+public class GameEntityControllerReference : GameParameterReference<GameEntityController> { }
+
+[System.Serializable]
+public class PatternBaseReference : GameParameterReference<PatternBase> { }
+
+[System.Serializable]
+public class EmissionShapeReference : GameParameterReference<EmissionShape> { }
+
+[System.Serializable]
+public class ImageReference : GameParameterReference<Image> { }
+
+[System.Serializable]
+public class PrefabReference : GameParameterReference<GameObject> { }
+
+[System.Serializable]
+public class AngleParameterReference : GameParameterReference<AngleParameter> { }
+
+[System.Serializable]
+public class SpawnPointTypeReference : GameParameterReference<SpawnPointType> { }
+
+[System.Serializable]
+public class RotationDirectionReference : GameParameterReference<RotationDirection> { }
+
+[System.Serializable]
+public class AngleModeReference : GameParameterReference<EmissionShape.AngleMode> { }

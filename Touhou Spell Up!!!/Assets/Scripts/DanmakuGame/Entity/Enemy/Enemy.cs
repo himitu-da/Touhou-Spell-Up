@@ -4,5 +4,5 @@ using UnityEngine;
 public class Enemy : GameEntity
 {
     // GameEntityの'property'フィールドをEnemyPropertyとしてキャストして公開する
-    public EnemyProperty PropertyTyped => property as EnemyProperty;
+    public EnemyProperty PropertyTyped => property.Value as EnemyProperty;
 }

@@ -12,16 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3c7e54a59024ff4d95b929ea8d6fee7, type: 3}
   m_Name: PlayerProperty
   m_EditorClassIdentifier: 
-  shootPattern: {fileID: 0}
-  movePattern: {fileID: 0}
-  moveSpeed: 9
-  moveSpeedSlow: 3
+  shootPattern:
+    useConstant: 1
+    constantValue: {fileID: 0}
+    parameter: {fileID: 0}
+  movePattern:
+    useConstant: 1
+    constantValue: {fileID: 0}
+    parameter: {fileID: 0}
+  moveSpeed:
+    useConstant: 1
+    constantValue: 9
+    parameter: {fileID: 0}
+  moveSpeedSlow:
+    useConstant: 1
+    constantValue: 3
+    parameter: {fileID: 0}
   movableArea:
-    serializedVersion: 2
-    x: -16
-    y: -9
-    width: 32
-    height: 18
-  shotInterval: 0.1
-  shotPatternNormal: {fileID: 11400000, guid: 0b98d0f53a3fd084bab73a1cbfb3ec14, type: 2}
-  shotPatternSlow: {fileID: 11400000, guid: 0b98d0f53a3fd084bab73a1cbfb3ec14, type: 2}
+    useConstant: 1
+    constantValue:
+      serializedVersion: 2
+      x: -16
+      y: -9
+      width: 32
+      height: 18
+    parameter: {fileID: 0}
+  shotInterval:
+    useConstant: 1
+    constantValue: 0.1
+    parameter: {fileID: 0}
+  shotPatternNormal:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: 0b98d0f53a3fd084bab73a1cbfb3ec14, type: 2}
+    parameter: {fileID: 0}
+  shotPatternSlow:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: 0b98d0f53a3fd084bab73a1cbfb3ec14, type: 2}
+    parameter: {fileID: 0}

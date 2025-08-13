@@ -12,8 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdec78ff14d98e84b8a2f14fe44058d4, type: 3}
   m_Name: RTS_B
   m_EditorClassIdentifier: 
-  _beforeAwaitSeconds: 0
-  _afterAwaitSeconds: 0
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
   _entity: {fileID: 11400000, guid: c04f33af92af4764a945fd1b4b6946ff, type: 2}
   spawnPointType: 0
   positionOffset:
@@ -35,11 +41,11 @@ MonoBehaviour:
     parameter: {fileID: 0}
   directionOffset:
     useConstant: 1
-    constantValue: 0
+    constantValue: 180
     parameter: {fileID: 0}
   aimAtPlayer:
     useConstant: 1
-    constantValue: 0
+    constantValue: 1
     parameter: {fileID: 0}
   alwaysAimToPlayer:
     useConstant: 1

@@ -231,4 +231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff931c6099468c6498d238285f94f568, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lifeGaugeImage: {fileID: 4804082576252952052}
+  _lifeGaugeImage:
+    useConstant: 1
+    constantValue: {fileID: 4804082576252952052}
+    parameter: {fileID: 0}

@@ -544,8 +544,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9930e3c6c5381e4fa640308ed35062e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _entity: {fileID: 11400000, guid: 67792246908d20c488026a83136a9416, type: 2}
-  hitboxMarker: {fileID: 52255542}
+  _entity:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: 67792246908d20c488026a83136a9416, type: 2}
+    parameter: {fileID: 0}
+  _interpolationSpeed:
+    useConstant: 1
+    constantValue: 15
+    parameter: {fileID: 0}
+  hitboxMarker:
+    useConstant: 1
+    constantValue: {fileID: 52255542}
+    parameter: {fileID: 0}
 --- !u!114 &1078971736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -872,8 +882,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421d8442025816849bece32b5cf760d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _entity: {fileID: 11400000, guid: 29c4c4139997f3c4daeef9192eea1fa8, type: 2}
-  lifeGaugePrefab: {fileID: 6845083702458507679, guid: b33681019a1032140a6bf80759c2caf7, type: 3}
+  _entity:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: 29c4c4139997f3c4daeef9192eea1fa8, type: 2}
+    parameter: {fileID: 0}
+  _interpolationSpeed:
+    useConstant: 1
+    constantValue: 15
+    parameter: {fileID: 0}
+  lifeGaugePrefab:
+    useConstant: 1
+    constantValue: {fileID: 6845083702458507679, guid: b33681019a1032140a6bf80759c2caf7, type: 3}
+    parameter: {fileID: 0}
 --- !u!1 &1648173143
 GameObject:
   m_ObjectHideFlags: 0

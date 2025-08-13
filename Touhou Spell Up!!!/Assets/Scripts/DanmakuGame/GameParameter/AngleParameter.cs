@@ -6,8 +6,27 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GPA_", menuName = "Danmaku/GameParameter/Angle (float)")]
 public class AngleParameter : GameParameter<float>
 {
-    // GameParameter<float>を継承するだけで、
-    // 必要な機能（Valueプロパティ、Resetメソッドなど）はすべて実装済み。
-    // 今後、角度に特化した処理（例：ラジアンへの変換など）が必要になった場合は、
-    // このクラスに追記していく。
+    public override float Value
+    {
+        get => base.Value;
+        set
+        {
+            // 角度を0-360の範囲に正規化
+            float normalizedValue = value % 360f;
+            if (normalizedValue < 0)
+            {
+                normalizedValue += 360f;
+            }
+            base.Value = normalizedValue;
+        }
+    }
+
+    /// <summary>
+    /// 角度に値を加算します。結果は自動的に0-360の範囲に正規化されます。
+    /// </summary>
+    /// <param name="amount">加算する角度</param>
+    public void Add(float amount)
+    {
+        Value += amount;
+    }
 }

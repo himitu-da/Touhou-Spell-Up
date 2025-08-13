@@ -12,16 +12,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3820d39d8630a224dba9f9ea6ea5bf39, type: 3}
   m_Name: BASIC_
   m_EditorClassIdentifier: 
-  _beforeAwaitSeconds: 0
-  _afterAwaitSeconds: 0
-  _entity: {fileID: 11400000, guid: eca161d462224dc4ca708fdda6f6b080, type: 2}
-  spawnPointType: 0
-  positionOffset: {x: 0, y: 0, z: 0}
-  followShooterPosition: 0
-  emissionShape: {fileID: 11400000, guid: e3b136d61b41b974aaf052131eabb9fe, type: 2}
-  sequential: 0
-  emissionInterval: 0.1
-  directionOffset: 0
-  aimAtPlayer: 0
-  alwaysAimToPlayer: 0
-  spawnRadius: 0
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _entity:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: eca161d462224dc4ca708fdda6f6b080, type: 2}
+    parameter: {fileID: 0}
+  spawnPointType:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  positionOffset:
+    useConstant: 1
+    constantValue: {x: 0, y: 0, z: 0}
+    parameter: {fileID: 0}
+  followShooterPosition:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  emissionShape:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: e3b136d61b41b974aaf052131eabb9fe, type: 2}
+    parameter: {fileID: 0}
+  sequential:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  emissionInterval:
+    useConstant: 1
+    constantValue: 0.1
+    parameter: {fileID: 0}
+  directionOffset:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  aimAtPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  alwaysAimToPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  spawnRadius:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}

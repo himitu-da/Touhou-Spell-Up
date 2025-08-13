@@ -15,16 +15,16 @@ public class ScatteringPattern : ShootPatternBase
 
     public override async UniTask ExecuteShoot(GameEntityController controller, CancellationToken token)
     {
-        if (_entity == null || _entity.Prefab == null)
+        if (_entity == null || _entity.Value == null || _entity.Value.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
         }
 
         var emissions = new List<EmissionData>();
-        if (emissionShape != null)
+        if (emissionShape != null && emissionShape.Value != null)
         {
-            emissions.AddRange(emissionShape.GetEmissions(controller));
+            emissions.AddRange(emissionShape.Value.GetEmissions(controller));
         }
         else
         {
@@ -76,11 +76,16 @@ public class ScatteringPattern : ShootPatternBase
             Quaternion rotation = Quaternion.Euler(0, 0, scatterAngle);
 
             Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, scatterAngle);
-            controller.InstantiateProperty(_entity, finalSpawnPosition, rotation);
+            controller.InstantiateProperty(_entity.Value, finalSpawnPosition, rotation);
 
             if (interval.Value > 0)
             {
-                await UniTask.Delay((int)(interval.Value * 1000), cancellationToken: token);
+                float waitTime = interval.Value;
+                while (waitTime > 0 && !token.IsCancellationRequested)
+                {
+                    await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
+                    waitTime -= Time.fixedDeltaTime;
+                }
             }
         }
     }

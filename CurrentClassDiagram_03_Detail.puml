@@ -1,5 +1,5 @@
 @startuml ClassDiagram
-' v0.1.11
+' v0.1.12
 ' ステレオタイプの色設定
 skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
@@ -10,374 +10,421 @@ skinparam class {
     BackgroundColor<<enum>> LightCoral
 }
 
-' --- インターフェース定義 ---
-interface IMovable <<Interface>> {
-    +transform : Transform
-}
-interface IShootable <<Interface>> {
-    +InstantiateProperty(GameEntity, Vector3, Quaternion)
+package "Core" {
+    ' --- インターフェース定義 ---
+    interface IMovable <<Interface>> {
+        +transform : Transform
+    }
+    interface IShootable <<Interface>> {
+        +InstantiateProperty(GameEntity, Vector3, Quaternion)
+    }
+
+    ' --- マネージャー ---
+    class SystemManager <<MonoBehaviour>> {
+        + {static} Instance : SystemManager
+    }
+    class DanmakuGameManager <<MonoBehaviour>> {
+        + {static} Instance : DanmakuGameManager
+        +GameOver()
+    }
 }
 
-' --- マネージャー ---
-class SystemManager <<MonoBehaviour>> {
-    + {static} Instance : SystemManager
-}
-class DanmakuGameManager <<MonoBehaviour>> {
-    + {static} Instance : DanmakuGameManager
-    +GameOver()
-}
+package "Entity" {
+    ' --- エンティティ基盤 ---
+    abstract class GameEntityController <<MonoBehaviour>> {
+        #_entity : GameEntity
+        +Property : GameEntityProperty
+        +ParentActor : GameEntityController
+        #_cancellationTokenSource : CancellationTokenSource
+        +Initialize(GameEntity)
+        #OnDestroy()
+    }
+    IMovable <|.. GameEntityController
+    IShootable <|.. GameEntityController
 
-' --- エンティティ基盤 ---
-abstract class GameEntityController <<MonoBehaviour>> {
-    #_entity : GameEntity
-    +Property : GameEntityProperty
-    +ParentActor : GameEntityController
-    #_cancellationTokenSource : CancellationTokenSource
-    +Initialize(GameEntity)
-    #OnDestroy()
-}
-IMovable <|.. GameEntityController
-IShootable <|.. GameEntityController
+    class GameEntity <<ScriptableObject>> {
+        +Prefab : GameObject
+        #property : GameEntityProperty
+    }
+    GameEntityController o-- GameEntity : " _entity"
 
-class GameEntity <<ScriptableObject>> {
-    +Prefab : GameObject
-    #property : GameEntityProperty
-}
-GameEntityController o-- GameEntity : " _entity"
-
-class GameEntityProperty <<ScriptableObject>> {
-    +ShootPattern : PatternBase
-    +MovePattern : PatternBase
-}
-GameEntity o-- "1" GameEntityProperty : " property"
+    class GameEntityProperty <<ScriptableObject>> {
+        +ShootPattern : PatternBase
+        +MovePattern : PatternBase
+    }
+    GameEntity o-- "1" GameEntityProperty : " property"
 
 
-' --- Player ---
-class PlayerController <<MonoBehaviour>> {
-    -hitboxMarker : GameObject
-    +OnMove(InputValue)
-    +OnShot(InputValue)
-    +OnSlowMove(InputValue)
-    +OnHit()
-}
-GameEntityController <|-- PlayerController
-PlayerController ..> DanmakuGameManager : "calls GameOver"
+    ' --- Player ---
+    class PlayerController <<MonoBehaviour>> {
+        -hitboxMarker : GameObject
+        +OnMove(InputValue)
+        +OnShot(InputValue)
+        +OnSlowMove(InputValue)
+        +OnHit()
+    }
+    GameEntityController <|-- PlayerController
+    PlayerController ..> DanmakuGameManager : "calls GameOver"
 
-class Player <<ScriptableObject>> {
-    +PlayerProperty : PlayerProperty
-}
-GameEntity <|-- Player
+    class Player <<ScriptableObject>> {
+        +PlayerProperty : PlayerProperty
+    }
+    GameEntity <|-- Player
 
-class PlayerProperty <<ScriptableObject>> {
-    +MoveSpeed : float
-    +MoveSpeedSlow : float
-    +MovableArea : Rect
-    +ShotInterval : float
-    +ShotPatternNormal : PatternBase
-    +ShotPatternSlow : PatternBase
-}
-GameEntityProperty <|-- PlayerProperty
-PlayerProperty o-- "shotPatternNormal" PatternBase
-PlayerProperty o-- "shotPatternSlow" PatternBase
-PlayerController ..> PlayerProperty : "uses"
-
-
-' --- Enemy ---
-class EnemyController <<MonoBehaviour>> {
-    +MaxHealth : float
-    +CurrentHealth : float
-    +HealthPercentage : float
-    +OnHealthChanged : UnityAction<float, float>
-    +TakeDamage(float)
-    -Die()
-}
-GameEntityController <|-- EnemyController
-
-class Enemy <<ScriptableObject>> {
-    +PropertyTyped : EnemyProperty
-}
-GameEntity <|-- Enemy
-
-class EnemyProperty <<ScriptableObject>> {
-    +MaxHealth : int
-}
-GameEntityProperty <|-- EnemyProperty
-EnemyController ..> EnemyProperty : "uses"
+    class PlayerProperty <<ScriptableObject>> {
+        +MoveSpeed : float
+        +MoveSpeedSlow : float
+        +MovableArea : Rect
+        +ShotInterval : float
+        +ShotPatternNormal : PatternBase
+        +ShotPatternSlow : PatternBase
+    }
+    GameEntityProperty <|-- PlayerProperty
+    PlayerProperty o-- "shotPatternNormal" PatternBase
+    PlayerProperty o-- "shotPatternSlow" PatternBase
+    PlayerController ..> PlayerProperty : "uses"
 
 
-' --- Bullet ---
-class BulletController <<MonoBehaviour>> {
-    - _isPlayerShot : bool
-    +Initialize(GameEntity, GameEntityController)
-}
-GameEntityController <|-- BulletController
-BulletController ..> EnemyController : "calls TakeDamage"
-BulletController ..> PlayerController : "calls OnHit (via trigger)"
+    ' --- Enemy ---
+    class EnemyController <<MonoBehaviour>> {
+        +MaxHealth : float
+        +CurrentHealth : float
+        +HealthPercentage : float
+        +OnHealthChanged : UnityAction<float, float>
+        +TakeDamage(float)
+        -Die()
+    }
+    GameEntityController <|-- EnemyController
 
-class Bullet <<ScriptableObject>> {
-    + {new} Property : BulletProperty
-}
-GameEntity <|-- Bullet
+    class Enemy <<ScriptableObject>> {
+        +PropertyTyped : EnemyProperty
+    }
+    GameEntity <|-- Enemy
 
-class BulletProperty <<ScriptableObject>> {
-    +LifeTime : float
-    +AttackPower : float
-}
-GameEntityProperty <|-- BulletProperty
-BulletController ..> BulletProperty : "uses"
+    class EnemyProperty <<ScriptableObject>> {
+        +MaxHealth : int
+    }
+    GameEntityProperty <|-- EnemyProperty
+    EnemyController ..> EnemyProperty : "uses"
 
 
-' --- 状態 ---
-class MovementState {
-    +Position : Vector3
-    +Rotation : Quaternion
-    +Velocity : Vector3
+    ' --- Bullet ---
+    class BulletController <<MonoBehaviour>> {
+        - _isPlayerShot : bool
+        +Initialize(GameEntity, GameEntityController)
+    }
+    GameEntityController <|-- BulletController
+    BulletController ..> EnemyController : "calls TakeDamage"
+    BulletController ..> PlayerController : "calls OnHit (via trigger)"
+
+    class Bullet <<ScriptableObject>> {
+        + {new} Property : BulletProperty
+    }
+    GameEntity <|-- Bullet
+
+    class BulletProperty <<ScriptableObject>> {
+        +LifeTime : float
+        +AttackPower : float
+    }
+    GameEntityProperty <|-- BulletProperty
+    BulletController ..> BulletProperty : "uses"
 }
 
-' --- パターン関連 ---
-abstract class PatternBase <<ScriptableObject>> {
-  -_beforeAwaitSeconds : FloatReference
-  -_afterAwaitSeconds : FloatReference
-  +Execute(GameEntityController, CancellationToken) : UniTask
-    +Execute(MovementState, CancellationToken) : UniTask
-    + {abstract} ExecuteImpl(GameEntityController, CancellationToken) : UniTask
-    +ExecuteImpl(MovementState, CancellationToken) : UniTask
-}
-GameEntityProperty o-- "ShootPattern" PatternBase
-GameEntityProperty o-- "MovePattern" PatternBase
-PatternBase ..> GameEntityController : "uses"
-PatternBase ..> MovementState : "uses"
-PatternBase ..> FloatReference
+package "Pattern" {
+    ' --- 状態 ---
+    class MovementState {
+        +Position : Vector3
+        +Rotation : Quaternion
+        +Velocity : Vector3
+    }
 
-abstract class MovePatternBase <<ScriptableObject>> {
-    +ExecuteImpl(MovementState, CancellationToken) : UniTask
-    + {abstract} ExecuteMove(MovementState, CancellationToken) : UniTask
-}
-PatternBase <|-- MovePatternBase
-class StraightMovePattern <<ScriptableObject>> {
-  -_speed : FloatReference
-}
-class CurveMovePattern <<ScriptableObject>> {
-  -speed : FloatReference
-  -angleChangeRate : FloatReference
-  -overrideInitialDirection : BoolReference
-  -initialDirection : FloatReference
-}
-class SatelliteMovePattern <<ScriptableObject>> {
-  -positionOffset : Vector3Reference
-  -initialRadius : FloatReference
-  -radialSpeed : FloatReference
-  -angularSpeed : FloatReference
-  -tangentialSpeed : FloatReference
-  -followShooter : BoolReference
-}
-class HomingMovePattern <<ScriptableObject>> {
-  -_homingSpeed : FloatReference
-  -_angularSpeed : FloatReference
-  -_duration : FloatReference
-}
-MovePatternBase <|-- StraightMovePattern
-MovePatternBase <|-- CurveMovePattern
-MovePatternBase <|-- SatelliteMovePattern
-MovePatternBase <|-- HomingMovePattern
-HomingMovePattern ..> PlayerUtility : "uses"
-StraightMovePattern ..> FloatReference
-CurveMovePattern ..> FloatReference
-CurveMovePattern ..> BoolReference
-SatelliteMovePattern ..> Vector3Reference
-SatelliteMovePattern ..> FloatReference
-SatelliteMovePattern ..> BoolReference
-HomingMovePattern ..> FloatReference
-LoopPattern ..> FloatReference
-LoopPattern ..> IntReference
+    ' --- パターン関連 ---
+    abstract class PatternBase <<ScriptableObject>> {
+      -_beforeAwaitSeconds : FloatReference
+      -_afterAwaitSeconds : FloatReference
+      +Execute(GameEntityController, CancellationToken) : UniTask
+      +Execute(MovementState, CancellationToken) : UniTask
+      + {abstract} ExecuteImpl(GameEntityController, CancellationToken) : UniTask
+      +ExecuteImpl(MovementState, CancellationToken) : UniTask
+    }
+    GameEntityProperty o-- "ShootPattern" PatternBase
+    GameEntityProperty o-- "MovePattern" PatternBase
+    PatternBase ..> GameEntityController : "uses"
+    PatternBase ..> MovementState : "uses"
+    PatternBase ..> FloatReference
 
-abstract class ShootPatternBase <<ScriptableObject>> {
-  #_entity : GameEntity
-  #positionOffset : Vector3Reference
-  #followShooterPosition : BoolReference
-  #sequential : BoolReference
-  #emissionInterval : FloatReference
-  #directionOffset : FloatReference
-  #aimAtPlayer : BoolReference
-  #alwaysAimToPlayer : BoolReference
-  #spawnRadius : FloatReference
-  #emissionShape : EmissionShape
-  +ExecuteShoot(GameEntityController, CancellationToken) : UniTask
-  + {abstract} ExecuteShootFromPoint(GameEntityController, EmissionData, CancellationToken) : UniTask
-  #GetSpawnPosition(GameEntityController) : Vector3
-}
-PatternBase <|-- ShootPatternBase
-ShootPatternBase o-- EmissionShape : "emissionShape"
-ShootPatternBase ..> PlayerUtility : "uses"
-ShootPatternBase ..> FloatReference
-ShootPatternBase ..> BoolReference
-ShootPatternBase ..> Vector3Reference
+    abstract class MovePatternBase <<ScriptableObject>> {
+        +ExecuteImpl(MovementState, CancellationToken) : UniTask
+        + {abstract} ExecuteMove(MovementState, CancellationToken) : UniTask
+    }
+    MovePatternBase ..> MovementState : "uses"
+    PatternBase <|-- MovePatternBase
+    class StraightMovePattern <<ScriptableObject>> {
+      -_speed : FloatReference
+    }
+    class CurveMovePattern <<ScriptableObject>> {
+      -speed : FloatReference
+      -angleChangeRate : FloatReference
+      -overrideInitialDirection : BoolReference
+      -initialDirection : FloatReference
+    }
+    class SatelliteMovePattern <<ScriptableObject>> {
+      -positionOffset : Vector3Reference
+      -initialRadius : FloatReference
+      -radialSpeed : FloatReference
+      -angularSpeed : FloatReference
+      -tangentialSpeed : FloatReference
+      -followShooter : BoolReference
+    }
+    class HomingMovePattern <<ScriptableObject>> {
+      -_homingSpeed : FloatReference
+      -_angularSpeed : FloatReference
+      -_duration : FloatReference
+    }
+    MovePatternBase <|-- StraightMovePattern
+    MovePatternBase <|-- CurveMovePattern
+    MovePatternBase <|-- SatelliteMovePattern
+    MovePatternBase <|-- HomingMovePattern
+    HomingMovePattern ..> PlayerUtility : "uses"
+    StraightMovePattern ..> FloatReference
+    CurveMovePattern ..> FloatReference
+    CurveMovePattern ..> BoolReference
+    SatelliteMovePattern ..> Vector3Reference
+    SatelliteMovePattern ..> FloatReference
+    SatelliteMovePattern ..> BoolReference
+    HomingMovePattern ..> FloatReference
+    LoopPattern ..> FloatReference
+    LoopPattern ..> IntReference
 
-class BasicShotPattern <<ScriptableObject>>
-class MultiWayPattern <<ScriptableObject>> {
-  -wayCount : IntReference
-  -totalAngle : FloatReference
-  -allRound : BoolReference
-  -avoidAtPlayer : BoolReference
-  -angleParameter : AngleParameter
-  -initializeParameterOnStart : BoolReference
-  -accumulatingOffset : FloatReference
-}
-class RotatingShotPattern <<ScriptableObject>> {
-  -startAngle : FloatReference
-  -intervalAngle : FloatReference
-  -intervalTime : FloatReference
-  -shotCount : IntReference
-  -angleParameter : AngleParameter
-  -initializeParameterOnStart : BoolReference
-  -accumulatingOffset : FloatReference
-}
-class ScatteringPattern <<ScriptableObject>> {
-  -scatterCount : IntReference
-  -interval : FloatReference
-  -totalAngle : FloatReference
-  -allRound : BoolReference
-}
-ShootPatternBase <|-- BasicShotPattern
-ShootPatternBase <|-- MultiWayPattern
-ShootPatternBase <|-- RotatingShotPattern
-ShootPatternBase <|-- ScatteringPattern
+    abstract class ShootPatternBase <<ScriptableObject>> {
+      #_entity : GameEntityReference
+      #positionOffset : Vector3Reference
+      #followShooterPosition : BoolReference
+      #sequential : BoolReference
+      #emissionInterval : FloatReference
+      #directionOffset : FloatReference
+      #aimAtPlayer : BoolReference
+      #alwaysAimToPlayer : BoolReference
+      #spawnRadius : FloatReference
+      #emissionShape : EmissionShapeReference
+      +ExecuteShoot(GameEntityController, CancellationToken) : UniTask
+      + {abstract} ExecuteShootFromPoint(GameEntityController, EmissionData, CancellationToken) : UniTask
+      #GetSpawnPosition(GameEntityController) : Vector3
+    }
+    PatternBase <|-- ShootPatternBase
+    ShootPatternBase o-- EmissionShapeReference : "emissionShape"
+    ShootPatternBase ..> PlayerUtility : "uses"
+    ShootPatternBase ..> FloatReference
+    ShootPatternBase ..> BoolReference
+    ShootPatternBase ..> Vector3Reference
+    ShootPatternBase ..> GameEntityReference
 
-' --- コンポジットパターン ---
-class LoopPattern <<ScriptableObject>> {
-  -interval : FloatReference
-  -loopCount : IntReference
-}
-class ParallelPattern <<ScriptableObject>>
-class SequencePattern <<ScriptableObject>>
-class "SequencePattern.PatternStep" as PatternStep {
-  +pattern : PatternBase
-  +delay : FloatReference
-}
-PatternBase <|-- LoopPattern
-PatternBase <|-- ParallelPattern
-PatternBase <|-- SequencePattern
-LoopPattern o-- "1" PatternBase : "pattern"
-ParallelPattern o-- "*" PatternBase : "patterns"
-SequencePattern "1" o-- "*" PatternStep : "sequence"
-PatternStep ..> FloatReference
+    class BasicShotPattern <<ScriptableObject>>
+    class MultiWayPattern <<ScriptableObject>> {
+      -wayCount : IntReference
+      -totalAngle : FloatReference
+      -allRound : BoolReference
+      -avoidAtPlayer : BoolReference
+      -angleParameter : AngleParameterReference
+      -initializeParameterOnStart : BoolReference
+      -accumulatingOffset : FloatReference
+    }
+    class RotatingShotPattern <<ScriptableObject>> {
+      -startAngle : FloatReference
+      -intervalAngle : FloatReference
+      -intervalTime : FloatReference
+      -shotCount : IntReference
+      -angleParameter : AngleParameterReference
+      -initializeParameterOnStart : BoolReference
+      -accumulatingOffset : FloatReference
+    }
+    class ScatteringPattern <<ScriptableObject>> {
+      -scatterCount : IntReference
+      -interval : FloatReference
+      -totalAngle : FloatReference
+      -allRound : BoolReference
+    }
+    ShootPatternBase <|-- BasicShotPattern
+    ShootPatternBase <|-- MultiWayPattern
+    ShootPatternBase <|-- RotatingShotPattern
+    ShootPatternBase <|-- ScatteringPattern
 
-' --- 単独パターン ---
-class FireAndForgetPattern <<ScriptableObject>>
-class ForgetPattern <<ScriptableObject>>
-PatternBase <|-- FireAndForgetPattern
-PatternBase <|-- ForgetPattern
+    ' --- コンポジットパターン ---
+    class LoopPattern <<ScriptableObject>> {
+      -pattern : PatternBaseReference
+      -interval : FloatReference
+      -loopCount : IntReference
+    }
+    class ParallelPattern <<ScriptableObject>> {
+      -patterns : List<ParallelStep>
+    }
+    class SequencePattern <<ScriptableObject>> {
+      -sequence : List<PatternStep>
+    }
+    class "SequencePattern.PatternStep" as PatternStep {
+      +pattern : PatternBaseReference
+      +delay : FloatReference
+    }
+    class "ParallelPattern.ParallelStep" as ParallelStep {
+      +pattern : PatternBaseReference
+    }
+    PatternBase <|-- LoopPattern
+    PatternBase <|-- ParallelPattern
+    PatternBase <|-- SequencePattern
+    LoopPattern o-- "1" PatternBaseReference : "pattern"
+    ParallelPattern "1" o-- "*" ParallelStep : "patterns"
+    SequencePattern "1" o-- "*" PatternStep : "sequence"
+    PatternStep ..> PatternBaseReference
+    PatternStep ..> FloatReference
+    ParallelStep ..> PatternBaseReference
 
-' --- 発生源シェイプ ---
-abstract class EmissionShape <<ScriptableObject>> {
-    #sharedAngle : AngleParameter
-    #angleMode : AngleMode
-    + {abstract} GetEmissions(IMovable) : IEnumerable<EmissionData>
-}
-class PointEmissionShape <<ScriptableObject>>
-class LineEmissionShape <<ScriptableObject>>
-class PlaneEmissionShape <<ScriptableObject>>
-EmissionShape <|-- PointEmissionShape
-EmissionShape <|-- LineEmissionShape
-EmissionShape <|-- PlaneEmissionShape
+    ' --- 単独パターン ---
+    class FireAndForgetPattern <<ScriptableObject>>
+    class ForgetPattern <<ScriptableObject>>
+    PatternBase <|-- FireAndForgetPattern
+    PatternBase <|-- ForgetPattern
 
-' --- ゲームパラメータ関連 ---
-abstract class GameParameter <<ScriptableObject>> {
-    + {abstract} Reset()
+    ' --- 発生源シェイプ ---
+    abstract class EmissionShape <<ScriptableObject>> {
+        #sharedAngle : AngleParameter
+        #angleMode : AngleMode
+        + {abstract} GetEmissions(IMovable) : IEnumerable<EmissionData>
+    }
+    class PointEmissionShape <<ScriptableObject>>
+    class LineEmissionShape <<ScriptableObject>>
+    class PlaneEmissionShape <<ScriptableObject>>
+    EmissionShape <|-- PointEmissionShape
+    EmissionShape <|-- LineEmissionShape
+    EmissionShape <|-- PlaneEmissionShape
 }
-abstract class "GameParameter<T>" as GameParameter_T <<ScriptableObject>> {
-    +Value : T
-    +Reset()
-}
-class AngleParameter <<ScriptableObject>>
-abstract class "ConstantParameter<T>" as ConstantParameter_T <<ScriptableObject>>
-class CalculatedParameter <<ScriptableObject>>
-class GameStateParameter <<ScriptableObject>>
 
-GameParameter <|-- GameParameter_T
-GameParameter_T <|-- AngleParameter
-note right of AngleParameter : T = float
-GameParameter_T <|-- ConstantParameter_T
-ConstantParameter_T <|-- ConstantFloatParameter
-note on link: T = float
-ConstantParameter_T <|-- ConstantIntParameter
-note on link: T = int
-GameParameter_T <|-- CalculatedParameter
-note on link: T = float
-GameParameter_T <|-- GameStateParameter
-note on link: T = float
+package "GameParameter" {
+    ' --- ゲームパラメータ関連 ---
+    abstract class GameParameter <<ScriptableObject>> {
+        + {abstract} Reset()
+    }
+    abstract class "GameParameter<T>" as GameParameter_T <<ScriptableObject>> {
+        +Value : T
+        +Reset()
+    }
+    class AngleParameter <<ScriptableObject>>
+    abstract class "ConstantParameter<T>" as ConstantParameter_T <<ScriptableObject>>
+    class CalculatedParameter <<ScriptableObject>>
+    class GameStateParameter <<ScriptableObject>>
 
-class ConstantFloatParameter <<ScriptableObject>>
-class ConstantIntParameter <<ScriptableObject>>
+    GameParameter <|-- GameParameter_T
+    GameParameter_T <|-- AngleParameter
+    note right of AngleParameter : T = float
+    GameParameter_T <|-- ConstantParameter_T
+    ConstantParameter_T <|-- ConstantFloatParameter
+    note on link: T = float
+    ConstantParameter_T <|-- ConstantIntParameter
+    note on link: T = int
+    GameParameter_T <|-- CalculatedParameter
+    note on link: T = float
+    GameParameter_T <|-- GameStateParameter
+    note on link: T = float
 
-abstract class "GameParameterReference<T>" as GameParameterReference_T <<struct>> {
-  +Value : T
-}
-class FloatReference <<struct>>
-class IntReference <<struct>>
-class BoolReference <<struct>>
-class Vector3Reference <<struct>>
-GameParameterReference_T <|-- FloatReference
-note on link: T = float
-GameParameterReference_T <|-- IntReference
-note on link: T = int
-GameParameterReference_T <|-- BoolReference
-note on link: T = bool
-GameParameterReference_T <|-- Vector3Reference
-note on link: T = Vector3
-GameParameterReference_T ..> GameParameter_T : "parameter"
+    class ConstantFloatParameter <<ScriptableObject>>
+    class ConstantIntParameter <<ScriptableObject>>
 
-class GameParameterReferenceDrawer <<Editor>> {
-  +OnGUI()
-}
-GameParameterReferenceDrawer ..> GameParameterReference_T
+    abstract class "GameParameterReference<T>" as GameParameterReference_T <<struct>> {
+      +Value : T
+    }
+    class FloatReference <<struct>>
+    class IntReference <<struct>>
+    class BoolReference <<struct>>
+    class Vector3Reference <<struct>>
+    class GameEntityReference <<struct>>
+    class GameEntityPropertyReference <<struct>>
+    class PatternBaseReference <<struct>>
+    class EmissionShapeReference <<struct>>
+    class AngleParameterReference <<struct>>
+    class ImageReference <<struct>>
+    class PrefabReference <<struct>>
 
-MultiWayPattern o-- AngleParameter : "angleParameter"
-MultiWayPattern ..> FloatReference
-MultiWayPattern ..> IntReference
-MultiWayPattern ..> BoolReference
-ScatteringPattern ..> IntReference
-ScatteringPattern ..> FloatReference
-ScatteringPattern ..> BoolReference
-RotatingShotPattern o-- AngleParameter : "angleParameter"
-RotatingShotPattern ..> FloatReference
-RotatingShotPattern ..> IntReference
-EmissionShape o-- AngleParameter : "sharedAngle"
+    GameParameterReference_T <|-- FloatReference
+    note on link: T = float
+    GameParameterReference_T <|-- IntReference
+    note on link: T = int
+    GameParameterReference_T <|-- BoolReference
+    note on link: T = bool
+    GameParameterReference_T <|-- Vector3Reference
+    note on link: T = Vector3
+    GameParameterReference_T <|-- GameEntityReference
+    note on link: T = GameEntity
+    GameParameterReference_T <|-- GameEntityPropertyReference
+    note on link: T = GameEntityProperty
+    GameParameterReference_T <|-- PatternBaseReference
+    note on link: T = PatternBase
+    GameParameterReference_T <|-- EmissionShapeReference
+    note on link: T = EmissionShape
+    GameParameterReference_T <|-- AngleParameterReference
+    note on link: T = AngleParameter
+    GameParameterReference_T <|-- ImageReference
+    note on link: T = Image
+    GameParameterReference_T <|-- PrefabReference
+    note on link: T = GameObject
 
-' --- その他 ---
-class EnemyLifeGaugeController <<MonoBehaviour>> {
-    +Initialize(EnemyController)
-    -UpdateLifeGauge(float, float)
-}
-struct EmissionData <<struct>> {
-    +localPosition : Vector3
-    +localAngle : float
-}
-class AngleUtility <<static>> {
-    + {static} GetAngleToTarget(Vector3, Vector3, float) : float
-    + {static} GetAngleToPlayer(Vector3, float) : float
-}
-class PlayerUtility <<static>> {
-    - {static} _playerTransform : Transform
-    + {static} GetPlayerTransform() : Transform
-    + {static} ClearCache()
-}
-enum SpawnPointType <<enum>> {
-    RelativeToShooter
-    Absolute
-    RelativeToPlayer
-}
-enum RotationDirection <<enum>> {
-    CounterClockwise
-    Clockwise
-}
-note top of RotationDirection : namespace TouhouSpellUp.Danmaku
+    GameParameterReference_T ..> GameParameter_T : "parameter"
 
+    class GameParameterReferenceDrawer <<Editor>> {
+      +OnGUI()
+    }
+    GameParameterReferenceDrawer ..> GameParameterReference_T
+}
+
+package "UI" {
+    ' --- その他 ---
+    class EnemyLifeGaugeController <<MonoBehaviour>> {
+        +Initialize(EnemyController)
+        -UpdateLifeGauge(float, float)
+    }
+}
+
+package "Utility" {
+    struct EmissionData <<struct>> {
+        +localPosition : Vector3
+        +localAngle : float
+    }
+    class AngleUtility <<static>> {
+        + {static} GetAngleToTarget(Vector3, Vector3, float) : float
+        + {static} GetAngleToPlayer(Vector3, float) : float
+    }
+    class PlayerUtility <<static>> {
+        - {static} _playerTransform : Transform
+        + {static} GetPlayerTransform() : Transform
+        + {static} ClearCache()
+    }
+    enum SpawnPointType <<enum>> {
+        RelativeToShooter
+        Absolute
+        RelativeToPlayer
+    }
+    enum RotationDirection <<enum>> {
+        CounterClockwise
+        Clockwise
+    }
+    note top of RotationDirection : namespace TouhouSpellUp.Danmaku
+}
+
+' --- 関係性 ---
 EnemyController ..> EnemyLifeGaugeController : "creates"
 EnemyLifeGaugeController ..> EnemyController : "observes (OnHealthChanged)"
 ShootPatternBase ..> EmissionData : "creates"
 AngleUtility ..> PlayerController : "finds"
 PlayerUtility ..> PlayerController : "finds"
 ShootPatternBase ..> SpawnPointType : "uses"
+MultiWayPattern o-- AngleParameterReference : "angleParameter"
+MultiWayPattern ..> FloatReference
+MultiWayPattern ..> IntReference
+MultiWayPattern ..> BoolReference
+ScatteringPattern ..> IntReference
+ScatteringPattern ..> FloatReference
+ScatteringPattern ..> BoolReference
+RotatingShotPattern o-- AngleParameterReference : "angleParameter"
+RotatingShotPattern ..> FloatReference
+RotatingShotPattern ..> IntReference
+EmissionShape o-- AngleParameter : "sharedAngle"
 
 @enduml

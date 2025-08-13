@@ -12,8 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c988225907b881f4cb4590287b277f5b, type: 3}
   m_Name: PARA_
   m_EditorClassIdentifier: 
-  _beforeAwaitSeconds: 0
-  _afterAwaitSeconds: 0
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
   patterns:
-  - pattern: {fileID: 11400000, guid: ebefcdb953d1d624dac79ebefcc1113a, type: 2}
   - pattern: {fileID: 11400000, guid: b1e968cd60067e645a94a12527e2e388, type: 2}
+  - pattern: {fileID: 11400000, guid: ebefcdb953d1d624dac79ebefcc1113a, type: 2}
+  - pattern: {fileID: 0}

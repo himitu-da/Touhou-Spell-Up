@@ -10,7 +10,7 @@ public class SequencePattern : PatternBase
     [System.Serializable]
     public class PatternStep
     {
-        public PatternBase pattern;
+        public PatternBaseReference pattern;
         [Tooltip("このパターンの実行前に待機する時間（秒）")]
         public FloatReference delay = new FloatReference { useConstant = true, constantValue = 0f };
 
@@ -36,10 +36,10 @@ public class SequencePattern : PatternBase
             // キャンセルチェック
             if (token.IsCancellationRequested) return;
 
-            if (step.pattern != null)
+            if (step.pattern != null && step.pattern.Value != null)
             {
                 // 子パターンのUniTaskを実行し、完了を待つ
-                await step.pattern.Execute(controller, token);
+                await step.pattern.Value.Execute(controller, token);
             }
         }
     }
@@ -57,9 +57,9 @@ public class SequencePattern : PatternBase
 
             if (token.IsCancellationRequested) return;
 
-            if (step.pattern != null)
+            if (step.pattern != null && step.pattern.Value != null)
             {
-                await step.pattern.Execute(state, token);
+                await step.pattern.Value.Execute(state, token);
             }
         }
     }

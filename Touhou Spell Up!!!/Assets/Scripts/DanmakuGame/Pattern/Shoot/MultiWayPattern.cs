@@ -11,7 +11,7 @@ public class MultiWayPattern : ShootPatternBase
     [SerializeField] private IntReference wayCount = new IntReference { useConstant = true, constantValue = 5 };
     [SerializeField] private FloatReference totalAngle = new FloatReference { useConstant = true, constantValue = 90f };
     [SerializeField] private BoolReference allRound = new BoolReference { useConstant = true, constantValue = false };
-    [SerializeField] private RotationDirection rotationDirection = RotationDirection.CounterClockwise;
+    [SerializeField] private RotationDirectionReference rotationDirection = new RotationDirectionReference { useConstant = true, constantValue = RotationDirection.CounterClockwise };
 
     [Header("N-Way弾の角度")]
     [Tooltip("全方位で自機外し")]
@@ -19,7 +19,7 @@ public class MultiWayPattern : ShootPatternBase
 
     [Header("角度の共有と更新")]
     [Tooltip("角度の入出力に使用するパラメータ。未設定の場合は内部で角度を管理します。")]
-    [SerializeField] private AngleParameter angleParameter;
+    [SerializeField] private AngleParameterReference angleParameter;
     [Tooltip("実行開始時に、Angle Parameterを初期化するかどうか。")]
     [SerializeField] private BoolReference initializeParameterOnStart = new BoolReference { useConstant = true, constantValue = true };
     [Tooltip("実行後にAngle Parameterに加算するオフセット値。")]
@@ -27,7 +27,7 @@ public class MultiWayPattern : ShootPatternBase
 
     public override async UniTask ExecuteShootFromPoint(GameEntityController controller, EmissionData emissionData, CancellationToken token)
     {
-        if (_entity == null || _entity.Prefab == null)
+        if (_entity == null || _entity.Value == null || _entity.Value.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
@@ -36,11 +36,11 @@ public class MultiWayPattern : ShootPatternBase
         Vector3 baseSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
         float baseAngle = controller.transform.eulerAngles.z;
         bool useAvoidAtPlayer = allRound.Value && avoidAtPlayer.Value;
-        float directionMultiplier = (rotationDirection == RotationDirection.CounterClockwise) ? 1f : -1f;
+        float directionMultiplier = (rotationDirection.Value == RotationDirection.CounterClockwise) ? 1f : -1f;
 
         // --- 実行開始時の中央角度を決定 ---
         float centerAngle;
-        if (angleParameter != null)
+        if (angleParameter != null && angleParameter.Value != null)
         {
             if (initializeParameterOnStart.Value)
             {
@@ -53,9 +53,9 @@ public class MultiWayPattern : ShootPatternBase
                 {
                     initialAngle = baseAngle + emissionData.localAngle;
                 }
-                angleParameter.Value = initialAngle + directionOffset.Value;
+                angleParameter.Value.Value = initialAngle + directionOffset.Value;
             }
-            centerAngle = angleParameter.Value;
+            centerAngle = angleParameter.Value.Value;
         }
         else
         {
@@ -80,7 +80,7 @@ public class MultiWayPattern : ShootPatternBase
             if (token.IsCancellationRequested) break;
 
             Vector3 currentSpawnPosition = baseSpawnPosition;
-            if (followShooterPosition.Value && emissionShape == null)
+            if (followShooterPosition.Value && (emissionShape == null || emissionShape.Value == null))
             {
                 currentSpawnPosition = GetSpawnPosition(controller);
             }
@@ -95,13 +95,13 @@ public class MultiWayPattern : ShootPatternBase
             Quaternion rotation = Quaternion.Euler(0, 0, currentAngle);
 
             Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(currentSpawnPosition, currentAngle);
-            controller.InstantiateProperty(_entity, finalSpawnPosition, rotation);
+            controller.InstantiateProperty(_entity.Value, finalSpawnPosition, rotation);
         }
 
         // --- 次回実行のために最後の角度を保存 ---
-        if (angleParameter != null)
+        if (angleParameter != null && angleParameter.Value != null)
         {
-            angleParameter.Value = centerAngle + accumulatingOffset.Value;
+            angleParameter.Value.Value = centerAngle + accumulatingOffset.Value;
         }
         // ------------------------------------
 

@@ -29,12 +29,12 @@ public class HomingMovePattern : MovePatternBase
             return;
         }
 
-        var startTime = Time.time;
+        var startTime = Time.fixedTime;
 
         while (!token.IsCancellationRequested)
         {
             // 継続時間が設定されていれば、時間をチェック
-            if (_duration.Value > 0 && Time.time - startTime > _duration.Value)
+            if (_duration.Value > 0 && Time.fixedTime - startTime > _duration.Value)
             {
                 break;
             }
@@ -54,11 +54,11 @@ public class HomingMovePattern : MovePatternBase
 
             // 新しい速度ベクトルを計算
             // 現在の速度ベクトルを、対象への方向ベクトルに、角速度制限をかけながら近づける
-            Vector3 newVelocity = Vector3.RotateTowards(currentVelocity, targetDirection * currentVelocity.magnitude, _angularSpeed.Value * Mathf.Deg2Rad * Time.deltaTime, 0.0f);
+            Vector3 newVelocity = Vector3.RotateTowards(currentVelocity, targetDirection * currentVelocity.magnitude, _angularSpeed.Value * Mathf.Deg2Rad * Time.fixedDeltaTime, 0.0f);
 
             // 対象への移動速度（誘導ベクトル）を加算
             // homingSpeedは、既存の速度にどれだけ強く影響を与えるかの係数として扱う
-            state.Velocity = newVelocity + (targetDirection * _homingSpeed.Value * Time.deltaTime);
+            state.Velocity = newVelocity + (targetDirection * _homingSpeed.Value * Time.fixedDeltaTime);
 
             // 向きを速度ベクトルに合わせる
             if (state.Velocity.sqrMagnitude > 0.01f) // 速度がゼロに近い場合は向きを変えない
@@ -67,7 +67,7 @@ public class HomingMovePattern : MovePatternBase
                 state.Rotation = Quaternion.Euler(0, 0, angle);
             }
 
-            await UniTask.Yield(PlayerLoopTiming.Update, token);
+            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
         }
     }
 }

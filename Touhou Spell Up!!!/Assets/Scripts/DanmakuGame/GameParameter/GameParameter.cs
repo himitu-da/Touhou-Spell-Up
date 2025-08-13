@@ -26,7 +26,7 @@ public abstract class GameParameter<T> : GameParameter
     /// <summary>
     /// 現在の値
     /// </summary>
-    public T Value
+    public virtual T Value
     {
         get => currentValue;
         set => currentValue = value;

@@ -6,7 +6,7 @@ using System.Threading;
 public class LoopPattern : PatternBase
 {
     [SerializeField]
-    private PatternBase pattern;
+    private PatternBaseReference pattern;
 
     [SerializeField]
     private FloatReference interval = new FloatReference { useConstant = true, constantValue = 1.0f };
@@ -15,7 +15,7 @@ public class LoopPattern : PatternBase
 
     public override async UniTask ExecuteImpl(GameEntityController controller, CancellationToken token)
     {
-        if (pattern == null)
+        if (pattern == null || pattern.Value == null)
         {
             Debug.LogError("Patternが設定されていません。", this);
             return;
@@ -23,7 +23,7 @@ public class LoopPattern : PatternBase
 
         for (int i = 0; !token.IsCancellationRequested; ) {
             // 子パターンの実行
-            await pattern.Execute(controller, token);
+            await pattern.Value.Execute(controller, token);
 
             if (interval.Value > 0)
             {
@@ -44,7 +44,7 @@ public class LoopPattern : PatternBase
 
     public override async UniTask ExecuteImpl(MovementState state, CancellationToken token)
     {
-        if (pattern == null)
+        if (pattern == null || pattern.Value == null)
         {
             Debug.LogError("Patternが設定されていません。", this);
             return;
@@ -52,7 +52,7 @@ public class LoopPattern : PatternBase
 
         for (int i = 0; !token.IsCancellationRequested; )
         {
-            await pattern.Execute(state, token);
+            await pattern.Value.Execute(state, token);
 
             if (interval.Value > 0)
             {

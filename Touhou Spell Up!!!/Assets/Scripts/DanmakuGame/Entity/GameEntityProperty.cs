@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class GameEntityProperty : ScriptableObject
 {
-    [SerializeField] private PatternBase shootPattern;
-    [SerializeField] private PatternBase movePattern;
+    [SerializeField] private PatternBaseReference shootPattern;
+    [SerializeField] private PatternBaseReference movePattern;
 
-    public PatternBase ShootPattern => shootPattern;
-    public PatternBase MovePattern => movePattern;
+    public PatternBase ShootPattern => shootPattern.Value;
+    public PatternBase MovePattern => movePattern.Value;
 }

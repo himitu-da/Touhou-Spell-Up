@@ -6,7 +6,7 @@ using System.Threading;
 public class SatelliteMovePattern : MovePatternBase
 {
     [Header("中心点の設定")]
-    [SerializeField] private SpawnPointType spawnPointType = SpawnPointType.RelativeToShooter;
+    [SerializeField] private SpawnPointTypeReference spawnPointType = new SpawnPointTypeReference { useConstant = true, constantValue = SpawnPointType.RelativeToShooter };
     [SerializeField] private Vector3Reference positionOffset = new Vector3Reference { useConstant = true, constantValue = Vector3.zero };
 
     [Header("移動設定")]
@@ -50,8 +50,8 @@ public class SatelliteMovePattern : MovePatternBase
         Vector3 centerPosition = GetSpawnPosition(centerController);
 
         float radius = initialRadius.Value;
-        float currentAngle = state.Rotation.eulerAngles.z;
-
+        float currentAngle = state.Rotation.eulerAngles.z; // 累積的に更新される現在の角度
+        
         // 弾の初期位置を計算して設定
         Vector3 initialDirection = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
         state.Position = centerPosition + initialDirection * radius;
@@ -63,15 +63,20 @@ public class SatelliteMovePattern : MovePatternBase
                 centerPosition = GetSpawnPosition(centerController);
             }
 
-            radius += radialSpeed.Value * Time.deltaTime;
+            radius += radialSpeed.Value * Time.fixedDeltaTime;
 
-            float angularSpeedDelta = angularSpeed.Value * Time.deltaTime;
-            float tangentialSpeedDelta = 0f;
-            if (radius > 0.001f)
+            // 接線速度を角速度に変換
+            float tangentialAngularSpeed = 0f;
+            if (radius > 0.001f) // ゼロ除算を避ける
             {
-                tangentialSpeedDelta = (tangentialSpeed.Value / radius) * Mathf.Rad2Deg * Time.deltaTime;
+                tangentialAngularSpeed = (tangentialSpeed.Value / radius) * Mathf.Rad2Deg;
             }
-            currentAngle += angularSpeedDelta + tangentialSpeedDelta;
+
+            // 総角速度を計算
+            float totalAngularSpeed = angularSpeed.Value + tangentialAngularSpeed;
+
+            // 角度を累積的に更新（重要な修正点）
+            currentAngle += totalAngularSpeed * Time.fixedDeltaTime;
 
             // 向きは更新せず、位置だけを更新する
             Vector3 newDirection = Quaternion.Euler(0, 0, currentAngle) * Vector3.up;
@@ -79,7 +84,7 @@ public class SatelliteMovePattern : MovePatternBase
             // このパターンではVelocityは直接制御しない
             state.Velocity = Vector3.zero;
 
-            await UniTask.Yield(PlayerLoopTiming.Update, token);
+            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
         }
     }
 
@@ -95,7 +100,7 @@ public class SatelliteMovePattern : MovePatternBase
     // 発射地点を計算するヘルパーメソッド（ShootPatternBaseから拝借）
     protected Vector3 GetSpawnPosition(GameEntityController controller)
     {
-        switch (spawnPointType)
+        switch (spawnPointType.Value)
         {
             case SpawnPointType.Absolute:
                 return positionOffset.Value;

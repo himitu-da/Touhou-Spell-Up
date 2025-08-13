@@ -6,7 +6,7 @@ using Cysharp.Threading.Tasks;
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : GameEntityController
 {
-    [SerializeField] GameObject hitboxMarker;
+    [SerializeField] private PrefabReference hitboxMarker;
 
     private PlayerProperty _playerProperty;
     private float _shotTimer;
@@ -15,7 +15,7 @@ public class PlayerController : GameEntityController
 
     void Awake()
     {
-        Initialize(_entity);
+        Initialize(_entity.Value);
     }
 
     public override void Initialize(GameEntity entity)
@@ -72,7 +72,10 @@ public class PlayerController : GameEntityController
             }
         }
 
-        hitboxMarker.SetActive(_isSlowMovePressed);
+        if (hitboxMarker != null && hitboxMarker.Value != null)
+        {
+            hitboxMarker.Value.SetActive(_isSlowMovePressed);
+        }
     }
 
     public void OnHit()

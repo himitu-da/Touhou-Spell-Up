@@ -4,20 +4,20 @@ using UnityEngine;
 public class PlayerProperty : GameEntityProperty
 {
     [Header("移動")]
-    [SerializeField] float moveSpeed = 12f;
-    [SerializeField] float moveSpeedSlow = 6f;
-    [SerializeField] Rect movableArea;
+    [SerializeField] private FloatReference moveSpeed = new FloatReference { useConstant = true, constantValue = 12f };
+    [SerializeField] private FloatReference moveSpeedSlow = new FloatReference { useConstant = true, constantValue = 6f };
+    [SerializeField] private RectReference movableArea;
 
     [Header("ショット")]
-    [SerializeField] float shotInterval = 0.15f;
-    [SerializeField] private PatternBase shotPatternNormal;
-    [SerializeField] private PatternBase shotPatternSlow;
+    [SerializeField] private FloatReference shotInterval = new FloatReference { useConstant = true, constantValue = 0.15f };
+    [SerializeField] private PatternBaseReference shotPatternNormal;
+    [SerializeField] private PatternBaseReference shotPatternSlow;
 
 
-    public float MoveSpeed => moveSpeed;
-    public float MoveSpeedSlow => moveSpeedSlow;
-    public Rect MovableArea => movableArea;
-    public float ShotInterval => shotInterval;
-    public PatternBase ShotPatternNormal => shotPatternNormal;
-    public PatternBase ShotPatternSlow => shotPatternSlow;
+    public float MoveSpeed => moveSpeed.Value;
+    public float MoveSpeedSlow => moveSpeedSlow.Value;
+    public Rect MovableArea => movableArea.Value;
+    public float ShotInterval => shotInterval.Value;
+    public PatternBase ShotPatternNormal => shotPatternNormal.Value;
+    public PatternBase ShotPatternSlow => shotPatternSlow.Value;
 }

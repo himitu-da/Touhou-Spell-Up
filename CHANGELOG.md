@@ -319,5 +319,4 @@
     - `RotatingShotPattern`と`MultiWayPattern`の複雑だった角度共有機能を、`GameParameter`システムを用いてシンプルで一貫性のある設計に統一。
 - CHANGELOGフォルダを作成し、バージョンごとにファイルを作成。テンプレート（_TEMPLATE）を追加
 
-# 重要
-以降の変更点は、ChangeLogフォルダに記載
+## [v0.1.12] - 2025-08-10

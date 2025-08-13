@@ -4,11 +4,16 @@ using System.Threading;
 
 public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
 {
-    [SerializeField] protected GameEntity _entity;
+    [SerializeField] protected GameEntityReference _entity;
     protected MovementState _movementState;
     public MovementState MovementState => _movementState; // SatelliteMovePatternから参照するためにpublicにする
     public GameEntityProperty Property { get; protected set; }
     protected CancellationTokenSource _cancellationTokenSource;
+
+    // 描画補間用
+    private Vector3 _targetPosition;
+    private Quaternion _targetRotation;
+    [SerializeField] private FloatReference _interpolationSpeed = new FloatReference { useConstant = true, constantValue = 15f };
 
     private GameEntityController _parentActor;
     public GameEntityController ParentActor
@@ -22,7 +27,8 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
     {
         if (entity == null) return;
 
-        this._entity = entity;
+        // GameEntityReferenceに定数として設定する
+        this._entity = new GameEntityReference { useConstant = true, constantValue = entity };
         this.Property = entity.Property;
         
         // MovementStateをnewで生成する
@@ -32,6 +38,10 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
             Position = transform.position,
             Rotation = transform.rotation
         };
+
+        // 補間用の目標値も初期化
+        _targetPosition = _movementState.Position;
+        _targetRotation = _movementState.Rotation;
 
         if (this.Property == null) return;
 
@@ -66,7 +76,7 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
             // 親から借りてくる
             if (ParentActor != null)
             {
-                ParentActor.InstantiateProperty(ParentActor._entity, position, rotation);
+                ParentActor.InstantiateProperty(ParentActor._entity.Value, position, rotation);
                 return;
             }
             Debug.LogError("InstantiateProperty was called with a null entity or prefab, and no parent actor to borrow from.", this);
@@ -85,16 +95,25 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         }
     }
 
+    protected virtual void FixedUpdate()
+    {
+        if (_movementState == null) return;
+
+        // 速度に基づいて論理位置を更新
+        _movementState.Position += _movementState.Velocity * Time.fixedDeltaTime;
+
+        // 補間目標値を更新
+        _targetPosition = _movementState.Position;
+        _targetRotation = _movementState.Rotation;
+    }
+
     protected virtual void Update()
     {
         if (_movementState == null) return;
 
-        // 速度に基づいて位置を更新
-        _movementState.Position += _movementState.Velocity * Time.deltaTime;
-
-        // MovementStateをtransformに反映
-        transform.position = _movementState.Position;
-        transform.rotation = _movementState.Rotation;
+        // 描画位置を目標位置に滑らかに補間
+        transform.position = Vector3.Lerp(transform.position, _targetPosition, _interpolationSpeed.Value * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, _interpolationSpeed.Value * Time.deltaTime);
     }
 
     protected virtual void OnDestroy()

@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5b10d1485cf9ff42a27d82c143a933c, type: 3}
   m_Name: ENM_
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  property: {fileID: 11400000, guid: f85c66f65c834d44a86128646da898eb, type: 2}
+  prefab:
+    useConstant: 1
+    constantValue: {fileID: 0}
+    parameter: {fileID: 0}
+  property:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: f85c66f65c834d44a86128646da898eb, type: 2}
+    parameter: {fileID: 0}

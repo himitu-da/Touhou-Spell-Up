@@ -12,7 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd4fe3ce69e41e544b3b30ac254cbe33, type: 3}
   m_Name: StraightMovePattern
   m_EditorClassIdentifier: 
-  _beforeAwaitSeconds: 0
-  _afterAwaitSeconds: 0
-  _speed: 35
-  _duration: 0
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _speed:
+    useConstant: 1
+    constantValue: 35
+    parameter: {fileID: 0}

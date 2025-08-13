@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c7d318de5afe304383d78cb17036400, type: 3}
+  m_Name: NWAY_ 1
+  m_EditorClassIdentifier: 
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _entity:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: 31334ce98910f004a8f432a6307cba21, type: 2}
+    parameter: {fileID: 0}
+  spawnPointType:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  positionOffset:
+    useConstant: 1
+    constantValue: {x: 0, y: 0, z: 0}
+    parameter: {fileID: 0}
+  followShooterPosition:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  emissionShape:
+    useConstant: 1
+    constantValue: {fileID: 0}
+    parameter: {fileID: 0}
+  sequential:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  emissionInterval:
+    useConstant: 1
+    constantValue: 0.1
+    parameter: {fileID: 0}
+  directionOffset:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  aimAtPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  alwaysAimToPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  spawnRadius:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  wayCount:
+    useConstant: 1
+    constantValue: 3
+    parameter: {fileID: 0}
+  totalAngle:
+    useConstant: 1
+    constantValue: 90
+    parameter: {fileID: 0}
+  allRound:
+    useConstant: 1
+    constantValue: 1
+    parameter: {fileID: 0}
+  rotationDirection:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  avoidAtPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  angleParameter:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: f061905da6b361043960e65ad6e117a2, type: 2}
+    parameter: {fileID: 0}
+  initializeParameterOnStart:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  accumulatingOffset:
+    useConstant: 1
+    constantValue: 10
+    parameter: {fileID: 0}

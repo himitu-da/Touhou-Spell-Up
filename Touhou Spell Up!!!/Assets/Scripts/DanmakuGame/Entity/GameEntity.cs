@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class GameEntity : ScriptableObject
 {
-    [SerializeField] private GameObject prefab;
-    [SerializeField] protected GameEntityProperty property;
+    [SerializeField] private PrefabReference prefab;
+    [SerializeField] protected GameEntityPropertyReference property;
 
-    public GameObject Prefab => prefab;
-    public virtual GameEntityProperty Property => property;
+    public GameObject Prefab => prefab.Value;
+    public virtual GameEntityProperty Property => property.Value;
 }

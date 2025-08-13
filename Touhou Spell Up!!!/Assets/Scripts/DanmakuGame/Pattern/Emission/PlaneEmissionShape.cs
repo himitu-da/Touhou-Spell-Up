@@ -4,31 +4,31 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "PLANE_", menuName = "Danmaku/Pattern/Emission/Plane")]
 public class PlaneEmissionShape : EmissionShape
 {
-    [SerializeField] private Vector2 size = new Vector2(2f, 2f);            // 幅x高さ
-    [SerializeField, Range(1, 50)] private int countX = 3;                 // X方向分割
-    [SerializeField, Range(1, 50)] private int countY = 3;                 // Y方向分割
-    [SerializeField] private bool randomPositions = false;                 // ランダム配置か
+    [SerializeField] private Vector2Reference size = new Vector2Reference { useConstant = true, constantValue = new Vector2(2f, 2f) };            // 幅x高さ
+    [SerializeField] private IntReference countX = new IntReference { useConstant = true, constantValue = 3 };                 // X方向分割
+    [SerializeField] private IntReference countY = new IntReference { useConstant = true, constantValue = 3 };                 // Y方向分割
+    [SerializeField] private BoolReference randomPositions = new BoolReference { useConstant = true, constantValue = false };                 // ランダム配置か
 
     public override IEnumerable<EmissionData> GetEmissions(IMovable movable)
     {
-        float stepX = (countX > 1) ? size.x / (countX - 1) : 0;
-        float stepY = (countY > 1) ? size.y / (countY - 1) : 0;
-        float currentAngle = baseAngleOffset;
-        if (sharedAngle != null) currentAngle = sharedAngle.Value;
+        float stepX = (countX.Value > 1) ? size.Value.x / (countX.Value - 1) : 0;
+        float stepY = (countY.Value > 1) ? size.Value.y / (countY.Value - 1) : 0;
+        float currentAngle = baseAngleOffset.Value;
+        if (sharedAngle != null && sharedAngle.Value != null) currentAngle = sharedAngle.Value.Value;
 
-        for (int y = 0; y < countY; y++)
+        for (int y = 0; y < countY.Value; y++)
         {
-            for (int x = 0; x < countX; x++)
+            for (int x = 0; x < countX.Value; x++)
             {
                 Vector3 localPos = new Vector3(
-                    -size.x / 2 + (randomPositions ? Random.Range(0f, size.x) : x * stepX),
-                    -size.y / 2 + (randomPositions ? Random.Range(0f, size.y) : y * stepY),
+                    -size.Value.x / 2 + (randomPositions.Value ? Random.Range(0f, size.Value.x) : x * stepX),
+                    -size.Value.y / 2 + (randomPositions.Value ? Random.Range(0f, size.Value.y) : y * stepY),
                     0
                 );
                 float angle = currentAngle;
 
                 // angleModeに応じた計算（Line同様）
-                switch (angleMode)
+                switch (angleMode.Value)
                 {
                     case AngleMode.AimToPlayer:
                         Vector3 worldPos = movable.transform.position + movable.transform.rotation * localPos;
@@ -44,6 +44,6 @@ public class PlaneEmissionShape : EmissionShape
             }
         }
 
-        UpdateSharedAngle(currentAngle + baseAngleOffset);
+        UpdateSharedAngle(currentAngle + baseAngleOffset.Value);
     }
 }

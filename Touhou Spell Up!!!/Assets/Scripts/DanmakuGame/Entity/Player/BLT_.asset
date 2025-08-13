@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dae897c254c7b8b4abe9cf15c8b41089, type: 3}
   m_Name: BLT_
   m_EditorClassIdentifier: 
-  prefab: {fileID: 652089954478125638, guid: 69cb42a9338b46f46a37019cb795d4e7, type: 3}
-  property: {fileID: 11400000, guid: 4ed712b1f007341499dd7a0e1e493cc7, type: 2}
+  prefab:
+    useConstant: 1
+    constantValue: {fileID: 652089954478125638, guid: 69cb42a9338b46f46a37019cb795d4e7, type: 3}
+    parameter: {fileID: 0}
+  property:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: 4ed712b1f007341499dd7a0e1e493cc7, type: 2}
+    parameter: {fileID: 0}

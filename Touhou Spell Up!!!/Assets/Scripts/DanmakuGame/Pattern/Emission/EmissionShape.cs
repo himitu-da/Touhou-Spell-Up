@@ -4,13 +4,13 @@ using System.Collections.Generic;
 public abstract class EmissionShape : ScriptableObject
 {
     [Tooltip("共有角度（オプション）。これを設定すると、生成される角度に適用。")]
-    [SerializeField] protected AngleParameter sharedAngle;
+    [SerializeField] protected AngleParameterReference sharedAngle;
 
     [Tooltip("角度モード: Fixed（固定）、AimToPlayer（各ポイントで自機狙い）、Radial（放射状）")]
-    [SerializeField] protected AngleMode angleMode = AngleMode.Fixed;
+    [SerializeField] protected AngleModeReference angleMode = new AngleModeReference { useConstant = true, constantValue = AngleMode.Fixed };
 
     [Tooltip("ベース角度オフセット")]
-    [SerializeField] protected float baseAngleOffset = 0f;
+    [SerializeField] protected FloatReference baseAngleOffset = new FloatReference { useConstant = true, constantValue = 0f };
 
     public enum AngleMode { Fixed, AimToPlayer, Radial }
 
@@ -28,9 +28,9 @@ public abstract class EmissionShape : ScriptableObject
     // 共有角度の更新ロジック（オプション、オーバーライド可能）
     protected void UpdateSharedAngle(float newValue)
     {
-        if (sharedAngle != null)
+        if (sharedAngle != null && sharedAngle.Value != null)
         {
-            sharedAngle.Value = newValue;
+            sharedAngle.Value.Value = newValue;
         }
     }
 }

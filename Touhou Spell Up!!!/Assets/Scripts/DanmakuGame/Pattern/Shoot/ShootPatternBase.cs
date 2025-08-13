@@ -14,16 +14,16 @@ public enum SpawnPointType
 public abstract class ShootPatternBase : PatternBase
 {
     [Header("弾の設定")]
-    [SerializeField] protected GameEntity _entity;
+    [SerializeField] protected GameEntityReference _entity;
 
     [Header("発射地点の設定")]
-    [SerializeField] protected SpawnPointType spawnPointType = SpawnPointType.RelativeToShooter;
+    [SerializeField] protected SpawnPointTypeReference spawnPointType = new SpawnPointTypeReference { useConstant = true, constantValue = SpawnPointType.RelativeToShooter };
     [SerializeField] protected Vector3Reference positionOffset = new Vector3Reference { useConstant = true, constantValue = Vector3.zero };
     [Tooltip("射撃中にシューターの位置に追従するか")]
     [SerializeField] protected BoolReference followShooterPosition = new BoolReference { useConstant = true, constantValue = false };
 
     [Header("発生源シェイプ（オプション）")]
-    [SerializeField] protected EmissionShape emissionShape;
+    [SerializeField] protected EmissionShapeReference emissionShape;
     [Tooltip("順次発射か（同時ならfalse）")]
     [SerializeField] protected BoolReference sequential = new BoolReference { useConstant = true, constantValue = false };
     [Tooltip("順次発射時の間隔（秒）")]
@@ -52,7 +52,7 @@ public abstract class ShootPatternBase : PatternBase
     {
         var emissions = new List<EmissionData>();
 
-        if (emissionShape == null)
+        if (emissionShape == null || emissionShape.Value == null)
         {
             // EmissionShapeがない場合、単一の発生源として動作
             emissions.Add(new EmissionData
@@ -64,7 +64,7 @@ public abstract class ShootPatternBase : PatternBase
         else
         {
             // EmissionShapeがある場合、そこから発生源リストを取得
-            emissions.AddRange(emissionShape.GetEmissions(controller));
+            emissions.AddRange(emissionShape.Value.GetEmissions(controller));
         }
 
         // 各発生源から弾を発射
@@ -100,7 +100,7 @@ public abstract class ShootPatternBase : PatternBase
     // 発射地点を計算するヘルパーメソッド
     protected Vector3 GetSpawnPosition(GameEntityController controller)
     {
-        switch (spawnPointType)
+        switch (spawnPointType.Value)
         {
             case SpawnPointType.Absolute:
                 return positionOffset.Value;

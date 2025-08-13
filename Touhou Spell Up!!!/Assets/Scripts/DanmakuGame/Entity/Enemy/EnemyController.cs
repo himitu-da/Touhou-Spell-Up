@@ -4,7 +4,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Collider2D))]
 public class EnemyController : GameEntityController
 {
-    [SerializeField] GameObject lifeGaugePrefab;
+    [SerializeField] private PrefabReference lifeGaugePrefab;
     private GameObject _lifeGaugeInstance;
 
     // Health Properties
@@ -15,7 +15,7 @@ public class EnemyController : GameEntityController
 
     void Start()
     {
-        Initialize(_entity);
+        Initialize(_entity.Value);
 
         if (Property is EnemyProperty enemyProperty)
         {
@@ -23,9 +23,9 @@ public class EnemyController : GameEntityController
         }
         CurrentHealth = MaxHealth;
 
-        if (lifeGaugePrefab != null)
+        if (lifeGaugePrefab != null && lifeGaugePrefab.Value != null)
         {
-            _lifeGaugeInstance = Instantiate(lifeGaugePrefab, transform.position, Quaternion.identity, transform);
+            _lifeGaugeInstance = Instantiate(lifeGaugePrefab.Value, transform.position, Quaternion.identity, transform);
             
             var canvas = _lifeGaugeInstance.GetComponent<Canvas>();
             if (canvas != null)

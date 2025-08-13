@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48dfc7c9189a43a4298fb5ca23efea3a, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  property: {fileID: 11400000, guid: d79b02a3b0e99b745ab681108e35c620, type: 2}
+  prefab:
+    useConstant: 1
+    constantValue: {fileID: 0}
+    parameter: {fileID: 0}
+  property:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: d79b02a3b0e99b745ab681108e35c620, type: 2}
+    parameter: {fileID: 0}

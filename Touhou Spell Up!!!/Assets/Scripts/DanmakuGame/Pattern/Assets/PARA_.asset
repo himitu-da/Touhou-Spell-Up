@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c988225907b881f4cb4590287b277f5b, type: 3}
+  m_Name: PARA_
+  m_EditorClassIdentifier: 
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  patterns:
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: 4b1bd85ac7eec9c40a9f093bd36e5dca, type: 2}
+      parameter: {fileID: 0}
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: c2f14f3e4d90dfe46bff931f0ffe8b60, type: 2}
+      parameter: {fileID: 0}
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: b3b208f35b0a0f843806882e7bdf28f0, type: 2}
+      parameter: {fileID: 0}
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: 56cbc93b5f822db409a4b10414f47cec, type: 2}
+      parameter: {fileID: 0}

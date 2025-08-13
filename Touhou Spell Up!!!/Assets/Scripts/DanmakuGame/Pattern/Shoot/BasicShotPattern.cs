@@ -7,7 +7,7 @@ public class BasicShotPattern : ShootPatternBase
 {
     public override async UniTask ExecuteShootFromPoint(GameEntityController controller, EmissionData emissionData, CancellationToken token)
     {
-        if (_entity == null || _entity.Prefab == null)
+        if (_entity == null || _entity.Value == null || _entity.Value.Prefab == null)
         {
             Debug.LogError("発射する弾が指定されていません！", this);
             return;
@@ -34,7 +34,7 @@ public class BasicShotPattern : ShootPatternBase
         Vector3 finalSpawnPosition = CalculateFinalSpawnPosition(baseSpawnPosition, angle);
 
         // spawnPointの位置と角度で、指定された弾を1つ生成する
-        controller.InstantiateProperty(_entity, finalSpawnPosition, spawnRotation);
+        controller.InstantiateProperty(_entity.Value, finalSpawnPosition, spawnRotation);
 
         await UniTask.CompletedTask;
     }

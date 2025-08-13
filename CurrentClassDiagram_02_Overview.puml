@@ -1,5 +1,5 @@
 @startuml ClassDiagram_Overview
-' v0.1.11
+' v0.1.12
 ' ステレオタイプの色設定
 skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
@@ -86,6 +86,10 @@ GameEntity o-- "1" GameEntityProperty : " property"
 GameEntityProperty o-- PatternBase : "ShootPattern"
 GameEntityProperty o-- PatternBase : "MovePattern"
 PatternBase ..> GameEntityController : "uses"
+PatternBase ..> GameParameterReference_T : "uses"
+LoopPattern o-- PatternBase
+ParallelPattern o-- PatternBase
+SequencePattern o-- PatternBase
 ShootPatternBase o-- EmissionShape : "emissionShape"
 ShootPatternBase ..> AngleParameter : "uses"
 EmissionShape ..> AngleParameter : "uses"

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class EnemyLifeGaugeController : MonoBehaviour
 {
-    [SerializeField] private Image _lifeGaugeImage; // 体力ゲージのUIイメージ
+    [SerializeField] private ImageReference _lifeGaugeImage; // 体力ゲージのUIイメージ
     private EnemyController _enemyController; // 敵のコントローラーコンポーネント
 
     
@@ -24,10 +24,10 @@ public class EnemyLifeGaugeController : MonoBehaviour
 
     private void UpdateLifeGauge(float currentHealth, float maxHealth)
     {
-        if (_lifeGaugeImage != null)
+        if (_lifeGaugeImage != null && _lifeGaugeImage.Value != null)
         {
             float healthPercentage = currentHealth / maxHealth;
-            _lifeGaugeImage.fillAmount = healthPercentage; // ゲージの表示を更新
+            _lifeGaugeImage.Value.fillAmount = healthPercentage; // ゲージの表示を更新
         }
     }
 }

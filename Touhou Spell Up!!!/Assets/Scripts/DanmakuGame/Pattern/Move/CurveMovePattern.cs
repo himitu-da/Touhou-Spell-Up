@@ -25,13 +25,13 @@ public class CurveMovePattern : MovePatternBase
         {
             // 角度を徐々に変化
             float currentAngle = state.Rotation.eulerAngles.z;
-            currentAngle += angleChangeRate.Value * Time.deltaTime;
+            currentAngle += angleChangeRate.Value * Time.fixedDeltaTime;
             state.Rotation = Quaternion.Euler(0, 0, currentAngle);
 
             // 向きに基づいて速度を設定
             state.Velocity = state.Rotation * Vector3.up * speed.Value;
 
-            await UniTask.Yield(PlayerLoopTiming.Update, token);
+            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
         }
     }
 }
