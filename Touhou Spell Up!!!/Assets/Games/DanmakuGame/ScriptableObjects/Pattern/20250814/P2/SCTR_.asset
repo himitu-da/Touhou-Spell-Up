@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6353cc88c9c1964881d834756391663, type: 3}
-  m_Name: SCTR_0
+  m_Name: SCTR_
   m_EditorClassIdentifier: 
   _beforeAwaitSeconds:
     useConstant: 1
@@ -22,7 +22,7 @@ MonoBehaviour:
     parameter: {fileID: 0}
   _entity:
     useConstant: 1
-    constantValue: {fileID: 0}
+    constantValue: {fileID: 11400000, guid: a80dd5a0ba9e1e24fb69fa69fc257751, type: 2}
     parameter: {fileID: 0}
   spawnPointType:
     useConstant: 1
@@ -70,7 +70,7 @@ MonoBehaviour:
     parameter: {fileID: 0}
   interval:
     useConstant: 1
-    constantValue: 0.5
+    constantValue: 0
     parameter: {fileID: 0}
   totalAngle:
     useConstant: 1
@@ -78,5 +78,5 @@ MonoBehaviour:
     parameter: {fileID: 0}
   allRound:
     useConstant: 1
-    constantValue: 0
+    constantValue: 1
     parameter: {fileID: 0}

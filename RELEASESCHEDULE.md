@@ -1,55 +1,20 @@
 # Developed but not added to CHANGELOG.md
 
-- AccelerationMovePatternを作成（速度変化を指定）
-- ファイル構造の整理
-    Assets
-    ├── Core
-    ├── Games
-    │   └── DanmakuGame
-    │       ├── Prefabs
-    │       ├── ScriptableObjects
-    │       │   ├── Bullet
-    │       │   ├── Enemy
-    │       │   ├── Pattern
-    │       │   └── Player
-    │       └── Scripts
-    │           ├── Entity
-    │           │   ├── Bullet
-    │           │   ├── Enemy
-    │           │   └── Player
-    │           ├── GameParameter
-    │           │   └── Editor
-    │           ├── Pattern
-    │           │   ├── Calculate
-    │           │   ├── Composite
-    │           │   ├── Emission
-    │           │   ├── Move
-    │           │   └── Shoot
-    │           ├── State
-    │           └── Utility
 
-- AccelerationMovePatternをフレームに依存しないように修正
-- AccelerationMovePatternのロジックを、_durationの間に_accelerationだけ変化するように修正
-- CalculatedParameter.cs と CalculatedParameter.cs.meta ファイルを削除
-- GameParameterに対して、GameParameterReferenceに対応したScriptableObjectを作成
-- GameParameterのScriptableObjectを作成するために、専用のクラスを作成
 
 # Developing
 
-- 「TriggeredPattern」を作成。呼び出されたとき、トリガー条件（時間、オブジェクト衝突、オブジェクトからの距離、ライフタイム終了時、壁衝突時）を満たしたときに処理を実行する
-    - これは「条件を満たしたときに処理を実行する」という責務
-    - オプションとして、条件を満たしていなかった場合の処理も追加できる
-    - If文に相当
-    - GameParameterやいくつかの特殊な値（衝突の有無や時間、オブジェクトからの距離）を引数として、条件式をmXparserで評価する
+
 
 ## v0.1～実装予定
 
-- AngleParameterをGameParameterに統合
-- シーンをリロードしたときにGameParameterをinitializeの値で初期化するようにする
-    - 現在は保持されるようになっている
+- すべてのPatternBase抽象クラスに対して、Pattern実行開始条件と終了条件を設定できるようにする
+    - 開始条件は、Pattern実行前に満たす必要がある条件
+    - 終了条件は、Pattern実行中に満たす必要がある条件
+    - これに伴い、TriggerPatternBase等は消去
+    - 例えば、Shoot中に条件を満たさなくなったら強制終了されるなど
 
-- MovementStateのVelocityは、複数のものに対応できるようにして、例えば直進しつつsin波で上下に動くなど、複数の移動を組み合わせられるようにする
-    - 例えば、直進しつつsin波で上下に動くなど、複数の移動を組み合わせられるようにする
+- AngleParameterをGameParameterに統合
 
 - GameStateParameterを実装する
 
@@ -59,8 +24,6 @@
 
 - privateメンバの命名規則（_をつける）や、[SerializeField]の改行の統一
 - RotatingShotPattern、MultiWayPatternでもともと使用していたGameParameter（旧SharedResource）の記述を削除（不必要になったため）
-
-- CalculatedParameterで、次元数ごとに型を1まとめにできるようにする
 
 - PatternBase具象クラスの命名規則の統一
     - ShootPatternBaseの具象クラスは名称にShootPatternをつける
@@ -79,6 +42,13 @@
 - EntityControllerにAnimateを司る部分を追加
 
 以下はv0.1ではなく、v0.2以降に実装予定
+
+- CalculatedParameterで、次元数ごとに型を1まとめにできるようにする
+
+- BranchPatternで、else ifに相当する処理を追加
+
+- MovementStateのVelocityは、複数のものに対応できるようにして、例えば直進しつつsin波で上下に動くなど、複数の移動を組み合わせられるようにする
+    - 例えば、直進しつつsin波で上下に動くなど、複数の移動を組み合わせられるようにする
 
 - LaserShootPatternを作成（レーザー弾）
     - LaserEntity、LaserController、LaserPropertyを作成（レーザーの挙動はMovePatternを使用）

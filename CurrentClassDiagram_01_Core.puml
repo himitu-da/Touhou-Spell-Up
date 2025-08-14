@@ -1,10 +1,11 @@
 @startuml ClassDiagram_01_Core
-' v0.1.12
+' v0.1.13 - TriggerPatternシステム追加
 ' ステレオタイプの色設定
 skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
     BackgroundColor<<ScriptableObject>> LightGreen
     BackgroundColor<<Interface>> LightYellow
+    BackgroundColor<<enum>> LightCoral
 }
 
 ' --- Interfaces ---
@@ -20,18 +21,27 @@ abstract class GameEntityController <<MonoBehaviour>>
 class GameEntity <<ScriptableObject>>
 class GameEntityProperty <<ScriptableObject>>
 abstract class PatternBase <<ScriptableObject>>
+abstract class TriggerPatternBase <<ScriptableObject>>
 abstract class EmissionShape <<ScriptableObject>>
 abstract class GameParameter <<ScriptableObject>>
 abstract class "GameParameterReference<T>" as GameParameterReference_T <<struct>>
 
+' --- Enums ---
+enum ComparisonOperator <<enum>>
+enum DistanceReferenceType <<enum>>
+enum ParameterValueType <<enum>>
+
 ' --- 継承関係 ---
 IMovable <|.. GameEntityController
 IShootable <|.. GameEntityController
+PatternBase <|-- TriggerPatternBase
 
 ' --- 関連 ---
 GameEntityController o-- GameEntity : "_entity"
 GameEntity o-- "1" GameEntityProperty : "property"
 GameEntityProperty o-- PatternBase : "ShootPattern / MovePattern"
 PatternBase ..> GameParameterReference_T
+TriggerPatternBase o-- PatternBase : "_triggerPattern"
+TriggerPatternBase ..> GameEntityController : "monitors events"
 
 @enduml

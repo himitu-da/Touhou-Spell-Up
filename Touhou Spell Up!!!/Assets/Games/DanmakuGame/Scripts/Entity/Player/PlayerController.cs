@@ -84,7 +84,7 @@ public class PlayerController : GameEntityController
         Destroy(gameObject);
     }
 
-    void OnTriggerEnter2D(Collider2D col)
+    new void OnTriggerEnter2D(Collider2D col)
     {
         // 敵弾に当たったらゲームオーバー
         if (col.CompareTag("EnemyBullet"))

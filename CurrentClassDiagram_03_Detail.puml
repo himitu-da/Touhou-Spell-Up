@@ -1,5 +1,5 @@
 @startuml ClassDiagram
-' v0.1.12
+' v0.1.13 - TriggerPatternシステム追加
 ' ステレオタイプの色設定
 skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
@@ -36,8 +36,16 @@ package "Entity" {
         +Property : GameEntityProperty
         +ParentActor : GameEntityController
         #_cancellationTokenSource : CancellationTokenSource
+        +CurrentLifeTime : float
+        +IsCollided : bool
+        +LastCollider : Collider2D
+        +OnLifetimeChanged : LifetimeChangedEvent
+        +OnCollisionDetected : CollisionDetectedEvent
+        +OnEntityDestroyed : EntityDestroyedEvent
         +Initialize(GameEntity)
         #OnDestroy()
+        #OnCollisionEnter2D(Collision2D)
+        #OnTriggerEnter2D(Collider2D)
     }
     IMovable <|.. GameEntityController
     IShootable <|.. GameEntityController
@@ -278,6 +286,72 @@ package "Pattern" {
     PatternStep ..> FloatReference
     ParallelStep ..> PatternBaseReference
 
+    ' --- トリガーパターン ---
+    abstract class TriggerPatternBase <<ScriptableObject>> {
+        #_triggerPattern : PatternBaseReference
+        #_fireOnce : BoolReference
+        #_enabled : BoolReference
+        #_debugLog : BoolReference
+        #_hasTriggered : bool
+        +Execute(GameEntityController, CancellationToken) : UniTask
+        +MonitorTriggerCondition(GameEntityController, CancellationToken) : UniTask
+        +FireTrigger(GameEntityController, CancellationToken) : UniTask
+        #RegisterEventListeners(GameEntityController)
+        #UnregisterEventListeners(GameEntityController)
+        + {abstract} CheckTriggerCondition(GameEntityController) : bool
+        +ResetTrigger()
+        +SetEnabled(bool)
+    }
+    PatternBase <|-- TriggerPatternBase
+    TriggerPatternBase o-- "1" PatternBaseReference : "_triggerPattern"
+    TriggerPatternBase ..> GameEntityController : "monitors"
+
+    class TimeTriggerPattern <<ScriptableObject>> {
+        -_triggerTime : FloatReference
+        -_useRealTime : BoolReference
+        -_startTime : float
+    }
+    class LifetimeTriggerPattern <<ScriptableObject>> {
+        -_triggerLifetime : FloatReference
+        -_comparisonOperator : ComparisonOperatorReference
+    }
+    class CollisionTriggerPattern <<ScriptableObject>> {
+        -_filterByTag : BoolReference
+        -_targetTags : List<string>
+        -_filterByLayer : BoolReference
+        -_targetLayers : LayerMaskReference
+        -_collisionCountThreshold : IntReference
+        -_currentCollisionCount : int
+    }
+    class DistanceTriggerPattern <<ScriptableObject>> {
+        -_referenceType : DistanceReferenceType
+        -_customPosition : Vector3Reference
+        -_targetObject : GameObjectReference
+        -_triggerDistance : FloatReference
+        -_comparisonOperator : ComparisonOperatorReference
+        -_use2DDistance : BoolReference
+    }
+    class ParameterTriggerPattern <<ScriptableObject>> {
+        -_targetParameter : GameParameterReference
+        -_valueType : ParameterValueType
+        -_floatValue : FloatReference
+        -_intValue : IntReference
+        -_boolValue : BoolReference
+        -_compareParameter : GameParameterReference
+        -_comparisonOperator : ComparisonOperatorReference
+        -_monitorChanges : BoolReference
+    }
+    TriggerPatternBase <|-- TimeTriggerPattern
+    TriggerPatternBase <|-- LifetimeTriggerPattern
+    TriggerPatternBase <|-- CollisionTriggerPattern
+    TriggerPatternBase <|-- DistanceTriggerPattern
+    TriggerPatternBase <|-- ParameterTriggerPattern
+
+    LifetimeTriggerPattern ..> GameEntityController : "OnLifetimeChanged"
+    CollisionTriggerPattern ..> GameEntityController : "OnCollisionDetected"
+    DistanceTriggerPattern ..> PlayerUtility : "uses"
+    ParameterTriggerPattern ..> GameParameter : "monitors"
+
     ' --- 単独パターン ---
     class FireAndForgetPattern <<ScriptableObject>>
     class ForgetPattern <<ScriptableObject>>
@@ -342,6 +416,10 @@ package "GameParameter" {
     class AngleParameterReference <<struct>>
     class ImageReference <<struct>>
     class PrefabReference <<struct>>
+    class ComparisonOperatorReference <<struct>>
+    class LayerMaskReference <<struct>>
+    class GameParameterReference <<struct>>
+    class GameObjectReference <<struct>>
 
     GameParameterReference_T <|-- FloatReference
     note on link: T = float
@@ -364,6 +442,14 @@ package "GameParameter" {
     GameParameterReference_T <|-- ImageReference
     note on link: T = Image
     GameParameterReference_T <|-- PrefabReference
+    note on link: T = GameObject
+    GameParameterReference_T <|-- ComparisonOperatorReference
+    note on link: T = ComparisonOperator
+    GameParameterReference_T <|-- LayerMaskReference
+    note on link: T = LayerMask
+    GameParameterReference_T <|-- GameParameterReference
+    note on link: T = GameParameter
+    GameParameterReference_T <|-- GameObjectReference
     note on link: T = GameObject
 
     GameParameterReference_T ..> GameParameter_T : "parameter"
@@ -404,6 +490,26 @@ package "Utility" {
     enum RotationDirection <<enum>> {
         CounterClockwise
         Clockwise
+    }
+    enum ComparisonOperator <<enum>> {
+        Equal
+        NotEqual
+        GreaterThan
+        GreaterThanOrEqual
+        LessThan
+        LessThanOrEqual
+    }
+    enum DistanceReferenceType <<enum>> {
+        Player
+        Custom
+        TargetObject
+        WorldOrigin
+    }
+    enum ParameterValueType <<enum>> {
+        ConstantFloat
+        ConstantInt
+        ConstantBool
+        ParameterReference
     }
     note top of RotationDirection : namespace TouhouSpellUp.Danmaku
 }

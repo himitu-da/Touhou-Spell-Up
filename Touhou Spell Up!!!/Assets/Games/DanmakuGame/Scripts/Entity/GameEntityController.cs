@@ -2,6 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
 {
@@ -14,8 +15,26 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
     [SerializeField] private List<GameParameter> _gameParameters = new List<GameParameter>();
     public List<GameParameter> GameParameters => _gameParameters;
 
+    // イベント駆動のメンバ
     private float _currentLifetime = 0f;
+    public float CurrentLifeTime => _currentLifetime;
+    
     public bool IsCollided { get; private set; } = false;
+    public Collider2D LastCollider { get; private set; } = null;
+    
+    // イベント定義
+    [System.Serializable]
+    public class LifetimeChangedEvent : UnityEvent<float> { }
+    
+    [System.Serializable]
+    public class CollisionDetectedEvent : UnityEvent<Collider2D> { }
+    
+    [System.Serializable]
+    public class EntityDestroyedEvent : UnityEvent<GameEntityController> { }
+    
+    public LifetimeChangedEvent OnLifetimeChanged = new LifetimeChangedEvent();
+    public CollisionDetectedEvent OnCollisionDetected = new CollisionDetectedEvent();
+    public EntityDestroyedEvent OnEntityDestroyed = new EntityDestroyedEvent();
 
     // 描画補間用
     private Vector3 _targetPosition;
@@ -119,8 +138,16 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         if (_movementState == null) return;
 
         // 生存時間を更新
+        float previousLifetime = _currentLifetime;
         _currentLifetime += Time.deltaTime;
-        if (_entity.Value != null && _currentLifetime > _entity.Value.Lifetime)
+        
+        // 生存時間変更イベントを発火
+        if (previousLifetime != _currentLifetime)
+        {
+            OnLifetimeChanged?.Invoke(_currentLifetime);
+        }
+        
+        if (_entity.Value != null && _entity.Value.Lifetime != -1 && _currentLifetime > _entity.Value.Lifetime)
         {
             Destroy(gameObject);
             return;
@@ -134,10 +161,22 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
     protected virtual void OnCollisionEnter2D(Collision2D other)
     {
         IsCollided = true;
+        LastCollider = other.collider;
+        OnCollisionDetected?.Invoke(other.collider);
+    }
+
+    protected virtual void OnTriggerEnter2D(Collider2D other)
+    {
+        IsCollided = true;
+        LastCollider = other;
+        OnCollisionDetected?.Invoke(other);
     }
 
     protected virtual void OnDestroy()
     {
+        // エンティティ破棄イベントを発火
+        OnEntityDestroyed?.Invoke(this);
+        
         if (_cancellationTokenSource != null)
         {
             _cancellationTokenSource.Cancel();

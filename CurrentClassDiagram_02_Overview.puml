@@ -1,11 +1,12 @@
 @startuml ClassDiagram_Overview
-' v0.1.12
+' v0.1.13 - TriggerPatternシステム追加
 ' ステレオタイプの色設定
 skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
     BackgroundColor<<ScriptableObject>> LightGreen
     BackgroundColor<<Interface>> LightYellow
     BackgroundColor<<static>> LightGray
+    BackgroundColor<<enum>> LightCoral
 }
 
 ' --- インターフェース定義 ---
@@ -40,16 +41,29 @@ class BulletProperty <<ScriptableObject>>
 abstract class PatternBase <<ScriptableObject>>
 abstract class MovePatternBase <<ScriptableObject>>
 abstract class ShootPatternBase <<ScriptableObject>>
+abstract class TriggerPatternBase <<ScriptableObject>>
+class TimeTriggerPattern <<ScriptableObject>>
+class LifetimeTriggerPattern <<ScriptableObject>>
+class CollisionTriggerPattern <<ScriptableObject>>
+class DistanceTriggerPattern <<ScriptableObject>>
+class ParameterTriggerPattern <<ScriptableObject>>
 class LoopPattern <<ScriptableObject>>
 class ParallelPattern <<ScriptableObject>>
 class SequencePattern <<ScriptableObject>>
 abstract class EmissionShape <<ScriptableObject>>
+
+' --- GameParameter関連 ---
 abstract class GameParameter <<ScriptableObject>>
 class AngleParameter <<ScriptableObject>>
 class ConstantFloatParameter <<ScriptableObject>>
 class CalculatedParameter <<ScriptableObject>>
 class GameStateParameter <<ScriptableObject>>
 class "GameParameterReference<T>" as GameParameterReference_T <<struct>>
+
+' --- Enums ---
+enum ComparisonOperator <<enum>>
+enum DistanceReferenceType <<enum>>
+enum ParameterValueType <<enum>>
 
 ' --- その他 ---
 class EnemyLifeGaugeController <<MonoBehaviour>>
@@ -68,9 +82,15 @@ GameEntityProperty <|-- EnemyProperty
 GameEntityProperty <|-- BulletProperty
 PatternBase <|-- MovePatternBase
 PatternBase <|-- ShootPatternBase
+PatternBase <|-- TriggerPatternBase
 PatternBase <|-- LoopPattern
 PatternBase <|-- ParallelPattern
 PatternBase <|-- SequencePattern
+TriggerPatternBase <|-- TimeTriggerPattern
+TriggerPatternBase <|-- LifetimeTriggerPattern
+TriggerPatternBase <|-- CollisionTriggerPattern
+TriggerPatternBase <|-- DistanceTriggerPattern
+TriggerPatternBase <|-- ParameterTriggerPattern
 GameParameter <|-- AngleParameter
 GameParameter <|-- ConstantFloatParameter
 GameParameter <|-- CalculatedParameter
@@ -87,6 +107,12 @@ GameEntityProperty o-- PatternBase : "ShootPattern"
 GameEntityProperty o-- PatternBase : "MovePattern"
 PatternBase ..> GameEntityController : "uses"
 PatternBase ..> GameParameterReference_T : "uses"
+TriggerPatternBase o-- PatternBase : "_triggerPattern"
+TriggerPatternBase ..> GameEntityController : "monitors events"
+LifetimeTriggerPattern ..> GameEntityController : "OnLifetimeChanged"
+CollisionTriggerPattern ..> GameEntityController : "OnCollisionDetected"
+ParameterTriggerPattern ..> GameParameter : "monitors"
+DistanceTriggerPattern ..> PlayerUtility : "uses"
 LoopPattern o-- PatternBase
 ParallelPattern o-- PatternBase
 SequencePattern o-- PatternBase

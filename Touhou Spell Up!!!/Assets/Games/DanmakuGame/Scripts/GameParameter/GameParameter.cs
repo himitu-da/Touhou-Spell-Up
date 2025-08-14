@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// 共有されるリソースの基底となる抽象クラス
@@ -6,9 +8,61 @@ using UnityEngine;
 public abstract class GameParameter : ScriptableObject
 {
     /// <summary>
+    /// すべてのGameParameterインスタンスを静的に管理
+    /// </summary>
+    private static HashSet<GameParameter> allInstances = new HashSet<GameParameter>();
+
+    /// <summary>
     /// 値を初期状態にリセットする
     /// </summary>
     public abstract void Reset();
+
+    /// <summary>
+    /// インスタンスが有効になった時に登録
+    /// </summary>
+    protected virtual void OnEnable()
+    {
+        allInstances.Add(this);
+    }
+
+    /// <summary>
+    /// インスタンスが無効になった時に登録解除
+    /// </summary>
+    protected virtual void OnDisable()
+    {
+        allInstances.Remove(this);
+    }
+
+    /// <summary>
+    /// すべてのGameParameterを静的にリセット
+    /// </summary>
+    public static void ResetAll()
+    {
+        // nullチェックしつつリセット
+        var validInstances = allInstances.Where(instance => instance != null).ToList();
+        foreach (var instance in validInstances)
+        {
+            instance.Reset();
+        }
+        
+        Debug.Log($"GameParameter: {validInstances.Count} parameters reset to initial values.");
+    }
+
+    /// <summary>
+    /// 登録されているGameParameterの数を取得
+    /// </summary>
+    public static int GetInstanceCount()
+    {
+        return allInstances.Count(instance => instance != null);
+    }
+
+    /// <summary>
+    /// 登録されているすべてのGameParameterを取得（デバッグ用）
+    /// </summary>
+    public static List<GameParameter> GetAllInstances()
+    {
+        return allInstances.Where(instance => instance != null).ToList();
+    }
 }
 
 /// <summary>
@@ -35,8 +89,10 @@ public abstract class GameParameter<T> : GameParameter
     /// <summary>
     /// 実行開始時に呼ばれ、値を初期値にリセットする
     /// </summary>
-    protected virtual void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable(); // 基底クラスの登録処理を呼ぶ
+        
         // プレイモード中のみリセットする（エディタでの意図しない値のリセットを防ぐ）
         if (Application.isPlaying)
         {

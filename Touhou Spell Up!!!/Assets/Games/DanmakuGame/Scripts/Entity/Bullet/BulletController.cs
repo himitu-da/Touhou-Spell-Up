@@ -34,7 +34,7 @@ public class BulletController : GameEntityController
         }
     }
 
-    void OnTriggerEnter2D(Collider2D col)
+    new void OnTriggerEnter2D(Collider2D col)
     {
         if (_isPlayerShot)
         {

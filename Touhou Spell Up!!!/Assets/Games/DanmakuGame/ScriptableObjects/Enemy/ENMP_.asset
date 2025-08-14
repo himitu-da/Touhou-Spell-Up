@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootPattern:
     useConstant: 1
-    constantValue: {fileID: 11400000, guid: 87bcd8b79c4291c4b85692244e336657, type: 2}
+    constantValue: {fileID: 11400000, guid: 2614350e7bfd065488050a95c40a1f66, type: 2}
     parameter: {fileID: 0}
   movePattern:
     useConstant: 1
     constantValue: {fileID: 0}
     parameter: {fileID: 0}
   maxHealth:
-    useConstant: 1
-    constantValue: 200
-    parameter: {fileID: 0}
+    useConstant: 0
+    constantValue: 500
+    parameter: {fileID: 11400000, guid: 69388485a14b4e2459bbe839d0e186d3, type: 2}

@@ -54,7 +54,7 @@ MonoBehaviour:
     parameter: {fileID: 0}
   aimAtPlayer:
     useConstant: 1
-    constantValue: 1
+    constantValue: 0
     parameter: {fileID: 0}
   alwaysAimToPlayer:
     useConstant: 1
@@ -66,7 +66,7 @@ MonoBehaviour:
     parameter: {fileID: 0}
   wayCount:
     useConstant: 1
-    constantValue: 5
+    constantValue: 3
     parameter: {fileID: 0}
   totalAngle:
     useConstant: 1
@@ -90,9 +90,9 @@ MonoBehaviour:
     parameter: {fileID: 0}
   initializeParameterOnStart:
     useConstant: 1
-    constantValue: 1
+    constantValue: 0
     parameter: {fileID: 0}
   accumulatingOffset:
     useConstant: 1
-    constantValue: 45
+    constantValue: 6.3
     parameter: {fileID: 0}

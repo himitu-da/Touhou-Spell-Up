@@ -85,3 +85,13 @@ public class RotationDirectionReference : GameParameterReference<RotationDirecti
 
 [System.Serializable]
 public class AngleModeReference : GameParameterReference<EmissionShape.AngleMode> { }
+
+// --- トリガーパターン用の追加Reference型 ---
+[System.Serializable]
+public class LayerMaskReference : GameParameterReference<LayerMask> { }
+
+[System.Serializable]
+public class GameParameterReference : GameParameterReference<GameParameter> { }
+
+[System.Serializable]
+public class GameObjectReference : GameParameterReference<GameObject> { }

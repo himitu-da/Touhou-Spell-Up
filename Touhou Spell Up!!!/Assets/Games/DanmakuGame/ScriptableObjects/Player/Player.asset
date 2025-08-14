@@ -20,3 +20,7 @@ MonoBehaviour:
     useConstant: 1
     constantValue: {fileID: 11400000, guid: d79b02a3b0e99b745ab681108e35c620, type: 2}
     parameter: {fileID: 0}
+  _lifetime:
+    useConstant: 1
+    constantValue: -1
+    parameter: {fileID: 0}
