@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab8e274925f08734487dd148de7d202a, type: 3}
+  m_Name: LOOP_
+  m_EditorClassIdentifier: 
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  pattern:
+    useConstant: 1
+    constantValue: {fileID: 11400000, guid: d929c88bdd35b774c90d04aad3eea0f2, type: 2}
+    parameter: {fileID: 0}
+  interval:
+    useConstant: 1
+    constantValue: 1
+    parameter: {fileID: 0}
+  loopCount:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
