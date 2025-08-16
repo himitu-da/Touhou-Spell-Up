@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 382a0573a373ec446b427e074d57ec17, type: 3}
-  m_Name: HP
+  m_Name: EnemyMaxHP
   m_EditorClassIdentifier: 
-  currentValue: 200
-  initialValue: 200
+  currentValue: 300
+  initialValue: 300
+  autoResetOnEnable: 1

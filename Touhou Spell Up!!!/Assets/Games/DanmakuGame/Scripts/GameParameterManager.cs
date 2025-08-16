@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 /// <summary>
 /// すべてのGameParameterを管理し、一括でリセットする機能を提供するマネージャー
@@ -8,11 +9,10 @@ using System.Linq;
 public class GameParameterManager : MonoBehaviour
 {
     public static GameParameterManager Instance { get; private set; }
+    public static bool IsInitialized { get; private set; } = false;
+    public static event System.Action OnInitializationComplete;
 
     [Header("リセット設定")]
-    [Tooltip("ゲーム開始時にGameParameterをリセットするか")]
-    [SerializeField] private bool resetOnStart = true;
-    
     [Tooltip("ゲーム再起動時にGameParameterをリセットするか")]
     [SerializeField] private bool resetOnRestart = true;
     
@@ -28,8 +28,7 @@ public class GameParameterManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            // ゲーム開始時にすべてのGameParameterを収集
-            CollectAllGameParameters();
+            InitializeGameParameters();
         }
         else
         {
@@ -39,9 +38,43 @@ public class GameParameterManager : MonoBehaviour
 
     void Start()
     {
-        if (resetOnStart)
+        // 旧式の遅延リセット処理は削除
+        // 初期化はAwakeで同期的に完了済み
+        if (showDebugLog)
         {
-            ResetAllGameParameters();
+            Debug.Log("GameParameterManager: Start() called, initialization already completed in Awake().");
+        }
+    }
+
+    /// <summary>
+    /// GameParameterの同期初期化を実行
+    /// </summary>
+    private void InitializeGameParameters()
+    {
+        CollectAllGameParameters();
+        ResetGameParametersWithAutoResetEnabled();
+        IsInitialized = true;
+        OnInitializationComplete?.Invoke();
+        
+        if (showDebugLog)
+        {
+            Debug.Log("GameParameterManager: Initialization completed synchronously.");
+        }
+    }
+
+    /// <summary>
+    /// 遅延リセット処理
+    /// </summary>
+    private void DelayedReset()
+    {
+        if (resetOnRestart)
+        {
+            ResetGameParametersWithAutoResetEnabled();
+            
+            if (showDebugLog)
+            {
+                Debug.Log("GameParameterManager: Delayed reset completed after scene reload.");
+            }
         }
     }
 
@@ -111,6 +144,50 @@ public class GameParameterManager : MonoBehaviour
     }
 
     /// <summary>
+    /// autoResetOnEnableがtrueのGameParameterのみをリセットする
+    /// </summary>
+    public void ResetGameParametersWithAutoResetEnabled()
+    {
+        // 最新のGameParameterを再収集
+        CollectAllGameParameters();
+
+        int resetCount = 0;
+        foreach (var parameter in allGameParameters)
+        {
+            if (parameter != null && ShouldAutoReset(parameter))
+            {
+                parameter.Reset();
+                resetCount++;
+                
+                if (showDebugLog)
+                {
+                    Debug.Log($"Reset GameParameter: {parameter.name} (Type: {parameter.GetType().Name})");
+                }
+            }
+        }
+
+        if (showDebugLog)
+        {
+            Debug.Log($"GameParameterManager: {resetCount} GameParameters with autoResetOnEnable=true reset to initial values.");
+        }
+    }
+
+    /// <summary>
+    /// GameParameterがautoResetOnEnableを有効にしているかチェック
+    /// </summary>
+    private bool ShouldAutoReset(GameParameter parameter)
+    {
+        // リフレクションを使用してAutoResetOnEnableプロパティにアクセス
+        var autoResetProperty = parameter.GetType().GetProperty("AutoResetOnEnable");
+        if (autoResetProperty != null)
+        {
+            return (bool)autoResetProperty.GetValue(parameter);
+        }
+        // プロパティが見つからない場合はデフォルトでリセットする
+        return true;
+    }
+
+    /// <summary>
     /// 特定の型のGameParameterのみをリセット
     /// </summary>
     public void ResetGameParametersOfType<T>() where T : GameParameter
@@ -134,30 +211,46 @@ public class GameParameterManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 再起動時にリセットするかどうかを設定
-    /// </summary>
-    public void SetResetOnRestart(bool value)
-    {
-        resetOnRestart = value;
-    }
-
-    /// <summary>
-    /// 開始時にリセットするかどうかを設定
-    /// </summary>
-    public void SetResetOnStart(bool value)
-    {
-        resetOnStart = value;
-    }
-
-    /// <summary>
     /// 再起動時に呼ばれる（DanmakuGameManagerから呼び出される）
     /// </summary>
     public void OnGameRestart()
     {
         if (resetOnRestart)
         {
-            ResetAllGameParameters();
+            // 即座にリセットを実行
+            ResetGameParametersWithAutoResetEnabled();
+            
+            if (showDebugLog)
+            {
+                Debug.Log("GameParameterManager: Restart reset completed.");
+            }
         }
+    }
+
+    /// <summary>
+    /// シーンリロード後の初期化処理
+    /// リスタート時の実行順序を保証するため
+    /// </summary>
+    public void OnSceneReloaded()
+    {
+        // 既にAwakeで初期化されているが、リスタート時は再度リセット
+        if (resetOnRestart)
+        {
+            ResetGameParametersWithAutoResetEnabled();
+            
+            if (showDebugLog)
+            {
+                Debug.Log("GameParameterManager: Scene reloaded, parameters reset for restart.");
+            }
+        }
+    }
+
+    /// <summary>
+    /// 再起動時にリセットするかどうかを設定
+    /// </summary>
+    public void SetResetOnRestart(bool value)
+    {
+        resetOnRestart = value;
     }
 
     /// <summary>
@@ -183,7 +276,7 @@ public class GameParameterManager : MonoBehaviour
     {
         if (Application.isPlaying && showDebugLog)
         {
-            Debug.Log($"GameParameterManager Settings - ResetOnStart: {resetOnStart}, ResetOnRestart: {resetOnRestart}");
+            Debug.Log($"GameParameterManager Settings - ResetOnRestart: {resetOnRestart}, Debug Log: {showDebugLog}");
         }
     }
 }

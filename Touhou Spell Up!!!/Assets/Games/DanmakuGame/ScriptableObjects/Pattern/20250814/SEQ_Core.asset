@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edd4ec64db6ab0445998cea85f782abe, type: 3}
+  m_Name: SEQ_Core
+  m_EditorClassIdentifier: 
+  _startConditionExpression: 
+  _endConditionExpression: 
+  _conditionParameters: []
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  sequence:
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: 6c40fd70e9486ce44812c558db5f85b0, type: 2}
+      parameter: {fileID: 0}
+    delay:
+      useConstant: 1
+      constantValue: 0
+      parameter: {fileID: 0}
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: 71a96ca8782344b488e249e60dbbe9f8, type: 2}
+      parameter: {fileID: 0}
+    delay:
+      useConstant: 1
+      constantValue: 0
+      parameter: {fileID: 0}
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: 09497cd8e68a0eb4dabf2f83fe382ffc, type: 2}
+      parameter: {fileID: 0}
+    delay:
+      useConstant: 1
+      constantValue: 0
+      parameter: {fileID: 0}

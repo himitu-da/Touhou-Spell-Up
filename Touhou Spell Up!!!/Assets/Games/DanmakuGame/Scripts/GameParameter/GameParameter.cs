@@ -77,6 +77,11 @@ public abstract class GameParameter<T> : GameParameter
     [Header("初期化時の値")]
     [SerializeField] protected T initialValue;
 
+    [Header("初期化設定")]
+    [SerializeField] 
+    [Tooltip("OnEnable時にcurrentValueをinitialValueで自動的にリセットするか")]
+    private bool autoResetOnEnable = true;
+
     /// <summary>
     /// 現在の値
     /// </summary>
@@ -87,15 +92,27 @@ public abstract class GameParameter<T> : GameParameter
     }
 
     /// <summary>
+    /// OnEnable時の自動リセットを有効/無効にする
+    /// </summary>
+    public bool AutoResetOnEnable
+    {
+        get => autoResetOnEnable;
+        set => autoResetOnEnable = value;
+    }
+
+    /// <summary>
     /// 実行開始時に呼ばれ、値を初期値にリセットする
     /// </summary>
     protected override void OnEnable()
     {
         base.OnEnable(); // 基底クラスの登録処理を呼ぶ
         
-        // プレイモード中のみリセットする（エディタでの意図しない値のリセットを防ぐ）
-        if (Application.isPlaying)
+        // プレイモード中かつ自動リセットが有効な場合のみリセットする
+        if (Application.isPlaying && autoResetOnEnable)
         {
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log($"GameParameter OnEnable Reset: {name} from {currentValue} to {initialValue}");
+            #endif
             Reset();
         }
     }

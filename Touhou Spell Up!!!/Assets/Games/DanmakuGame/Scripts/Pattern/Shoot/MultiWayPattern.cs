@@ -17,14 +17,6 @@ public class MultiWayPattern : ShootPatternBase
     [Tooltip("全方位で自機外し")]
     [SerializeField] private BoolReference avoidAtPlayer = new BoolReference { useConstant = true, constantValue = false };
 
-    [Header("角度の共有と更新")]
-    [Tooltip("角度の入出力に使用するパラメータ。未設定の場合は内部で角度を管理します。")]
-    [SerializeField] private AngleParameterReference angleParameter;
-    [Tooltip("実行開始時に、Angle Parameterを初期化するかどうか。")]
-    [SerializeField] private BoolReference initializeParameterOnStart = new BoolReference { useConstant = true, constantValue = true };
-    [Tooltip("実行後にAngle Parameterに加算するオフセット値。")]
-    [SerializeField] private FloatReference accumulatingOffset = new FloatReference { useConstant = true, constantValue = 0f };
-
     public override async UniTask ExecuteShootFromPoint(GameEntityController controller, EmissionData emissionData, CancellationToken token)
     {
         if (_entity == null || _entity.Value == null || _entity.Value.Prefab == null)
@@ -34,42 +26,11 @@ public class MultiWayPattern : ShootPatternBase
         }
 
         Vector3 baseSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
-        float baseAngle = controller.transform.eulerAngles.z;
         bool useAvoidAtPlayer = allRound.Value && avoidAtPlayer.Value;
         float directionMultiplier = (rotationDirection.Value == RotationDirection.CounterClockwise) ? 1f : -1f;
 
         // --- 実行開始時の中央角度を決定 ---
-        float centerAngle;
-        if (angleParameter != null && angleParameter.Value != null)
-        {
-            if (initializeParameterOnStart.Value)
-            {
-                float initialAngle;
-                if (aimAtPlayer.Value)
-                {
-                    initialAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f;
-                }
-                else
-                {
-                    initialAngle = baseAngle + emissionData.localAngle;
-                }
-                angleParameter.Value.Value = initialAngle + directionOffset.Value;
-            }
-            centerAngle = angleParameter.Value.Value;
-        }
-        else
-        {
-            if (aimAtPlayer.Value)
-            {
-                centerAngle = AngleUtility.GetAngleToPlayer(baseSpawnPosition) + 180f;
-            }
-            else
-            {
-                centerAngle = baseAngle + emissionData.localAngle;
-            }
-            centerAngle += directionOffset.Value;
-        }
-        // --------------------------
+        float centerAngle = InitializeBaseAngle(controller, emissionData, baseSpawnPosition);
 
         float finalAngle = allRound.Value ? 360f : totalAngle.Value;
         float startAngleOffset = -finalAngle / 2 * directionMultiplier;
@@ -88,7 +49,8 @@ public class MultiWayPattern : ShootPatternBase
             float loopCenterAngle = centerAngle;
             if (alwaysAimToPlayer.Value)
             {
-                loopCenterAngle = AngleUtility.GetAngleToPlayer(currentSpawnPosition) + 180f + directionOffset.Value;
+                // 毎回自機狙い角度を再計算
+                loopCenterAngle = CalculateShootAngle(controller, emissionData, currentSpawnPosition);
             }
 
             float currentAngle = loopCenterAngle + (allRound.Value ? 0 : startAngleOffset) + (useAvoidAtPlayer ? angleStep / 2 : 0) + (angleStep * i * directionMultiplier);
@@ -98,12 +60,14 @@ public class MultiWayPattern : ShootPatternBase
             controller.InstantiateProperty(_entity.Value, finalSpawnPosition, rotation);
         }
 
-        // --- 次回実行のために最後の角度を保存 ---
-        if (angleParameter != null && angleParameter.Value != null)
-        {
-            angleParameter.Value.Value = centerAngle + accumulatingOffset.Value;
-        }
-        // ------------------------------------
+        // 内部角度状態を更新（次回実行のため） - 中央角度から基準を引いた差分を保存
+        Vector3 initialSpawnPosition = controller.transform.position + controller.transform.rotation * emissionData.localPosition;
+        float baseCenterAngle = aimAtPlayer.Value ? AngleUtility.GetAngleToPlayer(initialSpawnPosition) + 180f : controller.transform.eulerAngles.z + emissionData.localAngle;
+        float finalInternalAngle = centerAngle - baseCenterAngle;
+        SetInternalAngle(finalInternalAngle);
+        
+        // --- パターン終了時のオフセット処理 ---
+        ApplyPostExecutionAngleOffset();
 
         await UniTask.CompletedTask;
     }

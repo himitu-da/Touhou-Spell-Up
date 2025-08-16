@@ -548,6 +548,16 @@ MonoBehaviour:
     useConstant: 1
     constantValue: {fileID: 11400000, guid: 67792246908d20c488026a83136a9416, type: 2}
     parameter: {fileID: 0}
+  _gameParameters: []
+  OnLifetimeChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionDetected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEntityDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
   _interpolationSpeed:
     useConstant: 1
     constantValue: 15
@@ -886,6 +896,16 @@ MonoBehaviour:
     useConstant: 1
     constantValue: {fileID: 11400000, guid: 29c4c4139997f3c4daeef9192eea1fa8, type: 2}
     parameter: {fileID: 0}
+  _gameParameters: []
+  OnLifetimeChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnCollisionDetected:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEntityDestroyed:
+    m_PersistentCalls:
+      m_Calls: []
   _interpolationSpeed:
     useConstant: 1
     constantValue: 15
@@ -894,6 +914,7 @@ MonoBehaviour:
     useConstant: 1
     constantValue: {fileID: 6845083702458507679, guid: b33681019a1032140a6bf80759c2caf7, type: 3}
     parameter: {fileID: 0}
+  currentHealthParameter: {fileID: 11400000, guid: 539c3642415d0814bbb7b51aca18b165, type: 2}
 --- !u!1 &1648173143
 GameObject:
   m_ObjectHideFlags: 0
@@ -938,6 +959,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbc65206a0ad1cb449dbfac8287eb119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resetGameParametersOnRestart: 1
+  showDebugLog: 1
 --- !u!1 &1846125579
 GameObject:
   m_ObjectHideFlags: 0

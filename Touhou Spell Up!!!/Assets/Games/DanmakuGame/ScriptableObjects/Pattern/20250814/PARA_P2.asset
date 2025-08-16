@@ -9,9 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab23db7ab4dfb334fb1f4e579dc6ad51, type: 3}
-  m_Name: BRANCH_
+  m_Script: {fileID: 11500000, guid: c988225907b881f4cb4590287b277f5b, type: 3}
+  m_Name: PARA_P2
   m_EditorClassIdentifier: 
+  _startConditionExpression: 
+  _endConditionExpression: p0 < 100
+  _conditionParameters:
+  - {fileID: 11400000, guid: 539c3642415d0814bbb7b51aca18b165, type: 2}
   _beforeAwaitSeconds:
     useConstant: 1
     constantValue: 0
@@ -20,17 +24,12 @@ MonoBehaviour:
     useConstant: 1
     constantValue: 0
     parameter: {fileID: 0}
-  _conditionBranches:
-  - conditionExpression: p0 > 100
-    pattern:
+  patterns:
+  - pattern:
       useConstant: 1
-      constantValue: {fileID: 11400000, guid: 3cdb52a75bea8f1438a38d3e630f7a1c, type: 2}
+      constantValue: {fileID: 11400000, guid: 1576c0ea23a0fd049891d5e744df9bd8, type: 2}
       parameter: {fileID: 0}
-    description: 
-  _referencedParameters:
-  - {fileID: 11400000, guid: 69388485a14b4e2459bbe839d0e186d3, type: 2}
-  _defaultPattern:
-    useConstant: 1
-    constantValue: {fileID: 0}
-    parameter: {fileID: 0}
-  _logEvaluationResult: 0
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: b6ff852108e58da4bb616b2fbfcc1549, type: 2}
+      parameter: {fileID: 0}

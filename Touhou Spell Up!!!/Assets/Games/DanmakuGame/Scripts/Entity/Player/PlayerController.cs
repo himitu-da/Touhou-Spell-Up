@@ -13,13 +13,14 @@ public class PlayerController : GameEntityController
     private Vector2 _moveInput;
     private bool _isShotPressed, _isSlowMovePressed;
 
-    void Awake()
-    {
-        Initialize(_entity.Value);
-    }
-
     public override void Initialize(GameEntity entity)
     {
+        // 依存システムが準備完了していることを確認
+        if (!GameParameterManager.IsInitialized)
+        {
+            Debug.LogError("PlayerController initialized before GameParameterManager!", this);
+        }
+        
         base.Initialize(entity);
         _playerProperty = entity.Property as PlayerProperty;
         if (_playerProperty == null)

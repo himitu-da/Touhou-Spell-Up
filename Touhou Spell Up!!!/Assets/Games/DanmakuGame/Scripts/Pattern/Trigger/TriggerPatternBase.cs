@@ -7,6 +7,7 @@ using UnityEngine.Events;
 /// イベント駆動のトリガーパターンの基底クラス
 /// 各FixedUpdateで条件をチェックし、条件が満たされたときに実行するパターンを定義する
 /// </summary>
+[System.Obsolete("TriggerPatternBase is deprecated. Use PatternBase with start/end condition expressions instead.", false)]
 public abstract class TriggerPatternBase : PatternBase
 {
     [Header("トリガー設定")]

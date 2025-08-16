@@ -10,8 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab8e274925f08734487dd148de7d202a, type: 3}
-  m_Name: LOOP_0
+  m_Name: LOOP_
   m_EditorClassIdentifier: 
+  _startConditionExpression: 
+  _endConditionExpression: 
+  _conditionParameters: []
   _beforeAwaitSeconds:
     useConstant: 1
     constantValue: 0
@@ -22,12 +25,12 @@ MonoBehaviour:
     parameter: {fileID: 0}
   pattern:
     useConstant: 1
-    constantValue: {fileID: 11400000, guid: 2d91c27b70e010a43b5fe0ac3cb92ba4, type: 2}
+    constantValue: {fileID: 11400000, guid: b8a7bb557e02f19418c5d3d66df1c904, type: 2}
     parameter: {fileID: 0}
   interval:
-    useConstant: 0
-    constantValue: 1
-    parameter: {fileID: 11400000, guid: 96b92331191b6ca40a50c57b572a241f, type: 2}
+    useConstant: 1
+    constantValue: 0.01
+    parameter: {fileID: 0}
   loopCount:
     useConstant: 1
     constantValue: 0

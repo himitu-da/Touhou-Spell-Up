@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab8e274925f08734487dd148de7d202a, type: 3}
-  m_Name: LOOP_
+  m_Name: LOOP_ 1
   m_EditorClassIdentifier: 
   _startConditionExpression: 
   _endConditionExpression: 
@@ -25,7 +25,7 @@ MonoBehaviour:
     parameter: {fileID: 0}
   pattern:
     useConstant: 1
-    constantValue: {fileID: 11400000, guid: ce428d8c59268044392b8b0d389e4579, type: 2}
+    constantValue: {fileID: 11400000, guid: 9c048f3fff8215e4dbf5965d183cec5c, type: 2}
     parameter: {fileID: 0}
   interval:
     useConstant: 1

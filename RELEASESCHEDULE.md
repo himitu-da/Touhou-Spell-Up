@@ -1,20 +1,11 @@
 # Developed but not added to CHANGELOG.md
 
 
-
 # Developing
 
 
 
 ## v0.1～実装予定
-
-- すべてのPatternBase抽象クラスに対して、Pattern実行開始条件と終了条件を設定できるようにする
-    - 開始条件は、Pattern実行前に満たす必要がある条件
-    - 終了条件は、Pattern実行中に満たす必要がある条件
-    - これに伴い、TriggerPatternBase等は消去
-    - 例えば、Shoot中に条件を満たさなくなったら強制終了されるなど
-
-- AngleParameterをGameParameterに統合
 
 - GameStateParameterを実装する
 
@@ -22,12 +13,6 @@
     - 例えば、PatternBaseの具象クラスや、Entityなど。
     - パラメータとしてこれを用意しておいて、これをCalculatePatternの引数に渡すことで、CalculatePatternの計算結果をパラメータとして使用できるなど
 
-- privateメンバの命名規則（_をつける）や、[SerializeField]の改行の統一
-- RotatingShotPattern、MultiWayPatternでもともと使用していたGameParameter（旧SharedResource）の記述を削除（不必要になったため）
-
-- PatternBase具象クラスの命名規則の統一
-    - ShootPatternBaseの具象クラスは名称にShootPatternをつける
-    - MovePatternBaseの具象クラスは名称にMovePatternを付ける
 
 - ShootPatternの具象クラスから、点・線・面の弾を撃つことを補助するためのShotUtilityを作成する
     - ShotUtilityクラスでは、与えられたEmissionDataとshooterによって、初期設定を行い、shootメソッドで撃つ
@@ -43,6 +28,12 @@
 
 以下はv0.1ではなく、v0.2以降に実装予定
 
+- privateメンバの命名規則（_をつける）や、[SerializeField]の改行の統一
+
+- PatternBase具象クラスの命名規則の統一
+    - ShootPatternBaseの具象クラスは名称にShootPatternをつける
+    - MovePatternBaseの具象クラスは名称にMovePatternを付ける
+    
 - CalculatedParameterで、次元数ごとに型を1まとめにできるようにする
 
 - BranchPatternで、else ifに相当する処理を追加

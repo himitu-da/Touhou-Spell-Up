@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootPattern:
     useConstant: 1
-    constantValue: {fileID: 11400000, guid: 2614350e7bfd065488050a95c40a1f66, type: 2}
+    constantValue: {fileID: 11400000, guid: 5a769fd1363e475408e41c55d8c6c525, type: 2}
     parameter: {fileID: 0}
   movePattern:
     useConstant: 1

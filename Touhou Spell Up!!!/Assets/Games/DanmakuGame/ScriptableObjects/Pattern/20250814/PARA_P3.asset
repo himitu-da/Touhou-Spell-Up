@@ -9,9 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab8e274925f08734487dd148de7d202a, type: 3}
-  m_Name: LOOP_Core
+  m_Script: {fileID: 11500000, guid: c988225907b881f4cb4590287b277f5b, type: 3}
+  m_Name: PARA_P3
   m_EditorClassIdentifier: 
+  _startConditionExpression: 
+  _endConditionExpression: 
+  _conditionParameters:
+  - {fileID: 11400000, guid: 539c3642415d0814bbb7b51aca18b165, type: 2}
   _beforeAwaitSeconds:
     useConstant: 1
     constantValue: 0
@@ -20,15 +24,8 @@ MonoBehaviour:
     useConstant: 1
     constantValue: 0
     parameter: {fileID: 0}
-  pattern:
-    useConstant: 1
-    constantValue: {fileID: 11400000, guid: 35b865e6660415b488b086229c612831, type: 2}
-    parameter: {fileID: 0}
-  interval:
-    useConstant: 1
-    constantValue: 0.01
-    parameter: {fileID: 0}
-  loopCount:
-    useConstant: 1
-    constantValue: 0
-    parameter: {fileID: 0}
+  patterns:
+  - pattern:
+      useConstant: 1
+      constantValue: {fileID: 11400000, guid: c0f245deb8babda44bc93d49a9363351, type: 2}
+      parameter: {fileID: 0}

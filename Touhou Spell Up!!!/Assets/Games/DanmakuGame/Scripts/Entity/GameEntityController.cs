@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
@@ -21,6 +22,10 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
     
     public bool IsCollided { get; private set; } = false;
     public Collider2D LastCollider { get; private set; } = null;
+
+    // 初期化管理
+    protected bool _isInitialized = false;
+    public bool IsInitialized => _isInitialized;
     
     // イベント定義
     [System.Serializable]
@@ -48,9 +53,66 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         set => _parentActor = value;
     }
 
+    void Start()
+    {
+        if (CanInitialize())
+        {
+            PerformInitialization();
+        }
+        else
+        {
+            StartCoroutine(WaitForSystemReady());
+        }
+    }
+
+    /// <summary>
+    /// サブクラスから呼び出し可能なStart処理
+    /// </summary>
+    protected virtual void InitializeOnStart()
+    {
+        Start();
+    }
+
+    /// <summary>
+    /// 初期化可能かどうかをチェック
+    /// </summary>
+    private bool CanInitialize()
+    {
+        return GameParameterManager.IsInitialized && 
+               DanmakuGameManager.Instance != null && 
+               DanmakuGameManager.Instance.IsSystemReady;
+    }
+
+    /// <summary>
+    /// システム準備完了まで待機
+    /// </summary>
+    private IEnumerator WaitForSystemReady()
+    {
+        yield return new WaitUntil(CanInitialize);
+        PerformInitialization();
+    }
+
+    /// <summary>
+    /// 実際の初期化処理を実行
+    /// </summary>
+    private void PerformInitialization()
+    {
+        if (!_isInitialized && _entity.Value != null)
+        {
+            Initialize(_entity.Value);
+            _isInitialized = true;
+        }
+    }
+
     // GameEntity を受け取るように変更
     public virtual void Initialize(GameEntity entity)
     {
+        // 依存システムの初期化完了をチェック
+        if (!GameParameterManager.IsInitialized)
+        {
+            Debug.LogError($"{GetType().Name} initialized before GameParameterManager! This may cause issues with Pattern execution.", this);
+        }
+
         if (entity == null) return;
 
         // GameEntityReferenceに定数として設定する
