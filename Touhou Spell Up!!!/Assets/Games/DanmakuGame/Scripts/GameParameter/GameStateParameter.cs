@@ -1,5 +1,5 @@
 using UnityEngine;
-
+/*
 /// <summary>
 /// ゲームの状態（例: 敵のHP、経過時間）を動的に値として提供するゲームパラメータ。
 /// （注意：このクラスは現在プレースホルダーであり、値の取得ロジックは未実装です）
@@ -83,3 +83,4 @@ public class GameStateParameter : GameParameter<float>
         base.Reset();
     }
 }
+*/

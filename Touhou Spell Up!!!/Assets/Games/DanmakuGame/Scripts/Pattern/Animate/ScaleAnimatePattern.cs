@@ -49,20 +49,20 @@ public class ScaleAnimatePattern : AnimatePatternBase
             if (token.IsCancellationRequested) return;
 
             float t = duration > 0 ? elapsedTime / duration : 1f;
-            state.Scale = Vector2.Lerp(startScale, endScale, t);
+            state.ScaleMultiplier = Vector2.Lerp(startScale, endScale, t);
 
             elapsedTime += Time.deltaTime;
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
 
-        state.Scale = endScale;
+        state.ScaleMultiplier = endScale;
     }
 
     private async UniTask ExecuteDelta(GameEntityState state, CancellationToken token)
     {
         if (_useStartValue)
         {
-            state.Scale = _deltaStartScale.Value;
+            state.ScaleMultiplier = _deltaStartScale.Value;
         }
 
         float duration = _duration.Value;
@@ -70,7 +70,7 @@ public class ScaleAnimatePattern : AnimatePatternBase
         {
             while (!token.IsCancellationRequested)
             {
-                state.Scale += (Vector3)_deltaScalePerSec.Value * Time.deltaTime;
+                state.ScaleMultiplier += (Vector3)_deltaScalePerSec.Value * Time.deltaTime;
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
         }
@@ -80,7 +80,7 @@ public class ScaleAnimatePattern : AnimatePatternBase
             while (elapsedTime < duration)
             {
                 if (token.IsCancellationRequested) return;
-                state.Scale += (Vector3)_deltaScalePerSec.Value * Time.deltaTime;
+                state.ScaleMultiplier += (Vector3)_deltaScalePerSec.Value * Time.deltaTime;
                 elapsedTime += Time.deltaTime;
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }

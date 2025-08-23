@@ -13,22 +13,8 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
     public GameEntityProperty Property { get; protected set; }
     protected CancellationTokenSource _cancellationTokenSource;
 
-    private Vector3 _initialScale;
-
     [SerializeField] private List<GameParameter> _gameParameters = new List<GameParameter>();
     public List<GameParameter> GameParameters => _gameParameters;
-
-    [Header("Health")]
-    [SerializeField] private FloatReference _maxHealth = new FloatReference { useConstant = true, constantValue = 100f };
-    public float MaxHealth => _maxHealth.Value;
-    
-    [System.NonSerialized]
-    private float _currentHealth;
-    public float CurrentHealth
-    {
-        get => _currentHealth;
-        protected set => _currentHealth = value;
-    }
 
     // イベント駆動のメンバ
     private float _currentLifetime = 0f;
@@ -118,6 +104,14 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         }
     }
 
+    /// <summary>
+    /// 適切な State オブジェクトを作成する（サブクラスでオーバーライド可能）
+    /// </summary>
+    protected virtual GameEntityState CreateState()
+    {
+        return new GameEntityState();
+    }
+
     // GameEntity を受け取るように変更
     public virtual void Initialize(GameEntity entity)
     {
@@ -133,20 +127,14 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         this._entity = new GameEntityReference { useConstant = true, constantValue = entity };
         this.Property = entity.Property;
 
-        // HPを初期化
-        _currentHealth = MaxHealth;
-        
-        // 初期スケールを保存
-        _initialScale = transform.localScale;
-
         // GameEntityStateをnewで生成する
-        _state = new GameEntityState
-        {
-            // 初期位置と向きを設定
-            Position = transform.position,
-            Rotation = transform.rotation,
-            Scale = Vector3.one // stateのScaleは乗数として扱うため1で初期化
-        };
+        _state = CreateState();
+        
+        // 初期位置と向きを設定
+        _state.Position = transform.position;
+        _state.Rotation = transform.rotation;
+        _state.InitialScale = transform.localScale; // 初期スケールをstateに保存
+        _state.ScaleMultiplier = Vector3.one; // stateのScaleMultiplierは乗数として扱うため1で初期化
 
         // 補間用の目標値も初期化
         _targetPosition = _state.Position;
@@ -180,21 +168,6 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         }
     }
 
-    /// <summary>
-    /// ダメージを受ける処理
-    /// </summary>
-    /// <param name="damageAmount">ダメージ量</param>
-    public virtual void TakeDamage(float damageAmount)
-    {
-        _currentHealth -= damageAmount;
-        if (_currentHealth < 0)
-        {
-            _currentHealth = 0;
-        }
-
-        // TODO: HPが0になった時の処理を実装
-    }
-
     // IShootableインターフェースの実装
     public void InstantiateProperty(GameEntity entity, Vector3 position, Quaternion rotation)
     {
@@ -220,6 +193,10 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         {
             // entity.Property (GameEntityProperty) と親Actor（自身）を渡して初期化
             bulletController.Initialize(entity, this);
+        }
+        else
+        {
+            Debug.LogError($"InstantiateProperty: BulletController not found on {instance.name}");
         }
     }
 
@@ -258,7 +235,7 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         // 描画位置を目標位置に滑らかに補間
         transform.position = Vector3.Lerp(transform.position, _targetPosition, _interpolationSpeed.Value * Time.deltaTime);
         transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, _interpolationSpeed.Value * Time.deltaTime);
-        transform.localScale = Vector3.Scale(_initialScale, _state.Scale);
+        transform.localScale = Vector3.Scale(_state.InitialScale, _state.ScaleMultiplier);
     }
 
     protected virtual void OnCollisionEnter2D(Collision2D other)

@@ -5,6 +5,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 254358
   packageName: Hot Reload | Edit Code Without Compiling
-  packageVersion: 1.13.8
+  packageVersion: 1.13.10
   assetPath: Packages/com.singularitygroup.hotreload/Runtime/Public/Log.cs
-  uploadId: 773968
+  uploadId: 780490

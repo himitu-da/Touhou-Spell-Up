@@ -69,7 +69,12 @@ public class PlayerController : GameEntityController
             var shotPattern = _isSlowMovePressed ? _playerProperty.ShotPatternSlow : _playerProperty.ShotPatternNormal;
             if (shotPattern != null)
             {
+                // Debug.Log($"PlayerController: Executing shot pattern {shotPattern.name}");
                 shotPattern.Execute(this, _cancellationTokenSource.Token).Forget();
+            }
+            else
+            {
+                Debug.LogError("PlayerController: Shot pattern is null");
             }
         }
 

@@ -39,9 +39,9 @@ MonoBehaviour:
   _useStartValue: 1
   _deltaStartScale:
     useConstant: 1
-    constantValue: {x: 0.2, y: 0.2}
+    constantValue: {x: 1, y: 1}
     parameter: {fileID: 0}
   _deltaScalePerSec:
     useConstant: 1
-    constantValue: {x: 0.1, y: 0.1}
+    constantValue: {x: 0, y: 0.5}
     parameter: {fileID: 0}

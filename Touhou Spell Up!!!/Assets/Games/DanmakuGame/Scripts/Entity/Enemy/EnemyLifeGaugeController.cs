@@ -11,7 +11,8 @@ public class EnemyLifeGaugeController : MonoBehaviour
     {
         _enemyController = enemyController;
         _enemyController.OnHealthChanged += UpdateLifeGauge; // 体力が変化したときにゲージを更新
-        UpdateLifeGauge(_enemyController.CurrentHealth, _enemyController.MaxHealth); // 初期状態のゲージを更新
+        float maxHealth = (_enemyController.Property as EnemyProperty)?.MaxHealth ?? 1f;
+        UpdateLifeGauge(_enemyController.CurrentHealth, maxHealth); // 初期状態のゲージを更新
     }
 
     private void OnDestroy()

@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3820d39d8630a224dba9f9ea6ea5bf39, type: 3}
   m_Name: BASIC_
   m_EditorClassIdentifier: 
+  _startConditionExpression: 
+  _endConditionExpression: 
+  _conditionParameters: []
   _beforeAwaitSeconds:
     useConstant: 1
     constantValue: 0
@@ -36,6 +39,11 @@ MonoBehaviour:
     useConstant: 1
     constantValue: 0
     parameter: {fileID: 0}
+  internalAngle:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  logInternalAngleChanges: 0
   emissionShape:
     useConstant: 1
     constantValue: {fileID: 11400000, guid: e3b136d61b41b974aaf052131eabb9fe, type: 2}
@@ -57,6 +65,14 @@ MonoBehaviour:
     constantValue: 0
     parameter: {fileID: 0}
   alwaysAimToPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  initializeAngleOnStart:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  postExecutionAngleOffset:
     useConstant: 1
     constantValue: 0
     parameter: {fileID: 0}

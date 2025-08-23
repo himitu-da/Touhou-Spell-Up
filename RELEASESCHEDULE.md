@@ -1,32 +1,38 @@
 # Developed but not added to CHANGELOG.md
 
 
+
 # Developing
 
+- GameEntityControllerに対して、Stateの値を取得するためのフィールドを用意する
+    - これはGameParameterとして共通化できるようにする
+
+- 点・線・面弾幕システムの階層設計実装
+    - EmissionShapeBaseを頂点とした階層構造の実装
+        - PointEmissionShapeBase、LineEmissionShapeBase、PlaneEmissionShapeBaseの中間抽象クラス作成
+        - 各具象クラス（BasicPoint、StraightLine、CircleLine、GridPlane、CirclePlaneなど）の実装
+    - 発射タイミング制御システムの強化
+        - EmissionTiming enum（Simultaneous、Sequential、Random、Wave、Spiralなど）の追加
+        - LineOrder enum（順次、逆順、1つ飛ばし、中央から/へ、ランダムなど）の実装
+        - PlaneOrder enum（同時、螺旋状、放射状、波状、ランダムなど）の実装
+    - 発射タイミング制御をShootPatternBaseからEmissionShapeBaseに移管
+    - 重複制御、個数制御などの高度なランダム発射制御の実装
+
 ## v0.1～実装予定
+
+
+
+- 常に進んでいる方向に向くみたいなAnimatePatternを作成する
+
 
 - PatternBaseにおいて、親のGameEntityを参照できるようにする。
     - SatellitePatternで特殊な実装をしていたものを、平準化する
 
-- ShootPatternの具象クラスから、点・線・面の弾を撃つことを補助するためのShotUtilityを作成する
-    - ShotUtilityクラスでは、与えられたEmissionDataとshooterによって、初期設定を行い、shootメソッドで撃つ
-    - ShotUtilityクラスの責務は、1セットのパターンを点・線・面で撃つかの補助を行うこと
-    - ShootPatternは、Shootメソッドを発火させるだけでよく、各EmissionDataに基づいてShotUtilityが発射処理を行う
-    - ShotUtilityクラスのコンストラクタに提供するのは、EmissionData、IShootable、IMovableの3つ
-    - Shootメソッドに提供するのは、「撃つ玉」と「撃ち方（角度計算方法・回数・頻度）」の2つ
-    - これによって各ShootPatternは点・線・面であることを意識せずに撃つことができるようになる
-
 - オブジェクトプーリングの実装
 
-- GameEntityStateとGameEntityPropertyについて、それぞれ動的な状態と静的な状態を保持するような責務に分ける
-- GameEntityControllerはGameEntityStateとGameEntityPropertyを持つようにし、これ自体が状態を保有しないようにする
-- GameEntityStateを継承したPlayerState、EnemyState、BulletStateを作成
-- BulletStateが残りの寿命を保持するようにし、BulletControllerからcurrentLifeTimeを削除する
-- GameEntityStateのScaleはScaleMultiplierに名称変更し、初期スケールに対する倍率として機能するようにする
-- EnemyPropertyにmaxHealthを追加し、EnemyControllerからmaxHealthを削除する
-- initialScaleはGameEntityStateが保有するように変更
-- GameEntityControllerに対して、Stateの値を取得するためのフィールドを用意する
-    - これはGameParameterとして共通化できるようにする
+- `GameStateParameter`を実装。ゲームの状態（経過時間、敵HP、HP割合など）を動的に取得し、`CalculatePattern`などで利用可能に
+    - `GameEntityController`にHP関連のプロパティ (`MaxHealth`, `CurrentHealth`) を追加
+    - `DanmakuGameManager`にゲームの経過時間を管理する`GameTime`プロパティを追加
 
 以下はv0.1ではなく、v0.2以降に実装予定
 
@@ -34,6 +40,7 @@
 - Assets/Games以下の全コードのフィールドにおいて、[SerializeField]後の改行はしないことで統一
 - Assets/Games以下の全コードのフィールドにおいて、publicフィールドは使用せず、[SerializeField]もしくはプロパティを使用することで統一
 - Assets/Games以下の全コードにおいて、`if`, `for`, `while` などの制御構文では、処理が1行であっても必ず波括弧を使用することで統一
+- クラスの命名法をコーディング規約に従って統一する
 
 - Reference型のメンバで、シークバーで指定できるようにする（Rangeが指定されている場合）
 

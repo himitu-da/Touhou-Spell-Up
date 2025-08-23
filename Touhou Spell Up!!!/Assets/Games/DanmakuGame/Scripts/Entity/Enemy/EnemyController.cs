@@ -12,7 +12,21 @@ public class EnemyController : GameEntityController
     [SerializeField] private IntGameParameter currentHealthParameter;
 
     public UnityAction<float, float> OnHealthChanged;
-    public float HealthPercentage => CurrentHealth / MaxHealth;
+    
+    // EnemyState にキャストして CurrentHealth にアクセス
+    public float CurrentHealth 
+    { 
+        get => (_state as EnemyState)?.CurrentHealth ?? 0f;
+        private set 
+        {
+            if (_state is EnemyState enemyState)
+            {
+                enemyState.CurrentHealth = value;
+            }
+        }
+    }
+    
+    public float HealthPercentage => CurrentHealth / (Property as EnemyProperty)?.MaxHealth ?? 1f;
 
     void Start()
     {
@@ -31,8 +45,22 @@ public class EnemyController : GameEntityController
         base.Initialize(entity);
         
         // EnemyController固有の初期化
+        // CurrentHealth を EnemyProperty.MaxHealth で初期化
+        if (Property is EnemyProperty enemyProperty)
+        {
+            CurrentHealth = enemyProperty.MaxHealth;
+        }
+        
         SetupHealthSystem();
         SetupLifeGauge();
+    }
+
+    /// <summary>
+    /// EnemyState を作成
+    /// </summary>
+    protected override GameEntityState CreateState()
+    {
+        return new EnemyState();
     }
 
     /// <summary>
@@ -72,9 +100,13 @@ public class EnemyController : GameEntityController
         }
     }
 
-    public override void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage)
     {
-        base.TakeDamage(damage);
+        CurrentHealth -= damage;
+        if (CurrentHealth < 0)
+        {
+            CurrentHealth = 0;
+        }
 
         // GameParameterが設定されていれば同期
         if (currentHealthParameter != null)
@@ -82,7 +114,8 @@ public class EnemyController : GameEntityController
             currentHealthParameter.Value = (int)CurrentHealth;
         }
 
-        OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+        float maxHealth = (Property as EnemyProperty)?.MaxHealth ?? 1f;
+        OnHealthChanged?.Invoke(CurrentHealth, maxHealth);
 
         if (CurrentHealth <= 0)
         {
