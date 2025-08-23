@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 [CreateAssetMenu(fileName = "LINE_", menuName = "Danmaku/Pattern/Emission/Line")]
+[Obsolete("LineEmissionShape is deprecated. Use classes derived from LineEmissionShapeBase instead for enhanced ordering control.", false)]
 public class LineEmissionShape : EmissionShape
 {
     [SerializeField] private Vector3Reference startOffset = new Vector3Reference { useConstant = true, constantValue = new Vector3(-1f, 0, 0) };  // 始点オフセット

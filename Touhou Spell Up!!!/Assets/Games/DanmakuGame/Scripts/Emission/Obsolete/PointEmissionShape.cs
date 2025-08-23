@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 [CreateAssetMenu(fileName = "POINT_", menuName = "Danmaku/Pattern/Emission/Point")]
+[Obsolete("PointEmissionShape is deprecated. Use classes derived from PointEmissionShapeBase instead for enhanced functionality.", false)]
 public class PointEmissionShape : EmissionShape
 {
     [SerializeField] private Vector3Reference positionOffset = new Vector3Reference { useConstant = true, constantValue = Vector3.zero };

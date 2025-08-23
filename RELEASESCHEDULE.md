@@ -7,17 +7,6 @@
 - GameEntityControllerに対して、Stateの値を取得するためのフィールドを用意する
     - これはGameParameterとして共通化できるようにする
 
-- 点・線・面弾幕システムの階層設計実装
-    - EmissionShapeBaseを頂点とした階層構造の実装
-        - PointEmissionShapeBase、LineEmissionShapeBase、PlaneEmissionShapeBaseの中間抽象クラス作成
-        - 各具象クラス（BasicPoint、StraightLine、CircleLine、GridPlane、CirclePlaneなど）の実装
-    - 発射タイミング制御システムの強化
-        - EmissionTiming enum（Simultaneous、Sequential、Random、Wave、Spiralなど）の追加
-        - LineOrder enum（順次、逆順、1つ飛ばし、中央から/へ、ランダムなど）の実装
-        - PlaneOrder enum（同時、螺旋状、放射状、波状、ランダムなど）の実装
-    - 発射タイミング制御をShootPatternBaseからEmissionShapeBaseに移管
-    - 重複制御、個数制御などの高度なランダム発射制御の実装
-
 ## v0.1～実装予定
 
 

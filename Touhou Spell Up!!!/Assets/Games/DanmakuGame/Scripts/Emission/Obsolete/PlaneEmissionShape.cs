@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 [CreateAssetMenu(fileName = "PLANE_", menuName = "Danmaku/Pattern/Emission/Plane")]
+[Obsolete("PlaneEmissionShape is deprecated. Use classes derived from PlaneEmissionShapeBase instead for enhanced 2D ordering control.", false)]
 public class PlaneEmissionShape : EmissionShape
 {
     [SerializeField] private Vector2Reference size = new Vector2Reference { useConstant = true, constantValue = new Vector2(2f, 2f) };            // 幅x高さ
@@ -21,8 +23,8 @@ public class PlaneEmissionShape : EmissionShape
             for (int x = 0; x < countX.Value; x++)
             {
                 Vector3 localPos = new Vector3(
-                    -size.Value.x / 2 + (randomPositions.Value ? Random.Range(0f, size.Value.x) : x * stepX),
-                    -size.Value.y / 2 + (randomPositions.Value ? Random.Range(0f, size.Value.y) : y * stepY),
+                    -size.Value.x / 2 + (randomPositions.Value ? UnityEngine.Random.Range(0f, size.Value.x) : x * stepX),
+                    -size.Value.y / 2 + (randomPositions.Value ? UnityEngine.Random.Range(0f, size.Value.y) : y * stepY),
                     0
                 );
                 float angle = currentAngle;

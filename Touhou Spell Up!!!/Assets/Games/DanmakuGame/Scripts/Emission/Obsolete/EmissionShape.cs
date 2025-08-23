@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
+[Obsolete("EmissionShape is deprecated. Use EmissionShapeBase instead for enhanced timing control and hierarchical structure.", false)]
 public abstract class EmissionShape : ScriptableObject
 {
     [Tooltip("共有角度（オプション）。これを設定すると、生成される角度に適用。")]
