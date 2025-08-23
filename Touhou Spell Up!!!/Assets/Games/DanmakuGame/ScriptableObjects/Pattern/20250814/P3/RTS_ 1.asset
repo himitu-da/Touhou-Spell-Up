@@ -16,9 +16,9 @@ MonoBehaviour:
   _endConditionExpression: 
   _conditionParameters: []
   _beforeAwaitSeconds:
-    useConstant: 1
+    useConstant: 0
     constantValue: 0
-    parameter: {fileID: 0}
+    parameter: {fileID: 11400000, guid: 6960c8e86bc4ab4438b147592fc1d5a4, type: 2}
   _afterAwaitSeconds:
     useConstant: 1
     constantValue: 0
@@ -41,7 +41,7 @@ MonoBehaviour:
     parameter: {fileID: 0}
   internalAngle:
     useConstant: 1
-    constantValue: 150
+    constantValue: 90
     parameter: {fileID: 0}
   logInternalAngleChanges: 0
   emissionShape:

@@ -8,13 +8,27 @@ using UnityEngine.Events;
 public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
 {
     [SerializeField] protected GameEntityReference _entity;
-    protected MovementState _movementState;
-    public MovementState MovementState => _movementState; // SatelliteMovePatternから参照するためにpublicにする
+    protected GameEntityState _state;
+    public GameEntityState State => _state;
     public GameEntityProperty Property { get; protected set; }
     protected CancellationTokenSource _cancellationTokenSource;
 
+    private Vector3 _initialScale;
+
     [SerializeField] private List<GameParameter> _gameParameters = new List<GameParameter>();
     public List<GameParameter> GameParameters => _gameParameters;
+
+    [Header("Health")]
+    [SerializeField] private FloatReference _maxHealth = new FloatReference { useConstant = true, constantValue = 100f };
+    public float MaxHealth => _maxHealth.Value;
+    
+    [System.NonSerialized]
+    private float _currentHealth;
+    public float CurrentHealth
+    {
+        get => _currentHealth;
+        protected set => _currentHealth = value;
+    }
 
     // イベント駆動のメンバ
     private float _currentLifetime = 0f;
@@ -118,18 +132,25 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         // GameEntityReferenceに定数として設定する
         this._entity = new GameEntityReference { useConstant = true, constantValue = entity };
         this.Property = entity.Property;
+
+        // HPを初期化
+        _currentHealth = MaxHealth;
         
-        // MovementStateをnewで生成する
-        _movementState = new MovementState
+        // 初期スケールを保存
+        _initialScale = transform.localScale;
+
+        // GameEntityStateをnewで生成する
+        _state = new GameEntityState
         {
             // 初期位置と向きを設定
             Position = transform.position,
-            Rotation = transform.rotation
+            Rotation = transform.rotation,
+            Scale = Vector3.one // stateのScaleは乗数として扱うため1で初期化
         };
 
         // 補間用の目標値も初期化
-        _targetPosition = _movementState.Position;
-        _targetRotation = _movementState.Rotation;
+        _targetPosition = _state.Position;
+        _targetRotation = _state.Rotation;
 
         if (this.Property == null) return;
 
@@ -146,13 +167,32 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
             }
             else
             {
-                Property.MovePattern.Execute(_movementState, _cancellationTokenSource.Token).Forget();
+                Property.MovePattern.Execute(_state, _cancellationTokenSource.Token).Forget();
             }
         }
         if (Property.ShootPattern != null)
         {
             Property.ShootPattern.Execute(this, _cancellationTokenSource.Token).Forget();
         }
+        if (Property.AnimatePattern != null)
+        {
+            Property.AnimatePattern.Execute(this, _cancellationTokenSource.Token).Forget();
+        }
+    }
+
+    /// <summary>
+    /// ダメージを受ける処理
+    /// </summary>
+    /// <param name="damageAmount">ダメージ量</param>
+    public virtual void TakeDamage(float damageAmount)
+    {
+        _currentHealth -= damageAmount;
+        if (_currentHealth < 0)
+        {
+            _currentHealth = 0;
+        }
+
+        // TODO: HPが0になった時の処理を実装
     }
 
     // IShootableインターフェースの実装
@@ -185,19 +225,19 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
 
     protected virtual void FixedUpdate()
     {
-        if (_movementState == null) return;
+        if (_state == null) return;
 
         // 速度に基づいて論理位置を更新
-        _movementState.Position += _movementState.Velocity * Time.fixedDeltaTime;
+        _state.Position += _state.Velocity * Time.fixedDeltaTime;
 
         // 補間目標値を更新
-        _targetPosition = _movementState.Position;
-        _targetRotation = _movementState.Rotation;
+        _targetPosition = _state.Position;
+        _targetRotation = _state.Rotation;
     }
 
     protected virtual void Update()
     {
-        if (_movementState == null) return;
+        if (_state == null) return;
 
         // 生存時間を更新
         float previousLifetime = _currentLifetime;
@@ -218,6 +258,7 @@ public abstract class GameEntityController : MonoBehaviour, IMovable, IShootable
         // 描画位置を目標位置に滑らかに補間
         transform.position = Vector3.Lerp(transform.position, _targetPosition, _interpolationSpeed.Value * Time.deltaTime);
         transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, _interpolationSpeed.Value * Time.deltaTime);
+        transform.localScale = Vector3.Scale(_initialScale, _state.Scale);
     }
 
     protected virtual void OnCollisionEnter2D(Collision2D other)

@@ -78,8 +78,8 @@ public abstract class PatternBase : ScriptableObject
             await UniTask.Delay(System.TimeSpan.FromSeconds(_afterAwaitSeconds.Value), cancellationToken: token);
     }
 
-    // MovementStateを受け取るExecuteメソッドのオーバーロード
-    public virtual async UniTask Execute(MovementState state, CancellationToken token)
+    // GameEntityStateを受け取るExecuteメソッドのオーバーロード
+    public virtual async UniTask Execute(GameEntityState state, CancellationToken token)
     {
         // 開始条件チェック
         if (!string.IsNullOrEmpty(_startConditionExpression))
@@ -126,11 +126,11 @@ public abstract class PatternBase : ScriptableObject
     // サブクラスで具体的な処理を実装するための抽象メソッド
     public abstract UniTask ExecuteImpl(GameEntityController controller, CancellationToken token);
 
-    // MovementStateを受け取るExecuteImplのオーバーロード（デフォルト実装は例外をスロー）
-    public virtual UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    // GameEntityStateを受け取るExecuteImplのオーバーロード（デフォルト実装は例外をスロー）
+    public virtual UniTask ExecuteImpl(GameEntityState state, CancellationToken token)
     {
         // このメソッドはMovePattern系のクラスでoverrideされることを想定
-        throw new System.NotImplementedException($"{this.GetType().Name} does not implement ExecuteImpl for MovementState.");
+        throw new System.NotImplementedException($"{this.GetType().Name} does not implement ExecuteImpl for GameEntityState.");
     }
 
     /// <summary>

@@ -1,5 +1,5 @@
 @startuml ClassDiagram_01_Core
-' v0.1.13 - TriggerPatternシステム追加
+' v0.1.15 - パターン実行条件、計算パターン、内部角度管理の追加
 ' ステレオタイプの色設定
 skinparam class {
     BackgroundColor<<MonoBehaviour>> LightBlue
@@ -10,11 +10,12 @@ skinparam class {
 
 ' --- Interfaces ---
 interface IMovable <<Interface>>
-interface IShootable <<Interface>>
+interface IShootable <<Interface->>
 
 ' --- Managers ---
 class SystemManager <<MonoBehaviour>>
 class DanmakuGameManager <<MonoBehaviour>>
+class GameParameterManager <<MonoBehaviour>>
 
 ' --- Core Abstract Classes ---
 abstract class GameEntityController <<MonoBehaviour>>
@@ -22,26 +23,25 @@ class GameEntity <<ScriptableObject>>
 class GameEntityProperty <<ScriptableObject>>
 abstract class PatternBase <<ScriptableObject>>
 abstract class TriggerPatternBase <<ScriptableObject>>
+abstract class "CalculatePatternBase<T>" as CalculatePatternBase_T <<ScriptableObject>>
 abstract class EmissionShape <<ScriptableObject>>
 abstract class GameParameter <<ScriptableObject>>
 abstract class "GameParameterReference<T>" as GameParameterReference_T <<struct>>
-
-' --- Enums ---
-enum ComparisonOperator <<enum>>
-enum DistanceReferenceType <<enum>>
-enum ParameterValueType <<enum>>
 
 ' --- 継承関係 ---
 IMovable <|.. GameEntityController
 IShootable <|.. GameEntityController
 PatternBase <|-- TriggerPatternBase
+PatternBase <|-- CalculatePatternBase_T
 
 ' --- 関連 ---
 GameEntityController o-- GameEntity : "_entity"
 GameEntity o-- "1" GameEntityProperty : "property"
 GameEntityProperty o-- PatternBase : "ShootPattern / MovePattern"
-PatternBase ..> GameParameterReference_T
+PatternBase o-- "*" GameParameter : "uses"
 TriggerPatternBase o-- PatternBase : "_triggerPattern"
 TriggerPatternBase ..> GameEntityController : "monitors events"
+CalculatePatternBase_T o-- "1" GameParameter : "_targetParameter"
+GameParameterReference_T ..> GameParameter
 
 @enduml

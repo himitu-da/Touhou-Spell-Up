@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c7d318de5afe304383d78cb17036400, type: 3}
+  m_Name: NWAY_A
+  m_EditorClassIdentifier: 
+  _beforeAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _afterAwaitSeconds:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  _entity: {fileID: 11400000, guid: c934e7ee65e066c46b78e2286f670443, type: 2}
+  spawnPointType: 0
+  positionOffset:
+    useConstant: 1
+    constantValue: {x: 0, y: 0, z: 0}
+    parameter: {fileID: 0}
+  followShooterPosition:
+    useConstant: 1
+    constantValue: 1
+    parameter: {fileID: 0}
+  emissionShape: {fileID: 0}
+  sequential:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  emissionInterval:
+    useConstant: 1
+    constantValue: 0.1
+    parameter: {fileID: 0}
+  directionOffset:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  aimAtPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  alwaysAimToPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  spawnRadius:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  wayCount:
+    useConstant: 1
+    constantValue: 8
+    parameter: {fileID: 0}
+  totalAngle:
+    useConstant: 1
+    constantValue: 90
+    parameter: {fileID: 0}
+  allRound:
+    useConstant: 1
+    constantValue: 1
+    parameter: {fileID: 0}
+  rotationDirection: 0
+  avoidAtPlayer:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  angleParameter: {fileID: 0}
+  initializeParameterOnStart:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  accumulatingOffset:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}

@@ -69,7 +69,7 @@ public class BranchPattern : PatternBase
         }
     }
 
-    public override async UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    public override async UniTask ExecuteImpl(GameEntityState state, CancellationToken token)
     {
         if (token.IsCancellationRequested) return;
 

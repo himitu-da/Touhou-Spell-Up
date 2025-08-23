@@ -11,9 +11,6 @@ public class EnemyController : GameEntityController
     [Header("GameParameter同期（オプション）")]
     [SerializeField] private IntGameParameter currentHealthParameter;
 
-    // Health Properties
-    public float MaxHealth { get; private set; }
-    public float CurrentHealth { get; private set; }
     public UnityAction<float, float> OnHealthChanged;
     public float HealthPercentage => CurrentHealth / MaxHealth;
 
@@ -43,13 +40,8 @@ public class EnemyController : GameEntityController
     /// </summary>
     private void SetupHealthSystem()
     {
-        if (Property is EnemyProperty enemyProperty)
-        {
-            MaxHealth = enemyProperty.MaxHealth;
-        }
-        CurrentHealth = MaxHealth;
-
-        // GameParameterが設定されていれば初期値を同期
+        // 親クラスのCurrentHealthはInitializeでMaxHealthに設定されるため、
+        // ここではGameParameterの同期のみ行う
         if (currentHealthParameter != null)
         {
             currentHealthParameter.Value = (int)CurrentHealth;
@@ -80,13 +72,9 @@ public class EnemyController : GameEntityController
         }
     }
 
-    public void TakeDamage(float damage)
+    public override void TakeDamage(float damage)
     {
-        CurrentHealth -= damage;
-        if (CurrentHealth < 0)
-        {
-            CurrentHealth = 0;
-        }
+        base.TakeDamage(damage);
 
         // GameParameterが設定されていれば同期
         if (currentHealthParameter != null)

@@ -34,18 +34,18 @@ public class SatelliteMovePattern : MovePatternBase
             centerController = controller;
         }
 
-        // publicプロパティ経由でMovementStateを取得
-        MovementState state = controller.MovementState;
+        // publicプロパティ経由でGameEntityStateを取得
+        GameEntityState state = controller.State;
         if (state == null)
         {
-            Debug.LogError("MovementState is null in GameEntityController.", this);
+            Debug.LogError("GameEntityState is null in GameEntityController.", this);
             return UniTask.CompletedTask;
         }
 
         return ExecuteSatelliteMove(state, centerController, token);
     }
 
-    private async UniTask ExecuteSatelliteMove(MovementState state, GameEntityController centerController, CancellationToken token)
+    private async UniTask ExecuteSatelliteMove(GameEntityState state, GameEntityController centerController, CancellationToken token)
     {
         Vector3 centerPosition = GetSpawnPosition(centerController);
 
@@ -89,11 +89,11 @@ public class SatelliteMovePattern : MovePatternBase
     }
 
     // MovePatternBaseの抽象メソッドを実装
-    public override UniTask ExecuteMove(MovementState state, CancellationToken token)
+    public override UniTask ExecuteMove(GameEntityState state, CancellationToken token)
     {
-        // このパターンは親Actorが必須なため、MovementStateだけでは実行できない。
+        // このパターンは親Actorが必須なため、GameEntityStateだけでは実行できない。
         // ExecuteImpl(GameEntityController, ...)が代わりに呼ばれる。
-        Debug.LogError("SatelliteMovePattern.ExecuteMove(MovementState, CancellationToken) should not be called directly.", this);
+        Debug.LogError("SatelliteMovePattern.ExecuteMove(GameEntityState, CancellationToken) should not be called directly.", this);
         return UniTask.CompletedTask;
     }
 

@@ -95,3 +95,6 @@ public class GameParameterReference : GameParameterReference<GameParameter> { }
 
 [System.Serializable]
 public class GameObjectReference : GameParameterReference<GameObject> { }
+
+[System.Serializable]
+public class ColorReference : GameParameterReference<Color> { }

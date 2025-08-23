@@ -43,9 +43,9 @@ public abstract class CalculatePatternBase<T> : PatternBase
     /// <returns>計算結果</returns>
     protected abstract T CalculateValue();
 
-    public override UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    public override UniTask ExecuteImpl(GameEntityState state, CancellationToken token)
     {
-        Debug.LogWarning($"{this.GetType().Name} does not support ExecuteImpl for MovementState.");
+        Debug.LogWarning($"{this.GetType().Name} does not support ExecuteImpl for GameEntityState.");
         return UniTask.CompletedTask;
     }
 

@@ -20,10 +20,21 @@
 | プロパティ | PascalCase | `PlayerHealth` |
 | ローカル変数 | camelCase | `currentScore` |
 | 引数 | camelCase | `void SetPosition(int newPosition)` |
-| プライベートフィールド | `_` + camelCase | `private int _playerHealth;` |
+| privateフィールド | `_` + camelCase | `private int _playerHealth;` |
 | publicフィールド | PascalCase | `public int PlayerHealth;` |
 | インターフェース | `I` + PascalCase | `IDamageable` |
 | enum | PascalCase | `GameState` |
+
+### 1.3. クラス名およびインターフェース名の命名規則
+
+- 抽象クラスの場合は、クラス名の末尾に`Base`を付ける。基本的に名詞で命名し、クラスの役割を明確にする。
+    - 例: `PatternBase`
+- 抽象クラスの実現をした抽象クラスの場合は、抽象クラス名の部分は保持し、その前にどのように専化したかを示す名詞をつける。ただし、PatternBase系の場合は動詞で命名を行う。
+    - 例: `ExpressionCalculatePatternBase`, `ShootPatternBase`, `MovePatternBase`
+- 抽象クラスの実現をした具象クラスの場合は、抽象クラス名から`Base`を除去する。基本的に名詞で命名し、クラスの役割を明確にする。
+    - 例: `CircleShootPattern`, `StraightMovePattern`
+- インターフェースの場合は、クラス名の先頭に`I`を付ける。基本的に形容詞や動詞で命名し、機能を明確にする。
+    - 例: `IShootable`, `IMovable`
 
 ## 2. 書式
 
@@ -45,6 +56,18 @@ if (condition)
 
 // 悪い例
 if (condition) DoSomething();
+```
+
+### 2.3. フィールドとプロパティ
+
+-   UnityのInspectorで設定可能にしたい場合は`[SerializeField]`属性を付与する。
+-   [SerializeField]の後には改行を入れず、フィールドの宣言と同じ行に配置します。
+-   `public`フィールドは基本的に使用しない。他クラスがアクセスしたい場合は、プロパティを通じてアクセスします。
+-   Inspectorで指定可能なフィールドは、必ずGameParameterReference型を使用する。
+
+```csharp
+    [SerializeField] private int _playerHealth;
+    public int PlayerHealth { get { return _playerHealth; } }
 ```
 
 ## 3. コメント
@@ -140,6 +163,10 @@ if (col.CompareTag(GameTags.EnemyBullet)) { ... }
 
 -   `ScriptableObject`は、設定値やアセット参照を保持するデータコンテナとしてだけでなく、複数のオブジェクトやパターン間で状態（例: 角度、座標）を共有するための「共有リソース」としても活用します。
 -   例えば、`SharedAngle`のような`ScriptableObject`を作成し、あるパターンが更新した角度を、別のパターンが参照するといった連携を可能にします。これにより、複雑な弾幕の同期や連携を、コンポーネント間の直接参照なしに実現できます。
+
+### 6.7. ゲームロジックにおける物理演算
+
+- 原則として、ゲームロジックではフレーム依存の物理演算はせず、FixedUpdateを用いて物理演算を行います。
 
 ## 7. システム設計
 

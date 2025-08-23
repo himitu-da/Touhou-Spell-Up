@@ -20,7 +20,7 @@ public class HomingMovePattern : MovePatternBase
     [Tooltip("追従を継続する時間（秒）。0以下の場合は無制限。")]
     private FloatReference _duration = new FloatReference { useConstant = true, constantValue = 5f };
 
-    public override async UniTask ExecuteMove(MovementState state, CancellationToken token)
+    public override async UniTask ExecuteMove(GameEntityState state, CancellationToken token)
     {
         var playerTransform = PlayerUtility.GetPlayerTransform();
         if (playerTransform == null)

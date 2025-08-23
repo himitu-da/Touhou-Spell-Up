@@ -3,16 +3,10 @@
 
 # Developing
 
-
-
 ## v0.1～実装予定
 
-- GameStateParameterを実装する
-
-- 数値型でない型に対してもCalculatePatternを実装できるようにする
-    - 例えば、PatternBaseの具象クラスや、Entityなど。
-    - パラメータとしてこれを用意しておいて、これをCalculatePatternの引数に渡すことで、CalculatePatternの計算結果をパラメータとして使用できるなど
-
+- PatternBaseにおいて、親のGameEntityを参照できるようにする。
+    - SatellitePatternで特殊な実装をしていたものを、平準化する
 
 - ShootPatternの具象クラスから、点・線・面の弾を撃つことを補助するためのShotUtilityを作成する
     - ShotUtilityクラスでは、与えられたEmissionDataとshooterによって、初期設定を行い、shootメソッドで撃つ
@@ -22,21 +16,32 @@
     - Shootメソッドに提供するのは、「撃つ玉」と「撃ち方（角度計算方法・回数・頻度）」の2つ
     - これによって各ShootPatternは点・線・面であることを意識せずに撃つことができるようになる
 
-- AnimatePatternを抽象クラスを追加する（ShootPatternは撃つ方法の責務、MovePatternは移動の方法の責務、AnimatePatternは見た目変化の方法の責務）
-    - GameEntity変更、大きさ変更、色変更、回転変更等
-- EntityControllerにAnimateを司る部分を追加
+- オブジェクトプーリングの実装
+
+- GameEntityStateとGameEntityPropertyについて、それぞれ動的な状態と静的な状態を保持するような責務に分ける
+- GameEntityControllerはGameEntityStateとGameEntityPropertyを持つようにし、これ自体が状態を保有しないようにする
+- GameEntityStateを継承したPlayerState、EnemyState、BulletStateを作成
+- BulletStateが残りの寿命を保持するようにし、BulletControllerからcurrentLifeTimeを削除する
+- GameEntityStateのScaleはScaleMultiplierに名称変更し、初期スケールに対する倍率として機能するようにする
+- EnemyPropertyにmaxHealthを追加し、EnemyControllerからmaxHealthを削除する
+- initialScaleはGameEntityStateが保有するように変更
+- GameEntityControllerに対して、Stateの値を取得するためのフィールドを用意する
+    - これはGameParameterとして共通化できるようにする
 
 以下はv0.1ではなく、v0.2以降に実装予定
 
-- privateメンバの命名規則（_をつける）や、[SerializeField]の改行の統一
+- Assets/Games以下の全コードのprivateフィールドにおいて、命名規則（_をつける）の統一
+- Assets/Games以下の全コードのフィールドにおいて、[SerializeField]後の改行はしないことで統一
+- Assets/Games以下の全コードのフィールドにおいて、publicフィールドは使用せず、[SerializeField]もしくはプロパティを使用することで統一
+- Assets/Games以下の全コードにおいて、`if`, `for`, `while` などの制御構文では、処理が1行であっても必ず波括弧を使用することで統一
+
+- Reference型のメンバで、シークバーで指定できるようにする（Rangeが指定されている場合）
 
 - PatternBase具象クラスの命名規則の統一
     - ShootPatternBaseの具象クラスは名称にShootPatternをつける
     - MovePatternBaseの具象クラスは名称にMovePatternを付ける
-    
-- CalculatedParameterで、次元数ごとに型を1まとめにできるようにする
 
-- BranchPatternで、else ifに相当する処理を追加
+- CalculatedParameterで、次元数ごとに型を1まとめにできるようにする
 
 - MovementStateのVelocityは、複数のものに対応できるようにして、例えば直進しつつsin波で上下に動くなど、複数の移動を組み合わせられるようにする
     - 例えば、直進しつつsin波で上下に動くなど、複数の移動を組み合わせられるようにする
@@ -49,7 +54,7 @@
 
 - WinderMovePatternを作成（巻きつけ弾）
 - ReflectionMovePatternを作成（反射弾）
-
+- ループ弾幕（直線または曲線を指定し、その間を移動する弾幕）
 
 - ノードベースで弾幕パターンを作成可能に（Graph Editorの作成）
 - Patternをノードで作成可能にして、同一の設定項目を表示
@@ -60,17 +65,24 @@
 - PatternBaseを保管するライブラリを作成
 
 ## v0.2～実装予定
-- オブジェクトプーリングの実装
-- 自機ライフの実装
-- 敵機複数弾幕の実装（体力がなくなると次の弾幕に移行）
-- ローディングシーン、タイトルシーン（スタート画面、トップ画面）を設定
-- トップ画面にGame Start、Quitを設定
-- ステージコントローラー（道中とボス）の作成
-- パワー、アイテム、ボムを実装
-- スコア、グレイズを実装
-- 難易度、オプションを実装
-- 雑魚敵、中ボスなどを実装
-- ゲームクリア、ゲームオーバーを実装
+- ゲーム進行管理系
+    - ゲームモード管理システムの作成
+    - ステージ進行システムの作成
+    - ローディングシーン、タイトルシーン（スタート画面、トップ画面）を設定
+    - トップ画面にGame Start、Quitを設定
+    - 難易度、オプションを実装
+    - ステージコントローラー（道中とボス）の作成
+    - ゲームクリア、ゲームオーバーを実装
+- プレイヤーシステム系
+    - 自機ライフの実装
+    - 被弾処理
+    - ボムシステム、パワーシステムの実装
+- スコアと収集
+    - スコア、グレイズの実装
+    - アイテムの収集システムの実装
+- 敵システム系
+    - 敵機複数弾幕の実装（体力がなくなると次の弾幕に移行）
+    - 雑魚敵、中ボスなどを実装
 - 特殊ルールシステムの試作
 - 問題データ管理のシステムを作成
 - 弾幕と音楽の同期システムを作成

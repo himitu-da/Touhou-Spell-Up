@@ -37,7 +37,7 @@ public class ParallelPattern : PatternBase
         await UniTask.WhenAll(tasks);
     }
 
-    public override async UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    public override async UniTask ExecuteImpl(GameEntityState state, CancellationToken token)
     {
         if (patterns == null || patterns.Count == 0)
         {

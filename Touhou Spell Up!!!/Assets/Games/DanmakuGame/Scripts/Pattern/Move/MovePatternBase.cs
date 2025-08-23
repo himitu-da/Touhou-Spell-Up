@@ -11,12 +11,12 @@ public abstract class MovePatternBase : PatternBase
         return UniTask.CompletedTask;
     }
 
-    // MovementState版のExecuteImplをoverride
-    public override UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    // GameEntityState版のExecuteImplをoverride
+    public override UniTask ExecuteImpl(GameEntityState state, CancellationToken token)
     {
         return ExecuteMove(state, token);
     }
 
     // サブクラスが実装するための新しい抽象メソッド
-    public abstract UniTask ExecuteMove(MovementState state, CancellationToken token);
+    public abstract UniTask ExecuteMove(GameEntityState state, CancellationToken token);
 }

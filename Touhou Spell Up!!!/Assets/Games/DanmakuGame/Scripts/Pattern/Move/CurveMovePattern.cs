@@ -13,7 +13,7 @@ public class CurveMovePattern : MovePatternBase
     [SerializeField] private BoolReference overrideInitialDirection = new BoolReference { useConstant = true, constantValue = false };
     [SerializeField] private FloatReference initialDirection = new FloatReference { useConstant = true, constantValue = -90f }; // 下向き（度）
 
-    public override async UniTask ExecuteMove(MovementState state, CancellationToken token)
+    public override async UniTask ExecuteMove(GameEntityState state, CancellationToken token)
     {
         // 初期角度の決定
         if (overrideInitialDirection.Value)

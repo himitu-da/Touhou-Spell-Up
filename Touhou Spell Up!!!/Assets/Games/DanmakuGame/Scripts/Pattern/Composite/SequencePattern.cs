@@ -44,7 +44,7 @@ public class SequencePattern : PatternBase
         }
     }
 
-    public override async UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    public override async UniTask ExecuteImpl(GameEntityState state, CancellationToken token)
     {
         foreach (var step in sequence)
         {

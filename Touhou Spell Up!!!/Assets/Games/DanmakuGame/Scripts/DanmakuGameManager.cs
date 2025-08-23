@@ -16,6 +16,9 @@ public class DanmakuGameManager : MonoBehaviour
     private bool _systemReady = false;
     public bool IsSystemReady => _systemReady;
 
+    private float _gameTime = 0f;
+    public float GameTime => _gameTime;
+
     void Awake()
     {
         if (Instance == null)
@@ -42,6 +45,14 @@ public class DanmakuGameManager : MonoBehaviour
 
         // リスタート後のシーンリロード検知
         CheckForRestartReload();
+    }
+
+    void Update()
+    {
+        if (_systemReady)
+        {
+            _gameTime += Time.deltaTime;
+        }
     }
 
     /// <summary>
@@ -116,6 +127,7 @@ public class DanmakuGameManager : MonoBehaviour
 
         // システム状態をリセット
         _systemReady = false;
+        _gameTime = 0f;
 
         // リスタートフラグを設定（シーンリロード後の検知用）
         PlayerPrefs.SetInt("GameRestarted", 1);

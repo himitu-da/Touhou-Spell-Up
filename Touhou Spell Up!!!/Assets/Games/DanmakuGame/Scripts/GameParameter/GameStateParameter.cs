@@ -26,16 +26,60 @@ public class GameStateParameter : GameParameter<float>
     [SerializeField]
     private GameEntityController targetEntity;
 
+    public override float Value
+    {
+        get
+        {
+            if (!Application.isPlaying)
+            {
+                return initialValue;
+            }
+
+            switch (valueToTrack)
+            {
+                case GameStateValue.GameTime:
+                    return DanmakuGameManager.Instance != null ? DanmakuGameManager.Instance.GameTime : 0f;
+
+                case GameStateValue.EnemyHealth:
+                    if (targetEntity != null)
+                    {
+                        return targetEntity.CurrentHealth;
+                    }
+                    Debug.LogWarning($"GameStateParameter ({name}): targetEntity is not set for EnemyHealth tracking.");
+                    return 0f;
+
+                case GameStateValue.EnemyHealthPercent:
+                    if (targetEntity != null && targetEntity.MaxHealth > 0)
+                    {
+                        return targetEntity.CurrentHealth / targetEntity.MaxHealth;
+                    }
+                    if (targetEntity == null)
+                    {
+                        Debug.LogWarning($"GameStateParameter ({name}): targetEntity is not set for EnemyHealthPercent tracking.");
+                    }
+                    return 0f;
+
+                case GameStateValue.PlayerPower:
+                    // TODO: Playerの状態を管理するクラスから取得
+                    Debug.LogWarning("PlayerPower tracking is not yet implemented.");
+                    return 0f;
+
+                case GameStateValue.PlayerGraze:
+                    // TODO: Playerの状態を管理するクラスから取得
+                    Debug.LogWarning("PlayerGraze tracking is not yet implemented.");
+                    return 0f;
+
+                default:
+                    return base.Value;
+            }
+        }
+        set => base.Value = value; // setは基本的に使わないが、念のため
+    }
+
     public override void Reset()
     {
         // ゲーム状態は実行時に決まるため、リセットは通常不要
         // ただし、デバッグ用に初期値を設定することは可能
         base.Reset();
     }
-
-    // TODO:
-    // 実行時に毎フレーム、あるいは値が要求されたタイミングで、
-    // valueToTrackに応じて適切なマネージャーやコントローラーから値を取得し、
-    // currentValueを更新するロジックを実装する必要がある。
-    // (例: GameTimeならTime.timeSinceLevelLoad, EnemyHealthならtargetEntityから取得)
 }

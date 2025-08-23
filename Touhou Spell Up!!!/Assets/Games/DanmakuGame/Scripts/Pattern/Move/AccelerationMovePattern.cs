@@ -8,7 +8,7 @@ public class AccelerationMovePattern : MovePatternBase
     [SerializeField] private FloatReference _acceleration = new FloatReference { useConstant = true, constantValue = 1f };
     [SerializeField] private FloatReference _duration = new FloatReference { useConstant = true, constantValue = 1f };
 
-    public override async UniTask ExecuteMove(MovementState state, CancellationToken token)
+    public override async UniTask ExecuteMove(GameEntityState state, CancellationToken token)
     {
         // 向きの正規化されたベクトルを取得
         Vector3 direction = state.Velocity.normalized;

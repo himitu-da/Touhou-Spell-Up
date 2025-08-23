@@ -42,7 +42,7 @@ public class LoopPattern : PatternBase
         }
     }
 
-    public override async UniTask ExecuteImpl(MovementState state, CancellationToken token)
+    public override async UniTask ExecuteImpl(GameEntityState state, CancellationToken token)
     {
         if (pattern == null || pattern.Value == null)
         {

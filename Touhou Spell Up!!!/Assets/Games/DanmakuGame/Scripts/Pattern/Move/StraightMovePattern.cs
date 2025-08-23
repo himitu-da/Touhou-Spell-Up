@@ -8,7 +8,7 @@ public class StraightMovePattern : MovePatternBase
     [SerializeField] private FloatReference _speed = new FloatReference { useConstant = true, constantValue = 5f };
     // durationは不要になるため削除
 
-    public override UniTask ExecuteMove(MovementState state, CancellationToken token)
+    public override UniTask ExecuteMove(GameEntityState state, CancellationToken token)
     {
         // 向き（Rotation）に基づいて速度を設定する
         // 現在はスプライトが上向き前提なので、upベクトルを回転させて進行方向を決定

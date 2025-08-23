@@ -39,6 +39,11 @@ MonoBehaviour:
     useConstant: 1
     constantValue: 0
     parameter: {fileID: 0}
+  internalAngle:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  logInternalAngleChanges: 0
   emissionShape:
     useConstant: 1
     constantValue: {fileID: 0}
@@ -63,6 +68,14 @@ MonoBehaviour:
     useConstant: 1
     constantValue: 0
     parameter: {fileID: 0}
+  initializeAngleOnStart:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  postExecutionAngleOffset:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
   spawnRadius:
     useConstant: 1
     constantValue: 0
@@ -84,18 +97,6 @@ MonoBehaviour:
     constantValue: 0
     parameter: {fileID: 0}
   avoidAtPlayer:
-    useConstant: 1
-    constantValue: 0
-    parameter: {fileID: 0}
-  angleParameter:
-    useConstant: 1
-    constantValue: {fileID: 0}
-    parameter: {fileID: 0}
-  initializeParameterOnStart:
-    useConstant: 1
-    constantValue: 1
-    parameter: {fileID: 0}
-  accumulatingOffset:
     useConstant: 1
     constantValue: 0
     parameter: {fileID: 0}
