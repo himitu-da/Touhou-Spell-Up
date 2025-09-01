@@ -25,7 +25,7 @@ public abstract class EmissionBase : ScriptableObject
     [SerializeField] protected AngleParameterReference sharedAngle;
     
     [Tooltip("角度モード")]
-    [SerializeField] protected NewAngleModeReference angleMode = new NewAngleModeReference { useConstant = true, constantValue = AngleMode.Fixed };
+    [SerializeField] protected AngleModeReference angleMode = new AngleModeReference { useConstant = true, constantValue = AngleMode.Fixed };
     
     [Tooltip("基本角度オフセット")]
     [SerializeField] protected FloatReference baseAngleOffset = new FloatReference { useConstant = true, constantValue = 0f };

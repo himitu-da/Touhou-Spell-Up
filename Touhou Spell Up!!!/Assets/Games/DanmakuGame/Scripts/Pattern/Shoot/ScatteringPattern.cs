@@ -28,7 +28,7 @@ public class ScatteringPattern : ShootPatternBase
         }
         else
         {
-            // EmissionShapeがない場合は、従来通り単一の発生源を追加
+            // Emissionがない場合は、従来通り単一の発生源を追加
             emissions.Add(new EmissionData { localPosition = positionOffset.Value, localAngle = 0 });
         }
 

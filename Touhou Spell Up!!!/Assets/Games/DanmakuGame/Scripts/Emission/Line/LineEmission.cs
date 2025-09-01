@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// ライン発射パターン - 新階層システム版
 /// </summary>
-[CreateAssetMenu(fileName = "LineEmission_", menuName = "Danmaku/Pattern/Emission/New/Line")]
+[CreateAssetMenu(fileName = "LineEmission_", menuName = "Danmaku/Pattern/Emission/Line/Basic")]
 public class LineEmission : LineEmissionBase
 {
     [Header("ライン発射設定")]

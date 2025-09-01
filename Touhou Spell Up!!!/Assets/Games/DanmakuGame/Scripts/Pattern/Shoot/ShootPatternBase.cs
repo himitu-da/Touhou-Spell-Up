@@ -35,7 +35,7 @@ public abstract class ShootPatternBase : PatternBase
     private bool _hasInitializedConstantAngle = false;
 
     [Header("発生源シェイプ（オプション）")]
-    [SerializeField] protected EmissionShapeReference emissionShape;
+    [SerializeField] protected EmissionReference emissionShape;
     [Tooltip("順次発射か（同時ならfalse）")]
     [SerializeField] protected BoolReference sequential = new BoolReference { useConstant = true, constantValue = false };
     [Tooltip("順次発射時の間隔（秒）")]
@@ -63,14 +63,14 @@ public abstract class ShootPatternBase : PatternBase
         return ExecuteShoot(controller, token);
     }
 
-    // ShootPatternの本体。EmissionShapeの有無で処理を分岐し、最終的にExecuteShootFromPointを呼び出す
+    // ShootPatternの本体。Emissionの有無で処理を分岐し、最終的にExecuteShootFromPointを呼び出す
     public virtual async UniTask ExecuteShoot(GameEntityController controller, CancellationToken token)
     {
         var emissions = new List<EmissionData>();
 
         if (emissionShape == null || emissionShape.Value == null)
         {
-            // EmissionShapeがない場合、単一の発生源として動作
+            // Emissionがない場合、単一の発生源として動作
             emissions.Add(new EmissionData
             {
                 localPosition = positionOffset.Value, // 従来の位置オフセット
@@ -79,7 +79,7 @@ public abstract class ShootPatternBase : PatternBase
         }
         else
         {
-            // EmissionShapeがある場合、そこから発生源リストを取得
+            // Emissionがある場合、そこから発生源リストを取得
             emissions.AddRange(emissionShape.Value.GetEmissions(controller));
         }
 

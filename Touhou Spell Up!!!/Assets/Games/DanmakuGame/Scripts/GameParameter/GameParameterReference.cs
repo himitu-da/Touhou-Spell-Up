@@ -66,7 +66,7 @@ public class GameEntityControllerReference : GameParameterReference<GameEntityCo
 public class PatternBaseReference : GameParameterReference<PatternBase> { }
 
 [System.Serializable]
-public class EmissionShapeReference : GameParameterReference<EmissionShape> { }
+public class EmissionReference : GameParameterReference<EmissionBase> { }
 
 [System.Serializable]
 public class ImageReference : GameParameterReference<Image> { }
@@ -84,7 +84,7 @@ public class SpawnPointTypeReference : GameParameterReference<SpawnPointType> { 
 public class RotationDirectionReference : GameParameterReference<RotationDirection> { }
 
 [System.Serializable]
-public class AngleModeReference : GameParameterReference<EmissionShape.AngleMode> { }
+public class AngleModeReference : GameParameterReference<AngleMode> { }
 
 // --- トリガーパターン用の追加Reference型 ---
 [System.Serializable]

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 螺旋ライン発射パターン - 新システムの拡張例
 /// </summary>
-[CreateAssetMenu(fileName = "SpiralLineEmission_", menuName = "Danmaku/Pattern/Emission/New/SpiralLine")]
+[CreateAssetMenu(fileName = "SpiralLineEmission_", menuName = "Danmaku/Pattern/Emission/Line/Spiral")]
 public class SpiralLineEmission : LineEmissionBase
 {
     [Header("螺旋ライン設定")]

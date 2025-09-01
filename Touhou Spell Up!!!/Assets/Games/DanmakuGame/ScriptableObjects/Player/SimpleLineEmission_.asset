@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9ce9ae404c853749aa9dde8dbbda4cf, type: 3}
-  m_Name: LINE_
+  m_Script: {fileID: 11500000, guid: 248aa554dc443c343bb521e450925e55, type: 3}
+  m_Name: SimpleLineEmission_
   m_EditorClassIdentifier: 
   sharedAngle:
     useConstant: 1
@@ -24,15 +24,39 @@ MonoBehaviour:
     useConstant: 1
     constantValue: 0
     parameter: {fileID: 0}
-  startOffset:
+  emissionTiming:
     useConstant: 1
-    constantValue: {x: -0.75, y: 0, z: 0}
+    constantValue: 0
     parameter: {fileID: 0}
-  endOffset:
+  emissionInterval:
     useConstant: 1
-    constantValue: {x: 0.75, y: 0, z: 0}
+    constantValue: 0.1
+    parameter: {fileID: 0}
+  randomizeOrder:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  allowDuplicates:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  lineOrder:
+    useConstant: 1
+    constantValue: 1
+    parameter: {fileID: 0}
+  lineLength:
+    useConstant: 1
+    constantValue: 1.5
     parameter: {fileID: 0}
   pointCount:
     useConstant: 1
     constantValue: 3
+    parameter: {fileID: 0}
+  lineAngle:
+    useConstant: 1
+    constantValue: 0
+    parameter: {fileID: 0}
+  centerOffset:
+    useConstant: 1
+    constantValue: {x: 0, y: 0, z: 0}
     parameter: {fileID: 0}

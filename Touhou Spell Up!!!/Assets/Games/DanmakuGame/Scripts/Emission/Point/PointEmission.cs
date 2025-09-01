@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 単一点発射パターン - 新階層システム版
 /// </summary>
-[CreateAssetMenu(fileName = "PointEmission_", menuName = "Danmaku/Pattern/Emission/New/Point")]
+[CreateAssetMenu(fileName = "PointEmission_", menuName = "Danmaku/Pattern/Emission/Point/Basic")]
 public class PointEmission : PointEmissionBase
 {
     [Header("ポイント発射設定")]

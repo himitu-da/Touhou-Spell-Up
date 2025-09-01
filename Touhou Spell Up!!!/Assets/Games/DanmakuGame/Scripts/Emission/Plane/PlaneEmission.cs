@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 面発射パターン - 新階層システム版
 /// </summary>
-[CreateAssetMenu(fileName = "PlaneEmission_", menuName = "Danmaku/Pattern/Emission/New/Plane")]
+[CreateAssetMenu(fileName = "PlaneEmission_", menuName = "Danmaku/Pattern/Emission/Plane/Basic")]
 public class PlaneEmission : PlaneEmissionBase
 {
     [Header("面発射設定")]

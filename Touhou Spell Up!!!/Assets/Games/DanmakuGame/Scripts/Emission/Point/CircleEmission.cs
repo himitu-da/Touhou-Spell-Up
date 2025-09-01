@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /// <summary>
 /// 円形発射パターン - 新システムの拡張例
 /// </summary>
-[CreateAssetMenu(fileName = "CircleEmission_", menuName = "Danmaku/Pattern/Emission/New/Circle")]
+[CreateAssetMenu(fileName = "CircleEmission_", menuName = "Danmaku/Pattern/Emission/Point/Circle")]
 public class CircleEmission : PointEmissionBase
 {
     [Header("円形発射設定")]

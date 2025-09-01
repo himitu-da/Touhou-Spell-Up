@@ -4,15 +4,15 @@
 
 # Developing
 
-- GameEntityControllerに対して、Stateの値を取得するためのフィールドを用意する
-    - これはGameParameterとして共通化できるようにする
+
 
 ## v0.1～実装予定
 
-
-
+- Emissionの完全な実装とメニュー位置の変更
 - 常に進んでいる方向に向くみたいなAnimatePatternを作成する
 
+- GameEntityControllerに対して、Stateの値を取得するためのフィールドを用意する
+    - これはGameParameterとして共通化できるようにする
 
 - PatternBaseにおいて、親のGameEntityを参照できるようにする。
     - SatellitePatternで特殊な実装をしていたものを、平準化する
